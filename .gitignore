@@ -80,3 +80,13 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+#----------------------------#
+# This project
+#----------------------------#
+
+# iso images and vagrant boxes
+*.iso
+*.box
+*.ova
+*.ovf
