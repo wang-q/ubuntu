@@ -47,8 +47,8 @@ apt-get install -y linux-headers-$(uname -r)
 echo "==> Installing Ubunutu desktop"
 
 apt-get install -y ubuntu-desktop
+apt-get install -y gedit gnome-terminal gnome-system-monitor firefox xrdp
 #apt-get install -y --no-install-recommends ubuntu-desktop
-#apt-get install -y gnome-terminal gnome-system-monitor gedit firefox xrdp
 #apt-get install -y unity-lens-applications unity-lens-files
 #apt-get install -y --no-install-recommends indicator-applet-complete indicator-session
 
