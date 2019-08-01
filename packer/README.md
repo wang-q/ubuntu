@@ -14,5 +14,9 @@ cd ~/Scripts/ubuntu/packer
 wget -N http://cdimage.ubuntu.com/ubuntu/releases/18.04/release/ubuntu-18.04.2-server-amd64.iso
 wget -N https://download.virtualbox.org/virtualbox/6.0.10/VBoxGuestAdditions_6.0.10.iso
 
+# Checksums for template.json
+openssl md5 ubuntu-18.04.2-server-amd64.iso
+openssl sha256 VBoxGuestAdditions_6.0.10.iso
+
 ```
 
