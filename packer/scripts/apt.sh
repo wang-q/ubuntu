@@ -29,12 +29,13 @@ if [ ! -e /etc/apt/sources.list.bak ]; then
 fi
 mv list.tmp /etc/apt/sources.list
 
-echo "==> Installing Ubunutu desktop"
+echo "==> Installing build-essential"
 apt-get update -y
 apt-get upgrade -y
 
 # needed by linuxbrew
 apt-get install -y build-essential module-assistant curl git m4 ruby texinfo
+apt-get install -y aptitude
 
 # needed by virtualbox guest additions
 apt-get install -y linux-headers-$(uname -r)
@@ -43,8 +44,11 @@ apt-get install -y linux-headers-$(uname -r)
 # desktop
 #----------------------------#
 
-apt-get install -y --no-install-recommends ubuntu-desktop
-apt-get install -y gnome-terminal firefox xrdp
+echo "==> Installing Ubunutu desktop"
+
+apt-get install -y ubuntu-desktop
+#apt-get install -y --no-install-recommends ubuntu-desktop
+#apt-get install -y gnome-terminal gnome-system-monitor gedit firefox xrdp
 #apt-get install -y unity-lens-applications unity-lens-files
 #apt-get install -y --no-install-recommends indicator-applet-complete indicator-session
 
@@ -64,6 +68,7 @@ tee -a /etc/lightdm/lightdm.conf <<EOF
 [SeatDefaults]
 # Enabling automatic login
 autologin-user=vagrant
+autologin-user-timeout=0
 
 EOF
 
@@ -80,6 +85,14 @@ Name[en_US]=nodpms
 Name=nodpms
 Comment[en_US]=
 Comment=
+
+EOF
+
+# Fix gnome-terminal
+# https://askubuntu.com/questions/608330/problem-with-gnome-terminal-on-gnome-3-12-2
+tee /etc/default/locale <<EOF
+LANG=en_US.UTF-8
+LANGUAGE="en_US:"
 
 EOF
 
