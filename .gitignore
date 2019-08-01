@@ -90,4 +90,7 @@ $RECYCLE.BIN/
 *.box
 *.ova
 *.ovf
+
+# packer and vagrant
 packer_cache/
+.vagrant

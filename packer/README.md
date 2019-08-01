@@ -17,8 +17,11 @@ openssl md5 ubuntu-18.04.2-server-amd64.iso
 openssl sha256 VBoxGuestAdditions_6.0.10.iso
 
 # build
+cd ~/Scripts/ubuntu/packer
+
 packer build template.json
 mv mybionic.box ../vm
+du -hs ../vm/*
 
 # Add base box
 vagrant box add mybionic ../vm/mybionic.box --force
