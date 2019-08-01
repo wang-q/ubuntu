@@ -1,7 +1,5 @@
 # Instructions for getting an Ubuntu base box
 
-## Build it myself
-
 I'm tired of guessing parameters of other people's boxes. So just copy & paste codes from other
 repos to get my own packer template.
 
@@ -18,5 +16,22 @@ wget -N https://download.virtualbox.org/virtualbox/6.0.10/VBoxGuestAdditions_6.0
 openssl md5 ubuntu-18.04.2-server-amd64.iso
 openssl sha256 VBoxGuestAdditions_6.0.10.iso
 
+# build
+packer build template.json
+mv mybionic.box ../vm
+
+# Add base box
+vagrant box add mybionic ../vm/mybionic.box --force
+
 ```
 
+Rules:
+
+* Keep it as simple as possible in `http/preseed.cfg`.
+* `apt-get` from nearby mirrors.
+* Upgrade kernel.
+* Install Ubuntu desktop without recommends.
+* VirtualBox only. For other platform, just use boxcutter's atlas boxes.
+* Install VirtualBox guest additions in building phase.
+* `vagrant:vagrant` as username:password.
+* Leave DVD there. Remove it by vagrant later.
