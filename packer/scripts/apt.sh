@@ -53,22 +53,12 @@ apt-get install -y gedit gnome-terminal gnome-system-monitor firefox xrdp
 #apt-get install -y --no-install-recommends indicator-applet-complete indicator-session
 
 # GUI default login
-mkdir -p /etc/lightdm
-mkdir -p /etc/gdm
-
-tee -a /etc/gdm/custom.conf <<EOF
+mkdir -p /etc/gdm3
+tee -a /etc/gdm3/custom.conf <<EOF
 [daemon]
 # Enabling automatic login
 AutomaticLoginEnable=True
-AutomaticLoginEnable=vagrant
-
-EOF
-
-tee -a /etc/lightdm/lightdm.conf <<EOF
-[SeatDefaults]
-# Enabling automatic login
-autologin-user=vagrant
-autologin-user-timeout=0
+AutomaticLogin=vagrant
 
 EOF
 
