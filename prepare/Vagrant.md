@@ -35,15 +35,21 @@ echo "You might need remove orphan disks first. VirtualBox->File->Virtual Media 
 # start
 cd $HOME/Scripts/ubuntu/prepare
 vagrant up --provider virtualbox
-VBoxManage controlvm bionic setvideomodehint 1280 800 32 # Change resolution
 
 vagrant ssh
+
+# Change resolution after logged in
+# VBoxManage controlvm bionic setvideomodehint 1280 960 32
 
 ```
 
 * STEPS inside VM
 
-Same as [Standalone Ubuntu](./README.md).
+Now you have a GUI desktop.
+
+Username and password are `vagrant` and `vagrant`, respectively.
+
+The other steps are the same as [Standalone Ubuntu](../README.md).
 
 * Create `bionic.ova`
 
