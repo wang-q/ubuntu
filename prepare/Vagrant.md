@@ -52,7 +52,7 @@ Username and password are `vagrant` and `vagrant`, respectively.
 The other steps are the same as [Standalone Ubuntu](../README.md).
 
 * Whiteout disks
-    
+
 ```bash
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/90-cleanup-user.sh)"
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/91-cleanup.sh)"
@@ -72,5 +72,7 @@ du -hs ../vm/*
 
 ```
 
-
-
+| name         |   size |
+|:-------------|-------:|
+| bionic.ova   | 4.0 GB |
+| mybionic.box | 1.5 GB |
