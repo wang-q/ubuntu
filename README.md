@@ -3,7 +3,7 @@
 [TOC levels=1-3]: # " "
 - [Setting-up scripts for Ubuntu 18.04](#setting-up-scripts-for-ubuntu-1804)
     - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-    - [Optional: removes nautilus bookmarks and disables lock screen.](#optional-removes-nautilus-bookmarks-and-disables-lock-screen)
+    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
     - [Install Linuxbrew](#install-linuxbrew)
     - [Download](#download)
     - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
@@ -14,11 +14,11 @@
     - [Directory Organization](#directory-organization)
 
 
-The whole developing environment is based on [Linuxbrew](http://linuxbrew.sh/), so many of the
-following steps also works under macOS. Link to the repo is
-[here](https://github.com/wang-q/dotfiles).
+The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
+following steps also works under macOS via [Homebrew](https://brew.sh/).
 
-Some Linux specific scripts were placed in [`prepare/`](prepare).
+Linux specific scripts were placed in [`prepare/`](prepare). This
+[repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
 
 ## Install packages needed by Linuxbrew and some others
 
@@ -28,12 +28,13 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/pre
 
 ```
 
-## Optional: removes nautilus bookmarks and disables lock screen.
+## Optional: adjusting Desktop
 
 In GUI desktop, disable auto updates: `Software & updates -> Updates`, set `Automatically check for
 updates:` to `Never`, untick all checkboxes, click close and click close again.
 
 ```bash
+# Removes nautilus bookmarks and disables lock screen
 echo '==> `Ctrl+Alt+T` to start a GUI terminal'
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnome.sh)"
 
@@ -121,9 +122,8 @@ bash $HOME/Scripts/dotfiles/genomics.sh
 
 bash $HOME/Scripts/dotfiles/ensembl.sh
 
-# Huge
+# Optional: huge apps 
 # bash $HOME/Scripts/dotfiles/others.sh
-
 
 ```
 
