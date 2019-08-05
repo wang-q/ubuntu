@@ -9,6 +9,7 @@
     - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
     - [Packages of each languages](#packages-of-each-languages)
     - [Bioinformatics Apps](#bioinformatics-apps)
+    - [MySQL](#mysql)
     - [Optional: dotfiles](#optional-dotfiles)
     - [Directory Organization](#directory-organization)
 
@@ -129,8 +130,10 @@ bash $HOME/Scripts/dotfiles/ensembl.sh
 ## MySQL
 
 ```bash
-# TODO: prepare/extra/7-mysql.sh
- 
+bash $HOME/Scripts/dotfiles/mysql.sh
+
+# Following the prompts, create mysql users and install DBD::mysql
+
 ```
 
 ## Optional: dotfiles
