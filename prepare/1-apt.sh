@@ -53,7 +53,7 @@ sudo apt-get -y install libbz2-dev zlib1g-dev
 sudo apt-get -y install libcurl4-openssl-dev libexpat-dev libncurses-dev
 
 echo "==> Install other software"
-sudo apt-get -y install aptitude gawk csh parallel vim graphviz screen unzip xsltproc numactl
+sudo apt-get -y install aptitude gawk csh parallel vim screen unzip xsltproc numactl
 
 echo "==> Install develop libraries"
 sudo apt-get -y install libdb-dev libreadline-dev libedit-dev
@@ -68,6 +68,9 @@ sudo apt-get -y install gir1.2-glib-2.0 gir1.2-gtk-3.0 gir1.2-webkit-3.0
 
 echo "==> Install gtk3 related tools"
 sudo apt-get -y install xvfb glade
+
+echo "==> Install graphics tools"
+sudo apt-get -y install gnuplot graphviz imagemagick
 
 #echo "==> Install nautilus plugins"
 #sudo apt-get -y install nautilus-open-terminal nautilus-actions
