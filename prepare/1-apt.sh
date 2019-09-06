@@ -48,17 +48,17 @@ sudo service whoopsie stop
 echo "==> Install linuxbrew dependences"
 sudo apt-get -y update
 sudo apt-get -y upgrade
-sudo apt-get -y install build-essential curl git m4 ruby texinfo
-sudo apt-get -y install libbz2-dev zlib1g-dev
-sudo apt-get -y install libcurl4-openssl-dev libexpat-dev libncurses-dev
+sudo apt-get -y install build-essential curl file git
+# sudo apt-get -y install libbz2-dev zlib1g-dev
+# sudo apt-get -y install libcurl4-openssl-dev libexpat-dev libncurses-dev
 
 echo "==> Install other software"
-sudo apt-get -y install aptitude gawk csh parallel vim screen unzip xsltproc numactl
+sudo apt-get -y install aptitude parallel vim screen xsltproc numactl
 
 echo "==> Install develop libraries"
-sudo apt-get -y install libdb-dev libreadline-dev libedit-dev
-sudo apt-get -y install libgd-dev libxml2-dev
-sudo apt-get -y install libgsl0ldbl libgsl0-dev
+# sudo apt-get -y install libreadline-dev libedit-dev
+# sudo apt-get -y install libdb-dev libgd-dev libxml2-dev
+# sudo apt-get -y install libgsl0ldbl libgsl0-dev
 
 # Gtk stuff, Need by alignDB
 # install them in a fresh machine to avoid problems
