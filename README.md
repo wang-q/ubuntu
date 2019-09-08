@@ -113,6 +113,8 @@ bash $HOME/Scripts/dotfiles/python/install.sh
 
 bash $HOME/Scripts/dotfiles/r/install.sh
 
+bash $HOME/Scripts/dotfiles/rust/install.sh
+
 ```
 
 ## Bioinformatics Apps
@@ -122,7 +124,7 @@ bash $HOME/Scripts/dotfiles/genomics.sh
 
 bash $HOME/Scripts/dotfiles/ensembl.sh
 
-# Optional: huge apps 
+# Optional: huge apps
 # bash $HOME/Scripts/dotfiles/others.sh
 
 ```
