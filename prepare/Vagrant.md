@@ -36,10 +36,10 @@ echo "You might need remove orphan disks first. VirtualBox->File->Virtual Media 
 cd $HOME/Scripts/ubuntu/prepare
 vagrant up --provider virtualbox
 
-vagrant ssh
-
-# Change resolution after logged in
+# Optonal
 # VBoxManage controlvm bionic setvideomodehint 1280 960 32
+
+vagrant ssh
 
 ```
 
