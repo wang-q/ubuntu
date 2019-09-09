@@ -113,7 +113,8 @@ bash $HOME/Scripts/dotfiles/python/install.sh
 
 bash $HOME/Scripts/dotfiles/r/install.sh
 
-bash $HOME/Scripts/dotfiles/rust/install.sh
+# Optional
+# bash $HOME/Scripts/dotfiles/rust/install.sh
 
 ```
 
