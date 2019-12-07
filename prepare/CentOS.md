@@ -59,7 +59,7 @@ source ~/.bashrc
 ```bash
 brew install hello
 brew test hello
-brew remove hello
+
 ```
 
 # Sudo
@@ -67,6 +67,7 @@ brew remove hello
 ```bash
 usermod -aG wheel wangq
 visudo
+
 ```
 
 # Mirror to remote server
