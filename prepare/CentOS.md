@@ -12,6 +12,8 @@ wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-D
 Let Parallels use the express installation. Customize the VM before installation as 4 cores and 4GB
 RAM.
 
+Change the VM to Bridged Network (Default Adapter)
+
 SSH in as `root`.
 
 # Change the Home directory
