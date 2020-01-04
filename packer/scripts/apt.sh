@@ -6,21 +6,21 @@ echo "==> Switch to the USTC mirror"
 # https://mirrors.ustc.edu.cn/repogen/
 cat <<EOF > list.tmp
 # USTC MIRRORS
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
 
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
 
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
 
-deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
 
 ## Not recommended
-# deb https://mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
 
 EOF
 
