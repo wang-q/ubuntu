@@ -10,21 +10,21 @@ echo "==> Switch to the USTC mirror"
 # https://lug.ustc.edu.cn/wiki/mirrors/help/ubuntu
 cat <<EOF > list.tmp
 # USTC MIRRORS
-deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
-deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic main restricted universe multiverse
+deb https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
+deb-src https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
 
-deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+deb https://mirrors.nju.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-security main restricted universe multiverse
 
-deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
+deb https://mirrors.nju.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
+deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
 
-deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
+deb https://mirrors.nju.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
+deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
 
 ## Not recommended
-# deb https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
-# deb-src https://ipv4.mirrors.ustc.edu.cn/ubuntu/ bionic-proposed main restricted universe multiverse
+# deb https://mirrors.nju.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
+# deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
 
 EOF
 
