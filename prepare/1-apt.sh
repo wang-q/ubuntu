@@ -9,7 +9,6 @@ echo "==> Switch to the USTC mirror"
 
 # https://lug.ustc.edu.cn/wiki/mirrors/help/ubuntu
 cat <<EOF > list.tmp
-# USTC MIRRORS
 deb https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
 deb-src https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
 

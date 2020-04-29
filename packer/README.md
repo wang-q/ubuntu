@@ -3,28 +3,28 @@
 I'm tired of guessing parameters of other people's boxes. So just copy & paste codes from other
 repos to get my own packer template.
 
-When internet connection is OK, the building process costs about less than 30 minutes.
+If the internet connection is OK, the building process costs about 30 minutes.
 
 ```bash
 cd ~/Scripts/ubuntu/packer
 # cd /mnt/c/Users/wangq/Scripts/ubuntu/packer
 
-wget -N http://cdimage.ubuntu.com/ubuntu/releases/18.04/release/ubuntu-18.04.2-server-amd64.iso
-wget -N https://download.virtualbox.org/virtualbox/6.0.10/VBoxGuestAdditions_6.0.10.iso
+wget -N http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04/release/ubuntu-20.04-legacy-server-amd64.iso
+wget -N https://download.virtualbox.org/virtualbox/6.1.6/VBoxGuestAdditions_6.1.6.iso
 
 # Checksums for template.json
-openssl md5 ubuntu-18.04.2-server-amd64.iso
-openssl sha256 VBoxGuestAdditions_6.0.10.iso
+openssl md5 ubuntu-20.04-legacy-server-amd64.iso
+openssl sha256 VBoxGuestAdditions_6.1.6.iso
 
 # build
 cd ~/Scripts/ubuntu/packer
 
 packer build template.json
-mv mybionic.box ../vm
+mv myfocal.box ../vm
 du -hs ../vm/*
 
 # Add base box
-vagrant box add mybionic ../vm/mybionic.box --force
+vagrant box add myfocal ../vm/myfocal.box --force
 
 ```
 
@@ -38,3 +38,4 @@ Rules:
 * Install VirtualBox guest additions in building phase.
 * `vagrant:vagrant` as username:password.
 * Leave DVD there. Remove it by vagrant later.
+

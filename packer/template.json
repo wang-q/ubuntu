@@ -21,7 +21,7 @@
       "type": "vagrant",
       "override": {
         "virtualbox": {
-          "output": "mybionic.box"
+          "output": "myfocal.box"
         }
       }
     }
@@ -57,11 +57,11 @@
       "hard_drive_interface": "sata",
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
-      "iso_checksum": "34416ff83179728d54583bf3f18d42d2",
+      "iso_checksum": "9d2b54506f8f9fdad6b72e45aff0f0de",
       "iso_checksum_type": "md5",
-      "iso_url": "./ubuntu-18.04.2-server-amd64.iso",
-      "guest_additions_url": "./VBoxGuestAdditions_6.0.10.iso",
-      "guest_additions_sha256": "c8a686f8c7ad9ca8375961ab19815cec6b1f0d2496900a356a38ce86fe8a1325",
+      "iso_url": "./ubuntu-20.04-legacy-server-amd64.iso",
+      "guest_additions_url": "./VBoxGuestAdditions_6.1.6.iso",
+      "guest_additions_sha256": "bcde4691dea7de93b65a10a43dda2b8f52e570f820992ad281c9bb5c8dede181",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,

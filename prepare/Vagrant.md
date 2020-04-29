@@ -2,12 +2,12 @@
 
 ## Software versions
 
-* Ubuntu: 18.04.2
-* VirtualBox: 6.0.10
-* Vagrant: 2.2.5
-* Packer: v1.4.1
+* Ubuntu: 20.04
+* VirtualBox: 6.1.6
+* Vagrant: 2.2.7
+* Packer: v1.5.5
 
-## Build Ubuntu base box `mybionic.box` with packer from .iso
+## Build Ubuntu base box `myfocal.box` with packer from .iso
 
 See [`packer/`](../packer) and [`packer/README.md`](../packer/README.md).
 
@@ -17,7 +17,7 @@ See [`packer/`](../packer) and [`packer/README.md`](../packer/README.md).
 
 ## VirtualBox VM building steps
 
-This build starts from `mybionic.box`.
+This build starts from `myfocal.box`.
 
 When internet connection is OK and most source files were downloaded previously, the building
 process costs about 100 minutes.
@@ -36,8 +36,8 @@ echo "You might need remove orphan disks first. VirtualBox->File->Virtual Media 
 cd $HOME/Scripts/ubuntu/prepare
 vagrant up --provider virtualbox
 
-# Optonal
-# VBoxManage controlvm bionic setvideomodehint 1280 960 32
+# Optional
+# VBoxManage controlvm focal setvideomodehint 1280 960 32
 
 vagrant ssh
 
@@ -59,20 +59,20 @@ sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/maste
 
 ```
 
-* Create `bionic.ova`
+* Create `focal.ova`
 
 ```bash
 cd $HOME/Scripts/ubuntu/prepare
 vagrant halt
 
-VBoxManage export bionic -o bionic.ova
+VBoxManage export focal -o focal.ova
 
-mv bionic.ova ../vm
+mv focal.ova ../vm
 du -hs ../vm/*
 
 ```
 
 | name         |   size |
 |:-------------|-------:|
-| bionic.ova   | 4.0 GB |
-| mybionic.box | 1.5 GB |
+| focal.ova   | 4.0 GB |
+| myfocal.box | 1.5 GB |
