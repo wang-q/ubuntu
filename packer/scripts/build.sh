@@ -38,14 +38,13 @@ echo "==> Install VirtualBox guest additions"
 m-a prepare
 
 # Packer will automatically download the proper guest additions.
-cd $HOME
-mount -o loop VBoxGuestAdditions.iso /mnt
+mount -o loop /home/vagrant/VBoxGuestAdditions.iso /mnt
 echo "yes" | sh /mnt/VBoxLinuxAdditions.run --nox11 # type yes
 
 /etc/init.d/vboxadd setup
 update-rc.d vboxadd defaults
 
-rm $HOME/VBoxGuestAdditions.iso
+rm /home/vagrant/VBoxGuestAdditions.iso
 
 echo "==> Check that Guest Editions are installed"
 lsmod | grep vboxguest
