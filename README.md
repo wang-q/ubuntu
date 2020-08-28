@@ -1,18 +1,18 @@
-# Setting-up scripts for Ubuntu 18.04
+# Setting-up scripts for Ubuntu 20.04
 
 [TOC levels=1-3]: # ""
 
-- [Setting-up scripts for Ubuntu 18.04](#setting-up-scripts-for-ubuntu-1804)
-  - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-  - [Optional: adjusting Desktop](#optional-adjusting-desktop)
-  - [Install Linuxbrew](#install-linuxbrew)
-  - [Download](#download)
-  - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
-  - [Packages of each languages](#packages-of-each-languages)
-  - [Bioinformatics Apps](#bioinformatics-apps)
-  - [MySQL](#mysql)
-  - [Optional: dotfiles](#optional-dotfiles)
-  - [Directory Organization](#directory-organization)
+- [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
+    - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
+    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
+    - [Install Linuxbrew](#install-linuxbrew)
+    - [Download](#download)
+    - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
+    - [Packages of each languages](#packages-of-each-languages)
+    - [Bioinformatics Apps](#bioinformatics-apps)
+    - [MySQL](#mysql)
+    - [Optional: dotfiles](#optional-dotfiles)
+    - [Directory Organization](#directory-organization)
 
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
@@ -95,15 +95,15 @@ source $HOME/.bashrc
 Attentions:
 
 * There is a post-install step when installing perl, `cpan -i XML::Parser`. If the process stalled
-  there, just kill the `cpan` process.
+    there, just kill the `cpan` process.
 
-  * `Test::RequiresInternet` wants to connect to google.com while it was blocked.
+* `Test::RequiresInternet` wants to connect to google.com while it was blocked.
 
 * `r` and `gnuplot` have a lot of dependencies, many of which is from `linuxbrew/xorg`. Just be
-  patient.
+    patient.
 
 * Sometimes there are no binary packages in <https://linuxbrew.bintray.com/bottles/>, compiling from
-  source codes may takes extra time.
+    source codes may takes extra time.
 
 ## Packages of each languages
 
