@@ -5,25 +5,25 @@ echo "====> Install softwares via apt-get <===="
 echo "==> Disabling the release upgrader"
 sudo sed -i.bak 's/^Prompt=.*$/Prompt=never/' /etc/update-manager/release-upgrades
 
-echo "==> Switch to the USTC mirror"
+echo "==> Switch to an adjacent mirror"
 
 # https://lug.ustc.edu.cn/wiki/mirrors/help/ubuntu
 cat <<EOF > list.tmp
-deb https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
-deb-src https://mirrors.nju.edu.cn/ubuntu/ focal main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
+deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
 
-deb https://mirrors.nju.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
 
-deb https://mirrors.nju.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
+deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
 
-deb https://mirrors.nju.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
+deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
 
 ## Not recommended
-# deb https://mirrors.nju.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src https://mirrors.nju.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
+# deb https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
 
 EOF
 
@@ -66,7 +66,7 @@ sudo apt-get -y install libcairo2-dev libglib2.0-0 libglib2.0-dev libgtk-3-dev l
 sudo apt-get -y install gir1.2-glib-2.0 gir1.2-gtk-3.0 gir1.2-webkit-3.0
 
 echo "==> Install gtk3 related tools"
-sudo apt-get -y install xvfb glade
+# sudo apt-get -y install xvfb glade
 
 echo "==> Install graphics tools"
 sudo apt-get -y install gnuplot graphviz imagemagick

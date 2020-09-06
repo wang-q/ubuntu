@@ -21,6 +21,12 @@ following steps also works under macOS via [Homebrew](https://brew.sh/).
 Linux specific scripts were placed in [`prepare/`](prepare). This
 [repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
 
+## Bypass GFW blocking
+
+* Query the IP address of `raw.githubusercontent.com` on ipaddress.com
+
+* Add it to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
+
 ## Install packages needed by Linuxbrew and some others
 
 ```bash
