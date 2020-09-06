@@ -24,7 +24,7 @@ process costs about 100 minutes.
 
 * STEPS on host machine
 
-```bash
+```shell script
 # destroy old builds
 cd $HOME/Scripts/ubuntu/prepare
 vagrant destroy -f
@@ -53,7 +53,7 @@ The other steps are the same as [Standalone Ubuntu](../README.md).
 
 * Whiteout disks
 
-```bash
+```shell script
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/90-cleanup-user.sh)"
 sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/91-cleanup.sh)"
 
@@ -61,7 +61,7 @@ sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/maste
 
 * Create `focal.ova`
 
-```bash
+```shell script
 cd $HOME/Scripts/ubuntu/prepare
 vagrant halt
 
@@ -72,7 +72,8 @@ du -hs ../vm/*
 
 ```
 
-| name         |   size |
-|:-------------|-------:|
+| name        |   size |
+|:------------|-------:|
 | focal.ova   | 4.0 GB |
 | myfocal.box | 1.5 GB |
+

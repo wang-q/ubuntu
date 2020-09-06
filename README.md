@@ -3,33 +3,34 @@
 [TOC levels=1-3]: # ""
 
 - [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
-    - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
-    - [Install Linuxbrew](#install-linuxbrew)
-    - [Download](#download)
-    - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
-    - [Packages of each languages](#packages-of-each-languages)
-    - [Bioinformatics Apps](#bioinformatics-apps)
-    - [MySQL](#mysql)
-    - [Optional: dotfiles](#optional-dotfiles)
-    - [Directory Organization](#directory-organization)
+  - [Bypass GFW blocking](#bypass-gfw-blocking)
+  - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
+  - [Optional: adjusting Desktop](#optional-adjusting-desktop)
+  - [Install Linuxbrew](#install-linuxbrew)
+  - [Download](#download)
+  - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
+  - [Packages of each languages](#packages-of-each-languages)
+  - [Bioinformatics Apps](#bioinformatics-apps)
+  - [MySQL](#mysql)
+  - [Optional: dotfiles](#optional-dotfiles)
+  - [Directory Organization](#directory-organization)
 
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
 following steps also works under macOS via [Homebrew](https://brew.sh/).
 
-Linux specific scripts were placed in [`prepare/`](prepare). This
-[repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
+Linux specific scripts were placed in [`prepare/`](prepare).
+[This repo](https://github.com/wang-q/dotfiles) contains macOS related codes.
 
 ## Bypass GFW blocking
 
-* Query the IP address of `raw.githubusercontent.com` on ipaddress.com
+* Query the IP address of `raw.githubusercontent.com` on [ipaddress](https://www.ipaddress.com/)
 
 * Add it to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 
 ## Install packages needed by Linuxbrew and some others
 
-```bash
+```shell script
 echo "==> When some packages went wrong, check http://mirrors.ustc.edu.cn/ubuntu/ for updating status."
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/1-apt.sh)"
 
@@ -40,7 +41,7 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/pre
 In GUI desktop, disable auto updates: `Software & updates -> Updates`, set `Automatically check for
 updates:` to `Never`, untick all checkboxes, click close and click close again.
 
-```bash
+```shell script
 # Removes nautilus bookmarks and disables lock screen
 echo '==> `Ctrl+Alt+T` to start a GUI terminal'
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnome.sh)"
@@ -49,9 +50,9 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/pre
 
 ## Install Linuxbrew
 
-```bash
+```shell script
 echo "==> Install linuxbrew, copy the next *ONE* line to terminal"
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
 test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
@@ -79,7 +80,7 @@ source $HOME/.bashrc
 
 Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 
-```bash
+```shell script
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh)"
 source $HOME/.bashrc
 
@@ -92,7 +93,7 @@ Packages includes:
 * Programming languages: Perl, Python, R, Java, Lua and Node.js
 * Some generalized tools
 
-```bash
+```shell script
 bash $HOME/Scripts/dotfiles/brew.sh
 source $HOME/.bashrc
 
@@ -101,19 +102,19 @@ source $HOME/.bashrc
 Attentions:
 
 * There is a post-install step when installing perl, `cpan -i XML::Parser`. If the process stalled
-    there, just kill the `cpan` process.
+  there, just kill the `cpan` process.
 
 * `Test::RequiresInternet` wants to connect to google.com while it was blocked.
 
 * `r` and `gnuplot` have a lot of dependencies, many of which is from `linuxbrew/xorg`. Just be
-    patient.
+  patient.
 
 * Sometimes there are no binary packages in <https://linuxbrew.bintray.com/bottles/>, compiling from
-    source codes may takes extra time.
+  source codes may takes extra time.
 
 ## Packages of each languages
 
-```bash
+```shell script
 bash $HOME/Scripts/dotfiles/perl/install.sh
 
 bash $HOME/Scripts/dotfiles/python/install.sh
@@ -127,7 +128,7 @@ bash $HOME/Scripts/dotfiles/r/install.sh
 
 ## Bioinformatics Apps
 
-```bash
+```shell script
 bash $HOME/Scripts/dotfiles/genomics.sh
 
 bash $HOME/Scripts/dotfiles/ensembl.sh
@@ -139,7 +140,7 @@ bash $HOME/Scripts/dotfiles/ensembl.sh
 
 ## MySQL
 
-```bash
+```shell script
 bash $HOME/Scripts/dotfiles/mysql.sh
 
 # Following the prompts, create mysql users and install DBD::mysql
@@ -148,7 +149,7 @@ bash $HOME/Scripts/dotfiles/mysql.sh
 
 ## Optional: dotfiles
 
-```bash
+```shell script
 bash $HOME/Scripts/dotfiles/install.sh
 source $HOME/.bashrc
 

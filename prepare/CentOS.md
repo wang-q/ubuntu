@@ -4,7 +4,7 @@ For HPCC in NJU
 
 # Install
 
-```bash
+```shell script
 wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-DVD-1908.iso
 
 ```
@@ -22,7 +22,7 @@ SSH in as `root`.
 user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
 the user's current directory to the new directory.
 
-```bash
+```shell script
 pkill -KILL -u wangq
 
 # Change the Home directory
@@ -39,7 +39,7 @@ yum -y install curl file git vim
 
 * SSH in as `wangq`
 
-```bash
+```shell script
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
 # can't sudo
@@ -58,7 +58,7 @@ source ~/.bashrc
 
 * Test your installation:
 
-```bash
+```shell script
 brew install hello
 brew test hello
 
@@ -66,7 +66,7 @@ brew test hello
 
 # Sudo
 
-```bash
+```shell script
 usermod -aG wheel wangq
 visudo
 
@@ -74,7 +74,7 @@ visudo
 
 # Mirror to remote server
 
-```bash
+```shell script
 rsync -avP ~/.linuxbrew/ wangq@202.119.37.251:.linuxbrew
 rsync -avP ~/share/ wangq@202.119.37.251:share
 rsync -avP ~/bin/ wangq@202.119.37.251:bin
