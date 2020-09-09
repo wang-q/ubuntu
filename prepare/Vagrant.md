@@ -17,12 +17,12 @@ See [`packer/`](../packer) and [`packer/README.md`](../packer/README.md).
 
 ## VirtualBox VM building steps
 
-This build starts from `myfocal.box`.
+This build starts with `myfocal.box`.
 
-When internet connection is OK and most source files were downloaded previously, the building
+When the internet connection is OK, and most source files were downloaded previously, the building
 process costs about 100 minutes.
 
-* STEPS on host machine
+* STEPS on the host machine
 
 ```shell script
 # destroy old builds
@@ -30,7 +30,7 @@ cd $HOME/Scripts/ubuntu/prepare
 vagrant destroy -f
 rm -fr .vagrant/
 
-echo "You might need remove orphan disks first. VirtualBox->File->Virtual Media Manager."
+echo "You might need to remove orphan disks first. VirtualBox->File->Virtual Media Manager."
 
 # start
 cd $HOME/Scripts/ubuntu/prepare
@@ -43,7 +43,7 @@ vagrant ssh
 
 ```
 
-* STEPS inside VM
+* STEPS inside the VM
 
 Now you have a GUI desktop.
 

@@ -33,9 +33,9 @@ Rules:
 * Keep it as simple as possible in `http/preseed.cfg`.
 * `apt-get` from nearby mirrors.
 * Upgrade kernel.
-* Install Ubuntu desktop without recommends.
-* VirtualBox only. For other platform, just use boxcutter's atlas boxes.
-* Install VirtualBox guest additions in building phase.
+* Install Ubuntu desktop without recommendations.
+* VirtualBox only. For other platforms, use boxcutter's atlas boxes.
+* Install VirtualBox guest additions in the building phase.
 * `vagrant:vagrant` as username:password.
 * Leave DVD there. Remove it by vagrant later.
 
