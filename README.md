@@ -131,7 +131,7 @@ bash $HOME/Scripts/dotfiles/r/install.sh
 ```shell script
 bash $HOME/Scripts/dotfiles/genomics.sh
 
-bash $HOME/Scripts/dotfiles/ensembl.sh
+bash $HOME/Scripts/dotfiles/perl/ensembl.sh
 
 # Optional: huge apps
 # bash $HOME/Scripts/dotfiles/others.sh
