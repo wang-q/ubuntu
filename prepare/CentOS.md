@@ -64,7 +64,7 @@ yum -y install curl file git vim
 * SSH in as `wangq`
 
 ```shell script
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # can't sudo
 # Ctrl+D to install linuxbrew to PATH=$HOME/.linuxbrew
@@ -80,7 +80,7 @@ source ~/.bashrc
 
 ```
 
-* Test your installation:
+* Test your installation: **Don't `brew update` again**
 
 ```shell script
 brew install hello
@@ -105,4 +105,9 @@ rsync -avP ~/bin/ wangq@202.119.37.251:bin
 rsync -avP ~/.bashrc wangq@202.119.37.251:.bashrc
 rsync -avP ~/.bash_profile wangq@202.119.37.251:.bash_profile
 
+# Sync back
+rsync -avP wangq@202.119.37.251:.linuxbrew/ ~/.linuxbrew
+rsync -avP wangq@202.119.37.251:.bashrc ~/.bashrc
+
 ```
+
