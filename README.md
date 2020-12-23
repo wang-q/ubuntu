@@ -24,9 +24,13 @@ Linux specific scripts were placed in [`prepare/`](prepare).
 
 ## Bypass GFW blocking
 
-* Query the IP address of `raw.githubusercontent.com` on [ipaddress](https://www.ipaddress.com/)
+* Query the IP address on [ipaddress](https://www.ipaddress.com/) for
 
-* Add it to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
+    * `raw.githubusercontent.com`
+    * `gist.githubusercontent.com`
+    * `camo.githubusercontent.com`
+
+* Add them to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 
 ## Install packages needed by Linuxbrew and some others
 
