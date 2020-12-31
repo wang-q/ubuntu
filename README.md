@@ -29,6 +29,7 @@ Linux specific scripts were placed in [`prepare/`](prepare).
     * `raw.githubusercontent.com`
     * `gist.githubusercontent.com`
     * `camo.githubusercontent.com`
+    * `user-images.githubusercontent.com`
 
 * Add them to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 
