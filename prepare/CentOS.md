@@ -107,8 +107,8 @@ rsync -avP ~/.bash_profile wangq@202.119.37.251:.bash_profile
 
 # Sync back
 rsync -avP wangq@202.119.37.251:.linuxbrew/ ~/.linuxbrew
-rsync -avP wangq@202.119.37.251:.share/ ~/.share
-rsync -avP wangq@202.119.37.251:.bin/ ~/.bin
+rsync -avP wangq@202.119.37.251:share/ ~/share
+rsync -avP wangq@202.119.37.251:bin/ ~/bin
 rsync -avP wangq@202.119.37.251:.bashrc ~/.bashrc
 rsync -avP wangq@202.119.37.251:.bash_profile ~/.bash_profile
 
