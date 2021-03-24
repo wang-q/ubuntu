@@ -3,17 +3,17 @@
 [TOC levels=1-3]: # ""
 
 - [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
-    - [Bypass GFW blocking](#bypass-gfw-blocking)
-    - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
-    - [Install Linuxbrew](#install-linuxbrew)
-    - [Download](#download)
-    - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
-    - [Packages of each language](#packages-of-each-language)
-    - [Bioinformatics Apps](#bioinformatics-apps)
-    - [MySQL](#mysql)
-    - [Optional: dotfiles](#optional-dotfiles)
-    - [Directory Organization](#directory-organization)
+  - [Bypass GFW blocking](#bypass-gfw-blocking)
+  - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
+  - [Optional: adjusting Desktop](#optional-adjusting-desktop)
+  - [Install Linuxbrew](#install-linuxbrew)
+  - [Download](#download)
+  - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
+  - [Packages of each language](#packages-of-each-language)
+  - [Bioinformatics Apps](#bioinformatics-apps)
+  - [MySQL](#mysql)
+  - [Optional: dotfiles](#optional-dotfiles)
+  - [Directory Organization](#directory-organization)
 
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
