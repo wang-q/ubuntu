@@ -55,6 +55,8 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/pre
 
 ## Install Linuxbrew
 
+使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
+
 ```shell script
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 if [[ "$(uname -s)" == "Linux" ]]; then BREW_TYPE="linuxbrew"; else BREW_TYPE="homebrew"; fi
@@ -91,7 +93,8 @@ source $HOME/.bashrc
 Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 
 ```shell script
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh)"
+curl -O https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh
+bash download.sh
 source $HOME/.bashrc
 
 ```
