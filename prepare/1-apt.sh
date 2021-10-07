@@ -48,7 +48,7 @@ echo "==> Install linuxbrew dependences"
 sudo apt-get -y update
 sudo apt-get -y upgrade
 sudo apt-get -y install build-essential curl file git
-sudo apt-get -y install libbz2-dev zlib1g-dev
+sudo apt-get -y install libbz2-dev zlib1g-dev libzstd-dev
 # sudo apt-get -y install libcurl4-openssl-dev libexpat-dev libncurses-dev
 
 echo "==> Install other software"
