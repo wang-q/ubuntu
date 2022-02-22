@@ -56,7 +56,7 @@ sudo apt-get -y install aptitude parallel vim screen xsltproc numactl
 
 echo "==> Install develop libraries"
 # sudo apt-get -y install libreadline-dev libedit-dev
-sudo apt-get -y install libdb-dev libxml2-dev libssl-dev # libgd-dev
+sudo apt-get -y install libdb-dev libxml2-dev libssl-dev libncurses5-dev # libgd-dev
 # sudo apt-get -y install gdal-bin gdal-data libgdal-dev # /usr/lib/libgdal.so: undefined reference to `TIFFReadDirectory@LIBTIFF_4.0'
 # sudo apt-get -y install libgsl0ldbl libgsl0-dev
 
