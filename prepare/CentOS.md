@@ -22,30 +22,6 @@ SSH in as `root`.
 user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
 the user's current directory to the new directory.
 
-```shell script # CentOS 7
-
-For HPCC in NJU
-
-# Install
-
-```shell script
-wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-DVD-1908.iso
-
-```
-
-Let Parallels use the express installation. Customize the VM before installation as 4 cores and 4GB
-RAM.
-
-Change the VM to Bridged Network (Default Adapter)
-
-SSH in as `root`.
-
-# Change the Home directory
-
-`usermod` is the command to edit an existing user. `-d` (abbreviation for `--home`) will change the
-user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
-the user's current directory to the new directory.
-
 ```shell script
 pkill -KILL -u wangq
 
