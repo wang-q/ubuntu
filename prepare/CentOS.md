@@ -322,28 +322,7 @@ EOF
 
 ```
 
-# Fonts
-
-```shell
-mkdir ~/.fonts
-
-# brew install linuxbrew/fonts/font-inconsolata --HEAD
-
-brew install cabextract
-
-wget -N https://downloads.sourceforge.net/corefonts/arial32.exe
-
-cabextract --list arial32.exe
-cabextract --filter='*.TTF' arial32.exe --directory ~/.fonts
-
-```
-
 # Mirror to remote server
-
-```shell
-brew list --formula > ~/brew.list
-
-```
 
 ```shell
 rsync -avP ~/.linuxbrew/ wangq@202.119.37.251:.linuxbrew
