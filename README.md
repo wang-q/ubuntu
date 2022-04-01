@@ -71,13 +71,13 @@ rm -rf brew-install
 test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
 test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
 
-if grep -q -i linuxbrew $HOME/.bashrc; then
-    echo "==> .bashrc already contains linuxbrew"
+if grep -q -i Homebrew $HOME/.bashrc; then
+    echo "==> .bashrc already contains Homebrew"
 else
     echo "==> Update .bashrc"
 
     echo >> $HOME/.bashrc
-    echo '# Linuxbrew' >> $HOME/.bashrc
+    echo '# Homebrew' >> $HOME/.bashrc
     echo "export PATH='$(brew --prefix)/bin:$(brew --prefix)/sbin'":'"$PATH"' >> $HOME/.bashrc
     echo "export MANPATH='$(brew --prefix)/share/man'":'"$MANPATH"' >> $HOME/.bashrc
     echo "export INFOPATH='$(brew --prefix)/share/info'":'"$INFOPATH"' >> $HOME/.bashrc
@@ -97,7 +97,7 @@ source $HOME/.bashrc
 Fill `$HOME/bin`, `$HOME/share` and `$HOME/Scripts`.
 
 ```shell script
-curl -O https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh
+curl -LO https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh
 bash download.sh
 source $HOME/.bashrc
 
@@ -126,8 +126,7 @@ Attentions:
 * `r` and `gnuplot` have a lot of dependencies, many of which are from `linuxbrew/xorg`. Just be
     patient.
 
-* Sometimes there are no binary packages in <https://linuxbrew.bintray.com/bottles/>; compiling from
-    source codes may take extra time.
+* Sometimes there are no binary packages; compiling from source codes may take extra time.
 
 ## Packages of each language
 
