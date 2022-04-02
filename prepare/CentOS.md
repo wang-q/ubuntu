@@ -159,34 +159,19 @@ visudo
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 # gcc@5
-brew install --build-from-source zlib
-brew install --build-from-source binutils
-brew install --build-from-source linux-headers@4.4
-brew install --build-from-source m4
-brew install --build-from-source gmp
-brew install --build-from-source mpfr
-brew install --build-from-source libmpc
-brew install --build-from-source isl@0.18
-
-brew install --build-from-source glibc
-
-brew install --build-from-source isl
-brew install --build-from-source gpatch
-brew install --build-from-source pkg-config
-brew install --build-from-source ncurses
-
+brew install --build-from-source $( brew deps gcc@5 )
 brew install --force-bottle gcc@5
 
-brew install --build-from-source openssl@1.1
+brew install --build-from-source $( brew deps cmake )
 brew install cmake
-brew install --build-from-source zstd
+
+brew install --build-from-source $( brew deps gcc@11 )
+brew install --force-bottle gcc@11
 
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
 # sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
 # sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
-
-brew install --force-bottle gcc@11
 
 # alias gcc='gcc-5'
 # alias cc='gcc-5'
@@ -194,21 +179,22 @@ brew install --force-bottle gcc@11
 # alias c++='c++-5'
 # alias gfortran='gfortran-5'
 
-# python
-brew install --build-from-source gdbm
-brew install --build-from-source berkeley-db
+# Some building tools
+brew install --build-from-source linux-headers@4.4
+brew install --build-from-source m4
 
-brew install --build-from-source berkeley-db@4
+brew install --build-from-source gpatch
+brew install --build-from-source pkg-config
 
-brew install --build-from-source libffi
-brew install --build-from-source readline
 brew install --build-from-source bison
+brew install --build-from-source flex
 
-brew install --build-from-source bzip2
-brew install --build-from-source xz
-brew install --build-from-source sqlite
-brew install --build-from-source mpdecimal
+brew install --build-from-source autoconf
+brew install --build-from-source automake
+brew install --build-from-source libtool
 
+# python
+brew install --build-from-source $( brew deps python@3.7 )
 brew install --build-from-source python@3.7
 brew unlink python@3.7 && brew link --force --overwrite python@3.7
 
@@ -225,31 +211,19 @@ else
     eval ${PYTHON_37_PATH}
 fi
 
-brew install --build-from-source expat
-brew install --build-from-source unzip
-
+brew install --build-from-source $( brew deps python )
 brew install --build-from-source python
 
 # curl
-brew install --build-from-source brotli
-brew install --build-from-source libssh2
-brew install --build-from-source libnghttp2
-brew install --build-from-source rtmpdump
-
-brew install --build-from-source libunistring
-brew install --build-from-source libidn2
-
-brew install --build-from-source libxml2
-brew install --build-from-source gettext
-brew install --build-from-source krb5
-
-# brew install ruby
+brew install --build-from-source $( brew deps curl )
 brew install --force-bottle util-linux
-brew install --build-from-source openldap
 brew install --build-from-source curl
 
 # perl
 echo "==> Install Perl 5.34"
+brew install --build-from-source berkeley-db
+brew install --build-from-source berkeley-db@4
+
 brew install --build-from-source perl
 
 if grep -q -i PERL_534_PATH $HOME/.bashrc; then
@@ -271,28 +245,13 @@ hash cpanm 2>/dev/null || {
         perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
 }
 
-brew install --build-from-source autoconf
-brew install --build-from-source automake
-brew install --build-from-source libtool
 
 # fontconfig
-brew install --build-from-source gperf
-brew install --build-from-source json-c
-
-brew install --build-from-source libpng
-brew install --build-from-source jpeg
-brew install --build-from-source libtiff
-brew install --build-from-source freetype
-
+brew install --build-from-source $( brew deps fontconfig )
 brew install --build-from-source fontconfig
 
 # gd
-brew install --build-from-source giflib
-brew install --build-from-source webp
-brew install --build-from-source nasm
-brew install --build-from-source yasm
-brew install aom
-brew install --build-from-source libavif
+brew install --build-from-source $( brew deps gd )
 brew install --build-from-source gd
 
 # libs
@@ -307,9 +266,10 @@ brew install --build-from-source openjdk
 
 # r
 brew install --build-from-source r
+
+# some r packages need udunits and gdal
 brew install --build-from-source udunits
 
-# some r packages need gdal
 brew install --force-bottle mesa
 brew install --force-bottle systemd
 brew install qt
