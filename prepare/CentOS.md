@@ -53,9 +53,11 @@ rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-release-2-2.rhel7.noarch.rpm
 
 yum install -y yum-utils
+
 yum-config-manager --disable city-fan.org
 
 yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
+yum-config-manager --disable epel
 
 curl --version
 # curl 7.82.0
@@ -64,7 +66,7 @@ curl --version
 yum remove yum-utils
 
 # libs
-yum install -y libdb4-devel libdb4-utils
+yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel
 
 ```
 
@@ -298,12 +300,24 @@ brew install --build-from-source gsl
 brew install --build-from-source libgit2
 brew install --build-from-source libgcrypt
 brew install --build-from-source libxslt
+brew install --build-from-source jemalloc
 
 # java
 brew install --build-from-source openjdk
 
 # r
 brew install --build-from-source r
+brew install --build-from-source udunits
+
+# some r packages need gdal
+brew install --force-bottle mesa
+brew install --force-bottle systemd
+brew install qt
+brew install qt@5
+
+brew install --force-bottle libdap
+brew install --force-bottle numpy
+brew install --force-bottle gdal
 
 # Test your installation
 brew install hello
