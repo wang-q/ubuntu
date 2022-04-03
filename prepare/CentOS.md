@@ -188,10 +188,22 @@ brew install --build-from-source pkg-config
 
 brew install --build-from-source bison
 brew install --build-from-source flex
+brew install --build-from-source byacc
 
 brew install --build-from-source autoconf
+brew install --build-from-source autogen
 brew install --build-from-source automake
 brew install --build-from-source libtool
+
+brew install bats
+
+# libs
+brew install --build-from-source gsl
+brew install --build-from-source libgit2
+brew install --build-from-source libgcrypt
+brew install --build-from-source libxslt
+brew install --build-from-source jemalloc
+brew install --build-from-source boost
 
 # python
 brew install --build-from-source $( brew deps python@3.7 )
@@ -213,11 +225,6 @@ fi
 
 brew install --build-from-source $( brew deps python )
 brew install --build-from-source python
-
-# curl
-brew install --build-from-source $( brew deps curl )
-brew install --force-bottle util-linux
-brew install --build-from-source curl
 
 # perl
 echo "==> Install Perl 5.34"
@@ -245,6 +252,14 @@ hash cpanm 2>/dev/null || {
         perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
 }
 
+# curl
+brew install --build-from-source $( brew deps curl )
+brew install --force-bottle util-linux
+brew install --build-from-source curl
+
+# git
+brew install --build-from-source $( brew deps git )
+brew install git
 
 # fontconfig
 brew install --build-from-source $( brew deps fontconfig )
@@ -254,15 +269,13 @@ brew install --build-from-source fontconfig
 brew install --build-from-source $( brew deps gd )
 brew install --build-from-source gd
 
-# libs
-brew install --build-from-source gsl
-brew install --build-from-source libgit2
-brew install --build-from-source libgcrypt
-brew install --build-from-source libxslt
-brew install --build-from-source jemalloc
+# ghostscript
+brew install --build-from-source $( brew deps ghostscript )
+brew install --build-from-source ghostscript
 
 # java
 brew install --build-from-source openjdk
+brew install ant maven
 
 # r
 brew install --build-from-source r
@@ -278,6 +291,29 @@ brew install qt@5
 brew install --force-bottle libdap
 brew install --force-bottle numpy
 brew install --force-bottle gdal
+
+# graphics
+brew install --build-from-source $( brew deps gnuplot )
+brew install gnuplot
+
+brew install --force-bottle shared-mime-info
+brew install --build-from-source $( brew deps graphviz )
+brew install graphviz
+
+brew install --build-from-source $( brew deps imagemagick )
+brew install --force-bottle libheif
+brew install imagemagick
+
+# others
+brew install lua node
+brew install pandoc
+brew install aria2 wget
+brew install screen stow htop parallel pigz
+brew install cloc tree pv
+brew install jq pup datamash miller tsv-utils
+brew install hyperfine ripgrep
+
+# brew install openmpi
 
 # Test your installation
 brew install hello
@@ -295,6 +331,28 @@ cat <<EOF >> ~/.bashrc
 EOF
 
 ```
+
+```shell
+# SRA Toolkit
+curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
+
+tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
+
+rm -fr sratoolkit*/bin/ncbi
+
+cp sratoolkit*/bin/* ~/bin/
+
+```
+
+Other stuff
+
+* `genomics.sh`
+* `App::Egaz`
+* `App::Dazz`
+* `anchr`
+* `bmr`
+
+kat igvtools mysql-client newick-utils poa
 
 # Mirror to remote server
 
