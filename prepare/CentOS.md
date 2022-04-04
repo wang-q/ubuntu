@@ -2,7 +2,7 @@
 
 For HPCC in NJU
 
-# Install
+## Install
 
 ```shell
 # wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-DVD-1908.iso
@@ -18,7 +18,7 @@ Change the VM to Bridged Network (Default Adapter)
 
 SSH in as `root`.
 
-# Change the Home directory
+## Change the Home directory
 
 `usermod` is the command to edit an existing user. `-d` (abbreviation for `--home`) will change the
 user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
@@ -70,7 +70,7 @@ yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel libxml2 libxml2-d
 
 ```
 
-# Install Linuxbrew without sudo
+## Install Linuxbrew without sudo
 
 * SSH in as `wangq`
 
@@ -133,7 +133,7 @@ source $HOME/.bashrc
 
 ```
 
-# Sudo
+## Sudo
 
 We *must* install Homebrew as a non-sudoer.
 
@@ -145,14 +145,12 @@ visudo
 
 ```
 
-# Packages
+## Packages
 
-* Build from sources for all dependcies of gcc
+### Build from sources for all dependcies of gcc
 
 * Use bottled gcc@11 and gcc@5
     * gcc@5 `make bootstrap` requires `crti.o`. This seems to be a bug
-
-* Build core libraries from sources
 
 ```shell
 
@@ -188,6 +186,8 @@ strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
 
 ```
 
+### Build commonly used libraries from sources
+
 ```shell
 
 # Some building tools
@@ -206,8 +206,6 @@ brew install --build-from-source autogen
 brew install --build-from-source automake
 brew install --build-from-source libtool
 
-brew install bats
-
 # libs
 brew install --build-from-source gsl
 brew install --build-from-source libgit2
@@ -215,6 +213,10 @@ brew install --build-from-source libgcrypt
 brew install --build-from-source libxslt
 brew install --build-from-source jemalloc
 brew install --build-from-source boost
+
+brew install bats-core # replace bats
+brew install libaec # replace szip
+brew install elfutils # replace libelf
 
 # python
 brew install --build-from-source $( brew deps python@3.7 )
@@ -403,7 +405,7 @@ parallel -j 1 -k --line-buffer '
 
 ```
 
-# Mirror to remote server
+## Mirror to remote server
 
 ```shell
 rsync -avP ~/.linuxbrew/ wangq@202.119.37.251:.linuxbrew
