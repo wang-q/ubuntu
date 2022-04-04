@@ -179,6 +179,17 @@ brew install --force-bottle gcc@11
 # alias c++='c++-5'
 # alias gfortran='gfortran-5'
 
+strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
+
+strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
+
+# System glibc doesn't contain GLIBC_2.18 or later
+# We should prevent custom build to reach the system one.
+
+```
+
+```shell
+
 # Some building tools
 brew install --build-from-source linux-headers@4.4
 brew install --build-from-source m4
