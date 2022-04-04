@@ -66,7 +66,7 @@ curl --version
 yum remove yum-utils
 
 # libs
-yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel
+yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel libxml2 libxml2-devel
 
 ```
 
@@ -342,17 +342,55 @@ rm -fr sratoolkit*/bin/ncbi
 
 cp sratoolkit*/bin/* ~/bin/
 
+# genomics.sh
+
+# Perl
+cpanm --installdeps XML::Parser
+cpanm --look XML::Parser
+EXPAT="$(brew --prefix)/Cellar/$(brew list --versions expat | sed 's/ /\//' | head -n 1)"
+perl Makefile.PL EXPATLIBPATH=${EXPAT}/lib EXPATINCPATH=${EXPAT}/include
+
+bash ~/Scripts/dotfiles/perl/install.sh
+
+# rust
+
+# dazz
+brew install brewsci/science/poa
+brew install wang-q/tap/faops
+brew install --HEAD wang-q/tap/dazz_db
+brew install --HEAD wang-q/tap/daligner
+brew install wang-q/tap/intspan
+
+# anchr 
+curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
+
+# App::Egaz
+curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh | bash
+
+# App::Plotr
+curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh | bash
+
+# bmr
+# R packages
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
+    ' ::: \
+        getopt foreach doParallel \
+        extrafont ggplot2 gridExtra \
+        survival survminer \
+        timeROC pROC verification \
+        tidyverse devtools BiocManager
+
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.14", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.14") } '\''
+    ' ::: \
+        Biobase GEOquery GenomicDataCommons
+
+# kat igvtools
+
 ```
-
-Other stuff
-
-* `genomics.sh`
-* `App::Egaz`
-* `App::Dazz`
-* `anchr`
-* `bmr`
-
-kat igvtools mysql-client newick-utils poa
 
 # Mirror to remote server
 
