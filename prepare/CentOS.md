@@ -35,8 +35,7 @@ usermod -m -d /share/home/wangq wangq
 yum -y upgrade
 yum -y install net-tools
 yum -y groupinstall 'Development Tools'
-yum -y groupinstall 'Compatibility Libraries'
-yum install glibc-devel.x86_64 libgcc.x86_64 libstdc++-devel.x86_64 ncurses-devel.x86_64
+#yum install glibc-devel.x86_64 libgcc.x86_64 libstdc++-devel.x86_64 ncurses-devel.x86_64
 yum -y install file vim
 
 # Linuxbrew need git 2.7.0 and cURL 7.41.0
@@ -54,19 +53,22 @@ rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-
 
 yum install -y yum-utils
 
-yum-config-manager --disable city-fan.org
-
-yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
-yum-config-manager --disable epel
+yum --enablerepo=city-fan.org install -y libcurl
+yum install -y libcurl
 
 curl --version
 # curl 7.82.0
 
+yum-config-manager --disable city-fan.org
+#yum-config-manager --disable epel
+
 # https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
-yum remove yum-utils
+yum remove -y yum-utils
 
 # libs
-yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel libxml2 libxml2-devel
+#yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel libxml2 libxml2-devel
+
+rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
 
 ```
 
@@ -94,6 +96,8 @@ alias ll='ls -alF'
 alias la='ls -A'
 
 EOF
+
+source ~/.bashrc
 
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
@@ -137,6 +141,8 @@ source $HOME/.bashrc
 
 We *must* install Homebrew as a non-sudoer.
 
+This is not a necessary step.
+
 ```shell
 usermod -aG wheel wangq
 visudo
@@ -147,24 +153,38 @@ visudo
 
 ## Packages
 
-### Build from sources for all dependcies of gcc
+### gcc and commonly used libraries
 
-* Use bottled gcc@11 and gcc@5
-    * gcc@5 `make bootstrap` requires `crti.o`. This seems to be a bug
+* Use bottled gcc@5 and gcc (gcc@11)
+    * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
 
 ```shell
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-# gcc@5
-brew install --build-from-source $( brew deps gcc@5 )
-brew install --force-bottle gcc@5
+# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
+# scp v2ray-linux-64.zip wangq@10.0.1.26:.
+# scp config.json wangq@10.0.1.26:.
+# 
+# mkdir ~/v2ray
+# unzip v2ray-linux-64.zip -d ~/v2ray
+# ~/v2ray/v2ray -config ~/config.json
 
-brew install --build-from-source $( brew deps cmake )
-brew install cmake
+# export ALL_PROXY=socks5h://localhost:1080
 
-brew install --build-from-source $( brew deps gcc@11 )
-brew install --force-bottle gcc@11
+brew install --only-dependencies gcc
+brew install --force-bottle gcc
+
+## gcc@5
+#brew install --build-from-source $( brew deps gcc@5 )
+#brew install --force-bottle gcc@5
+#
+#brew install --build-from-source $( brew deps cmake )
+#brew install cmake
+#
+#brew install --force-bottle isl
+#brew install --build-from-source $( brew deps gcc@11 )
+#brew install --force-bottle gcc@11
 
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
@@ -177,6 +197,15 @@ brew install --force-bottle gcc@11
 # alias c++='c++-5'
 # alias gfortran='gfortran-5'
 
+brew install --build-from-source linux-headers@4.4
+brew install --build-from-source glibc
+
+# https://github.com/Homebrew/discussions/discussions/2011
+# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
+patchelf --remove-rpath $(realpath ~/.linuxbrew/lib/ld.so)
+
+brew postinstall glibc
+
 strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
 
 strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
@@ -184,67 +213,47 @@ strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
 # System glibc doesn't contain GLIBC_2.18 or later
 # We should prevent custom build to reach the system one.
 
+# Some building tools
+brew install autoconf automake autogen libtool
+brew install cmake
+brew install bison flex
+
+# libs
+brew install gsl
+brew install libgit2
+brew install libgcrypt
+brew install libxslt
+brew install jemalloc
+brew install boost
+
+# background processes
+brew install screen htop
+
 ```
 
-### Build commonly used libraries from sources
+### Others
 
 ```shell
 
-# Some building tools
-brew install --build-from-source linux-headers@4.4
-brew install --build-from-source m4
-
-brew install --build-from-source gpatch
-brew install --build-from-source pkg-config
-
-brew install --build-from-source bison
-brew install --build-from-source flex
-brew install --build-from-source byacc
-
-brew install --build-from-source autoconf
-brew install --build-from-source autogen
-brew install --build-from-source automake
-brew install --build-from-source libtool
-
-# libs
-brew install --build-from-source gsl
-brew install --build-from-source libgit2
-brew install --build-from-source libgcrypt
-brew install --build-from-source libxslt
-brew install --build-from-source jemalloc
-brew install --build-from-source boost
-
-brew install bats-core # replace bats
-brew install libaec # replace szip
-brew install elfutils # replace libelf
-
 # python
-brew install --build-from-source $( brew deps python@3.7 )
-brew install --build-from-source python@3.7
-brew unlink python@3.7 && brew link --force --overwrite python@3.7
+brew install python@3.9
 
-if grep -q -i PYTHON_37_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains PYTHON_37_PATH"
+if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains PYTHON_39_PATH"
 else
-    echo "==> Updating .bashrc with PYTHON_37_PATH..."
-    PYTHON_37_PATH="export PATH=\"$(brew --prefix)/opt/python@3.7/bin:$(brew --prefix)/opt/python@3.7/libexec/bin:\$PATH\""
-    echo '# PYTHON_37_PATH' >> $HOME/.bashrc
-    echo ${PYTHON_37_PATH} >> $HOME/.bashrc
+    echo "==> Updating .bashrc with PYTHON_39_PATH..."
+    PYTHON_39_PATH="export PATH=\"$(brew --prefix)/opt/python@3.9/bin:$(brew --prefix)/opt/python@3.9/libexec/bin:\$PATH\""
+    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
+    echo ${PYTHON_39_PATH} >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 
     # make the above environment variables available for the rest of this script
-    eval ${PYTHON_37_PATH}
+    eval ${PYTHON_39_PATH}
 fi
-
-brew install --build-from-source $( brew deps python )
-brew install --build-from-source python
 
 # perl
 echo "==> Install Perl 5.34"
-brew install --build-from-source berkeley-db
-brew install --build-from-source berkeley-db@4
-
-brew install --build-from-source perl
+brew install perl
 
 if grep -q -i PERL_534_PATH $HOME/.bashrc; then
     echo "==> .bashrc already contains PERL_534_PATH"
@@ -265,18 +274,10 @@ hash cpanm 2>/dev/null || {
         perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
 }
 
-# curl
-brew install --build-from-source $( brew deps curl )
-brew install --force-bottle util-linux
-brew install --build-from-source curl
-
-# git
-brew install --build-from-source $( brew deps git )
-brew install git
-
 # fontconfig
+brew install --force-bottle ruby
 brew install --build-from-source $( brew deps fontconfig )
-brew install --build-from-source fontconfig
+brew install --force-bottle fontconfig
 
 # gd
 brew install --build-from-source $( brew deps gd )
@@ -284,20 +285,22 @@ brew install --build-from-source gd
 
 # ghostscript
 brew install --build-from-source $( brew deps ghostscript )
-brew install --build-from-source ghostscript
+brew install --build-from-source ghostscript --cc gcc-5
 
 # java
-brew install --build-from-source openjdk
-brew install ant maven
+#brew install --build-from-source openjdk
+#brew install ant maven
 
 # r
 brew install --build-from-source r
 
 # some r packages need udunits and gdal
-brew install --build-from-source udunits
+brew install udunits
 
 brew install --force-bottle mesa
 brew install --force-bottle systemd
+brew install --force-bottle libdrm
+brew install --force-bottle pulseaudio
 brew install qt
 brew install qt@5
 
@@ -318,12 +321,16 @@ brew install --force-bottle libheif
 brew install imagemagick
 
 # others
+brew install bats-core  # replaces bats
+brew install libaec     # replaces szip
+brew install elfutils   # replaces libelf
+
 brew install lua node
 brew install pandoc
 brew install aria2 wget
 brew install screen stow htop parallel pigz
 brew install cloc tree pv
-brew install jq pup datamash miller tsv-utils
+brew install jq pup datamash miller wang-q/tap/tsv-utils
 brew install hyperfine ripgrep
 
 # brew install openmpi
@@ -343,7 +350,11 @@ cat <<EOF >> ~/.bashrc
 
 EOF
 
+source ~/.bashrc
+
 ```
+
+### Manually
 
 ```shell
 # SRA Toolkit
