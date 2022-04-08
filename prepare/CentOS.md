@@ -297,10 +297,11 @@ brew install --build-from-source r
 # some r packages need udunits and gdal
 brew install udunits
 
+brew install --force-bottle libdrm
 brew install --force-bottle mesa
 brew install --force-bottle systemd
-brew install --force-bottle libdrm
 brew install --force-bottle pulseaudio
+brew install --force-bottle p11-kit
 brew install qt
 brew install qt@5
 
