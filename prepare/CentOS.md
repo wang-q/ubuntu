@@ -66,7 +66,8 @@ yum-config-manager --disable city-fan.org
 yum remove -y yum-utils
 
 # libs
-#yum install -y libdb4-devel libdb4-utils libuuid libuuid-devel libxml2 libxml2-devel
+yum install -y libxml2-devel # R XML failed with brew's libxml2
+yum install -y zlib-devel libdb-devel # for Perl
 
 rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
 
@@ -141,7 +142,7 @@ source $HOME/.bashrc
 
 We *must* install Homebrew as a non-sudoer.
 
-This is not a necessary step.
+This is *not* a necessary step.
 
 ```shell
 usermod -aG wheel wangq
@@ -175,29 +176,12 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 brew install --only-dependencies gcc
 brew install --force-bottle gcc
 
-## gcc@5
-#brew install --build-from-source $( brew deps gcc@5 )
-#brew install --force-bottle gcc@5
-#
-#brew install --build-from-source $( brew deps cmake )
-#brew install cmake
-#
-#brew install --force-bottle isl
-#brew install --build-from-source $( brew deps gcc@11 )
-#brew install --force-bottle gcc@11
-
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
 # sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
 # sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
 
-# alias gcc='gcc-5'
-# alias cc='gcc-5'
-# alias g++='g++-5'
-# alias c++='c++-5'
-# alias gfortran='gfortran-5'
-
-brew install --build-from-source linux-headers@4.4
+brew install linux-headers@4.4
 brew install --build-from-source glibc
 
 # https://github.com/Homebrew/discussions/discussions/2011
@@ -212,6 +196,28 @@ strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
 
 # System glibc doesn't contain GLIBC_2.18 or later
 # We should prevent custom build to reach the system one.
+
+# perl
+echo "==> Install Perl 5.34"
+brew install perl
+
+if grep -q -i PERL_534_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains PERL_534_PATH"
+else
+    echo "==> Updating .bashrc with PERL_534_PATH..."
+    PERL_534_PATH="export PATH=\"$(brew --prefix perl)/bin:\$PATH\""
+    echo '# PERL_534_PATH' >> $HOME/.bashrc
+    echo $PERL_534_PATH    >> $HOME/.bashrc
+    echo >> $HOME/.bashrc
+
+    # Make the above environment variables available for the rest of this script
+    eval $PERL_534_PATH
+fi
+
+hash cpanm 2>/dev/null || {
+    curl -L https://cpanmin.us |
+        perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
+}
 
 # Some building tools
 brew install autoconf automake autogen libtool
@@ -233,6 +239,8 @@ brew install screen htop
 
 ### Others
 
+The failed compilation package was installed with `--force-bottle`.
+
 ```shell
 
 # python
@@ -251,45 +259,28 @@ else
     eval ${PYTHON_39_PATH}
 fi
 
-# perl
-echo "==> Install Perl 5.34"
-brew install perl
-
-if grep -q -i PERL_534_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains PERL_534_PATH"
-else
-    echo "==> Updating .bashrc with PERL_534_PATH..."
-    PERL_534_BREW=$(brew --prefix)/Cellar/$(brew list --versions perl | sed 's/ /\//' | head -n 1)
-    PERL_534_PATH="export PATH=\"$PERL_534_BREW/bin:\$PATH\""
-    echo '# PERL_534_PATH' >> $HOME/.bashrc
-    echo $PERL_534_PATH    >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-
-    # make the above environment variables available for the rest of this script
-    eval $PERL_534_PATH
-fi
-
-hash cpanm 2>/dev/null || {
-    curl -L https://cpanmin.us |
-        perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
-}
-
 # fontconfig
 brew install --force-bottle ruby
-brew install --build-from-source $( brew deps fontconfig )
+brew install $( brew deps fontconfig )
 brew install --force-bottle fontconfig
 
 # gd
-brew install --build-from-source $( brew deps gd )
+brew install $( brew deps gd )
 brew install --build-from-source gd
 
 # ghostscript
-brew install --build-from-source $( brew deps ghostscript )
-brew install --build-from-source ghostscript --cc gcc-5
+brew install $( brew deps ghostscript )
+brew install ghostscript --cc gcc-5
 
 # java
-#brew install --build-from-source openjdk
-#brew install ant maven
+brew install $( brew deps openjdk@11 )
+#brew install openjdk@11
+#brew link openjdk@11 --force
+brew install --force-bottle openjdk
+
+java -version
+
+brew install ant maven
 
 # r
 brew install --build-from-source r
@@ -310,15 +301,15 @@ brew install --force-bottle numpy
 brew install --force-bottle gdal
 
 # graphics
-brew install --build-from-source $( brew deps gnuplot )
-brew install gnuplot
+brew install $( brew deps gnuplot )
+brew install --force-bottle gnuplot
 
 brew install --force-bottle shared-mime-info
-brew install --build-from-source $( brew deps graphviz )
+brew install $( brew deps graphviz )
 brew install graphviz
 
-brew install --build-from-source $( brew deps imagemagick )
 brew install --force-bottle libheif
+brew install $( brew deps imagemagick )
 brew install imagemagick
 
 # others
@@ -367,13 +358,19 @@ rm -fr sratoolkit*/bin/ncbi
 
 cp sratoolkit*/bin/* ~/bin/
 
-# genomics.sh
+# dotfiles/genomics.sh
 
 # Perl
-cpanm --installdeps XML::Parser
 cpanm --look XML::Parser
-EXPAT="$(brew --prefix)/Cellar/$(brew list --versions expat | sed 's/ /\//' | head -n 1)"
-perl Makefile.PL EXPATLIBPATH=${EXPAT}/lib EXPATINCPATH=${EXPAT}/include
+perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
+make test
+make install 
+
+cpanm --look Net::SSLeay
+OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
+CC=gcc-5 LD=gcc-5 make
+make test
+make install
 
 bash ~/Scripts/dotfiles/perl/install.sh
 
