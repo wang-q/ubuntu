@@ -53,8 +53,7 @@ rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-
 
 yum install -y yum-utils
 
-yum --enablerepo=city-fan.org install -y libcurl
-yum install -y libcurl
+yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
 
 curl --version
 # curl 7.82.0
@@ -70,10 +69,12 @@ yum install -y mlocate
 updatedb
 
 # libs
+
+yum install -y zlib-devel # for Perl
 yum install -y libxml2-devel # R XML failed with brew's libxml2
-yum install -y zlib-devel libdb-devel # for Perl
 
 rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
+# can't use brewed patchelf
 
 ```
 
@@ -162,6 +163,8 @@ visudo
 
 * Use bottled gcc@5 and gcc (gcc@11)
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
+* Avoid `brew install glibc`
+    * Make as many programs as possible link to the system `libc'.
 
 ```shell
 
@@ -185,21 +188,21 @@ brew install --force-bottle gcc
 # sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
 # sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
 
-brew install linux-headers@4.4
-brew install --build-from-source glibc
+#brew install linux-headers@4.4
 
-# https://github.com/Homebrew/discussions/discussions/2011
-# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
-patchelf --remove-rpath $(realpath ~/.linuxbrew/lib/ld.so)
-
-brew postinstall glibc
-
-strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
-
-strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
-
-# System glibc doesn't contain GLIBC_2.18 or later
-# We should prevent custom build to reach the system one.
+#brew install --build-from-source glibc
+#
+## https://github.com/Homebrew/discussions/discussions/2011
+## https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
+#patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
+#
+#brew postinstall glibc
+#
+#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
+#
+#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
+#
+## System glibc doesn't contain GLIBC_2.18 or later
 
 # perl
 echo "==> Install Perl 5.34"
@@ -223,22 +226,27 @@ hash cpanm 2>/dev/null || {
         perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
 }
 
+brew install proxychains-ng
+
 # Some building tools
-brew install autoconf automake autogen libtool
+brew install autoconf libtool automake autogen
 brew install cmake
 brew install bison flex
 
 # libs
 brew install gsl
-brew install libgit2
-brew install libgcrypt
-brew install libxslt
+brew install libssh2
 brew install jemalloc
 brew install boost
-brew install nghttp2
 
 # background processes
 brew install screen htop
+
+# Download
+brew install stow
+curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
+
+bash ~/Scripts/dotfiles/install.sh
 
 ```
 
@@ -264,46 +272,81 @@ else
     eval ${PYTHON_39_PATH}
 fi
 
+brew install python@3.10
+
+brew install ruby
+
 # fontconfig
-brew install --force-bottle ruby
 brew install $( brew deps fontconfig )
 brew install --force-bottle fontconfig
 
 # gd
 brew install $( brew deps gd )
-brew install --build-from-source gd
+brew install gd
+
+# gtk stuffs
+brew install glib --force-bottle
+brew test glib
+brew install cairo
+
+# ninja or meson failed
+brew install gobject-introspection --force-bottle
+brew install harfbuzz --force-bottle
+brew install pango --force-bottle
+brew test pango
+
+# rust
+# bottled rust need GLIBC 2.18
+brew install rust -s --cc gcc-5
+
+# dazz
+brew install brewsci/science/poa
+brew install wang-q/tap/faops
+brew install --HEAD wang-q/tap/dazz_db
+brew install --HEAD wang-q/tap/daligner
+brew install wang-q/tap/intspan
+
+#
+yum install -y bzip2-devel readline-devel pcre2-devel
+mkdir -p $HOME/share/R
+cd 
+curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.1.3.tar.gz |
+    tar xvz
+cd R-4.1.3
+./configure \
+    --prefix="$HOME/share/R" \
+    --without-x \
+    --without-tcltk \
+    --without-libtiff
+make -j 8
+make check
+make install
 
 # ghostscript
 brew install $( brew deps ghostscript )
-brew install ghostscript --cc gcc-5
+#brew install ghostscript --cc gcc-5
+brew install ghostscript --force-bottle
 
-# java
-brew install $( brew deps openjdk@11 )
-#brew install openjdk@11
-#brew link openjdk@11 --force
-brew install --force-bottle openjdk
-
-java -version
-
-brew install ant maven
+## java
+# HPCC has openjdk version "1.8.0_222-ea"
+# /usr/bin/java
 
 # r
-brew install --build-from-source r
+brew install $( brew deps r )
+brew install r
 
-# some r packages need udunits and gdal
+# some r packages need udunits
 brew install udunits
 
-brew install --force-bottle libdrm
-brew install --force-bottle mesa
-brew install --force-bottle systemd
-brew install --force-bottle pulseaudio
-brew install --force-bottle p11-kit
-brew install qt
-brew install qt@5
-
-brew install --force-bottle libdap
-brew install --force-bottle numpy
-brew install --force-bottle gdal
+#brew install --force-bottle libdrm
+#brew install --force-bottle mesa
+#brew install --force-bottle systemd
+#brew install --force-bottle pulseaudio
+#brew install --force-bottle p11-kit
+#brew install qt
+#brew install qt@5
+#
+#brew install --force-bottle numpy
 
 # graphics
 brew install $( brew deps gnuplot )
@@ -322,13 +365,15 @@ brew install bats-core  # replaces bats
 brew install libaec     # replaces szip
 brew install elfutils   # replaces libelf
 
-brew install lua node
+brew install lua 
 brew install pandoc
 brew install aria2 wget
-brew install screen stow htop parallel pigz
+brew install  parallel pigz
 brew install cloc tree pv
 brew install jq pup datamash miller wang-q/tap/tsv-utils
 brew install hyperfine ripgrep
+
+node
 
 # brew install openmpi
 
@@ -399,15 +444,6 @@ cd XML
 CC=gcc-5 R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
 
 bash ~/Scripts/dotfiles/r/install.sh
-
-# rust
-
-# dazz
-brew install brewsci/science/poa
-brew install wang-q/tap/faops
-brew install --HEAD wang-q/tap/dazz_db
-brew install --HEAD wang-q/tap/daligner
-brew install wang-q/tap/intspan
 
 # anchr 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
