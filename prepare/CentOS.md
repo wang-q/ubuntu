@@ -65,6 +65,10 @@ yum-config-manager --disable city-fan.org
 # https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
 yum remove -y yum-utils
 
+# locate
+yum install -y mlocate
+updatedb
+
 # libs
 yum install -y libxml2-devel # R XML failed with brew's libxml2
 yum install -y zlib-devel libdb-devel # for Perl
@@ -231,6 +235,7 @@ brew install libgcrypt
 brew install libxslt
 brew install jemalloc
 brew install boost
+brew install nghttp2
 
 # background processes
 brew install screen htop
@@ -327,9 +332,12 @@ brew install hyperfine ripgrep
 
 # brew install openmpi
 
-# Test your installation
-brew install hello
-brew test hello
+# pins
+brew pin r
+
+## Test your installation
+#brew install hello
+#brew test hello
 
 # bash-completion
 brew unlink util-linux
@@ -373,6 +381,24 @@ make test
 make install
 
 bash ~/Scripts/dotfiles/perl/install.sh
+
+# R
+# Can't use brewed libxml2
+Rscript -e ' install.packages(
+    "XML",
+    repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN",
+    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+    configure.vars= "CC=gcc-5"
+    ) '
+
+# manually
+curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
+    tar xvz
+cd XML
+./configure --with-xml-config=/usr/bin/xml2-config
+CC=gcc-5 R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+
+bash ~/Scripts/dotfiles/r/install.sh
 
 # rust
 
