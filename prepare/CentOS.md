@@ -1,8 +1,13 @@
 # CentOS 7
 
-For HPCC in NJU
+Mimic after the HPCC of NJU
 
-## Install
+We will build two VMs here:
+
+1. System gcc and yum packages for R, linked to the system libc
+2. Linuxbrew with everything linked to the brewed glibc
+
+## Install the system
 
 ```shell
 # wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-DVD-1908.iso
@@ -11,33 +16,61 @@ wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2009
 
 ```
 
-Let Parallels use the express installation. Customize the VM before installation as 4 cores, 4GB
-RAM, and 64G disk. Remove all unnecessary devices, e.g. printer, camera, or sound card.
+Let Parallels/VMware use the express installation. Customize the VM hardware before installation as
+4 or more cores, 4GB RAM, 80G disk, 800x600 screen and Bridged Network (Default Adapter). Remove all
+unnecessary devices, e.g. printer, camera, or sound card.
 
-Change the VM to Bridged Network (Default Adapter)
+## The VM for R
 
 SSH in as `root`.
 
-## Change the Home directory
+Present in the HPCC, `yum list installed | grep XXX`
 
-`usermod` is the command to edit an existing user. `-d` (abbreviation for `--home`) will change the
-user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
-the user's current directory to the new directory.
+* blas, lapack
+* pcre-devel
+* libcurl-devel
+* ghostscript
+* `/usr/bin/java -version` openjdk version "1.8.0_222-ea"
+
+Absent:
+
+* udunits2
+* imagemagick
+* pcre2-devel
+* cairo-devel
+* gnuplot
 
 ```shell
-pkill -KILL -u wangq
-
-# Change the Home directory
-mkdir -p /share/home
-usermod -m -d /share/home/wangq wangq
-
 # Development Tools
 yum -y upgrade
 yum -y install net-tools
 yum -y groupinstall 'Development Tools'
-#yum install glibc-devel.x86_64 libgcc.x86_64 libstdc++-devel.x86_64 ncurses-devel.x86_64
 yum -y install file vim
 
+# locate
+yum install -y mlocate
+updatedb
+
+# mimic libs
+# R XML failed with brew's libxml2
+# Some Perl modules need a system zlib
+yum install -y zlib-devel bzip2-devel
+yum install -y readline-devel ncurses-devel pcre-devel libxml2-devel
+yum install -y blas-devel lapack-devel
+yum install -y libpng-devel libjpeg-turbo-devel
+yum install -y freetype-devel fontconfig-devel
+yum install -y ghostscript
+
+#yum install -y libX11-devel libICE-devel libXt-devel libtirpc
+
+yum install -y cairo-devel pango-devel # HPCC has no -devel
+
+# Non linked
+yum install -y cmake3
+rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
+# can't use brewed patchelf
+
+# Install newer versions of git and curl
 # Linuxbrew need git 2.7.0 and cURL 7.41.0
 rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
     && yum install -y git
@@ -59,30 +92,86 @@ curl --version
 # curl 7.82.0
 
 yum-config-manager --disable city-fan.org
-#yum-config-manager --disable epel
 
 # https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
 yum remove -y yum-utils
 
-# locate
-yum install -y mlocate
-updatedb
+```
 
-# libs
+## Change the Home directory
 
-yum install -y zlib-devel # for Perl
-yum install -y libxml2-devel # R XML failed with brew's libxml2
+`usermod` is the command to edit an existing user. `-d` (abbreviation for `--home`) will change the
+user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
+the user's current directory to the new directory.
 
-rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
-# can't use brewed patchelf
+```shell
+pkill -KILL -u wangq
+
+# Change the Home directory
+mkdir -p /share/home
+usermod -m -d /share/home/wangq wangq
 
 ```
 
-## Install Linuxbrew without sudo
+### Sudo
 
-* SSH in as `wangq`
+We *must* install Homebrew as a non-sudoer.
+
+This is *not* a necessary step.
 
 ```shell
+usermod -aG wheel wangq
+visudo
+
+# wangq  ALL=(ALL) NOPASSWD:ALL
+
+```
+
+## Build R from source and install all packages
+
+SSH in as `wangq`
+
+All R-related binaries are built with system `gcc` and linked to the system `libc`.
+
+Avoid using graphic, gtk and x11 packages in brew.
+
+```shell
+cd
+mkdir -p $HOME/share/R
+
+cd
+curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.1.3.tar.gz |
+    tar xvz
+cd R-4.1.3
+
+./configure \
+    --prefix="$HOME/share/R" \
+    --disable-java \
+    --with-pcre1 \
+    --with-blas \
+    --with-lapack \
+    --without-x \
+    --without-tcltk \
+    --without-ICU \
+    --with-cairo \
+    --with-libpng \
+    --with-jpeglib \
+    --with-libtiff
+
+make -j 8
+make check
+make install
+
+bin/Rscript -e '
+    capabilities();
+    png("test.png");
+    plot(rnorm(4000),rnorm(4000),col="#ff000018",pch=19,cex=2);
+    dev.off();
+    '
+
+cd
+rm -fr ~/R-4.1.3
+
 cat <<EOF >> ~/.bashrc
 
 # Prefer US English and use UTF-8.
@@ -103,7 +192,61 @@ alias la='ls -A'
 
 EOF
 
+if grep -q -i R_413_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains R_413_PATH"
+else
+    echo "==> Updating .bashrc with R_413_PATH..."
+    R_413_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
+    echo '# R_413_PATH' >> $HOME/.bashrc
+    echo $R_413_PATH    >> $HOME/.bashrc
+    echo >> $HOME/.bashrc
+fi
+
 source ~/.bashrc
+
+Rscript -e '
+    capabilities();
+    png("test.png");
+    plot(rnorm(4000),rnorm(4000),col="#ff000018",pch=19,cex=2);
+    dev.off();
+    '
+
+```
+
+### R Packages
+
+SSH in as `wangq`
+
+```shell
+# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
+# scp v2ray-linux-64.zip wangq@10.0.1.26:.
+# scp config.json wangq@10.0.1.26:.
+# 
+# mkdir ~/v2ray
+# unzip v2ray-linux-64.zip -d ~/v2ray
+# ~/v2ray/v2ray -config ~/config.json
+
+# export ALL_PROXY=socks5h://localhost:1080
+
+cd
+curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
+
+# nloptr need `cmake`
+ln -s /usr/bin/cmake3 ~/bin/cmake
+
+bash ~/Scripts/dotfiles/r/install.sh
+
+# raster, classInt and spData need gdal
+# units needs udunit2
+# survminer might need a high version of gcc
+
+```
+
+## Install Linuxbrew without sudo
+
+SSH in as `wangq`
+
+```shell
 
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
@@ -143,28 +286,14 @@ source $HOME/.bashrc
 
 ```
 
-## Sudo
-
-We *must* install Homebrew as a non-sudoer.
-
-This is *not* a necessary step.
-
-```shell
-usermod -aG wheel wangq
-visudo
-
-# wangq  ALL=(ALL) NOPASSWD:ALL
-
-```
-
-## Packages
+## Brewed Packages
 
 ### gcc and commonly used libraries
 
 * Use bottled gcc@5 and gcc (gcc@11)
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
-* Avoid `brew install glibc`
-    * Make as many programs as possible link to the system `libc'.
+* Invoke `brew install glibc` early
+    * Make as many programs as possible not link to the system `libc'.
 
 ```shell
 
@@ -180,18 +309,22 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 
 # export ALL_PROXY=socks5h://localhost:1080
 
+brew install --only-dependencies gcc@5
+brew install --force-bottle gcc@5
+
 brew install --only-dependencies gcc
 brew install --force-bottle gcc
+
+brew reinstall --force-bottle gfortran
 
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
 # sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
 # sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
 
-#brew install linux-headers@4.4
+brew install linux-headers@4.4
+brew install --build-from-source glibc
 
-#brew install --build-from-source glibc
-#
 ## https://github.com/Homebrew/discussions/discussions/2011
 ## https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
 #patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
@@ -226,6 +359,12 @@ hash cpanm 2>/dev/null || {
         perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
 }
 
+# Download
+brew install stow
+curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
+
+bash ~/Scripts/dotfiles/install.sh
+
 brew install proxychains-ng
 
 # Some building tools
@@ -241,12 +380,6 @@ brew install boost
 
 # background processes
 brew install screen htop
-
-# Download
-brew install stow
-curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
-
-bash ~/Scripts/dotfiles/install.sh
 
 ```
 
@@ -306,30 +439,11 @@ brew install --HEAD wang-q/tap/dazz_db
 brew install --HEAD wang-q/tap/daligner
 brew install wang-q/tap/intspan
 
-#
-yum install -y bzip2-devel readline-devel pcre2-devel
-mkdir -p $HOME/share/R
-cd 
-curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.1.3.tar.gz |
-    tar xvz
-cd R-4.1.3
-./configure \
-    --prefix="$HOME/share/R" \
-    --without-x \
-    --without-tcltk \
-    --without-libtiff
-make -j 8
-make check
-make install
 
 # ghostscript
 brew install $( brew deps ghostscript )
 #brew install ghostscript --cc gcc-5
 brew install ghostscript --force-bottle
-
-## java
-# HPCC has openjdk version "1.8.0_222-ea"
-# /usr/bin/java
 
 # r
 brew install $( brew deps r )
@@ -365,20 +479,15 @@ brew install bats-core  # replaces bats
 brew install libaec     # replaces szip
 brew install elfutils   # replaces libelf
 
-brew install lua 
+brew install lua node
 brew install pandoc
 brew install aria2 wget
-brew install  parallel pigz
+brew install parallel pigz
 brew install cloc tree pv
 brew install jq pup datamash miller wang-q/tap/tsv-utils
 brew install hyperfine ripgrep
 
-node
-
 # brew install openmpi
-
-# pins
-brew pin r
 
 ## Test your installation
 #brew install hello
@@ -494,3 +603,11 @@ rsync -avP wangq@202.119.37.251:.bash_profile ~/.bash_profile
 
 ```
 
+Off campus
+
+```shell
+rsync -avP ~/share/ wangq@58.213.64.36:share
+
+58.213.64.36
+
+```
