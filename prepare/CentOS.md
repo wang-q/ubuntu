@@ -1,5 +1,20 @@
 # CentOS 7
 
+- [CentOS 7](#centos-7)
+    * [Install the system](#install-the-system)
+    * [The VM for R](#the-vm-for-r)
+    * [Change the Home directory](#change-the-home-directory)
+        + [Sudo](#sudo)
+    * [Build R from source and install all packages](#build-r-from-source-and-install-all-packages)
+        + [R Packages](#r-packages)
+    * [The VM for Linuxbrew](#the-vm-for-linuxbrew)
+    * [Install Linuxbrew without sudo](#install-linuxbrew-without-sudo)
+    * [Brewed Packages](#brewed-packages)
+        + [gcc, perl and commonly used libraries](#gcc-perl-and-commonly-used-libraries)
+        + [Others](#others)
+        + [Manually](#manually)
+    * [Mirror to remote server](#mirror-to-remote-server)
+
 Mimic after the HPCC of NJU
 
 We will build two VMs here:
@@ -16,7 +31,7 @@ wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2009
 
 ```
 
-Let Parallels/VMware use the express installation. Customize the VM hardware before installation as
+In Parallels/VMware, use the minimal installation. Customize the VM hardware before installation as
 4 or more cores, 4GB RAM, 80G disk, 800x600 screen and Bridged Network (Default Adapter). Remove all
 unnecessary devices, e.g. printer, camera, or sound card.
 
@@ -29,8 +44,6 @@ Present in the HPCC, `yum list installed | grep XXX`
 * blas, lapack
 * pcre-devel
 * libcurl-devel
-* ghostscript
-* `/usr/bin/java -version` openjdk version "1.8.0_222-ea"
 
 Absent:
 
@@ -38,63 +51,34 @@ Absent:
 * imagemagick
 * pcre2-devel
 * cairo-devel
-* gnuplot
 
 ```shell
 # Development Tools
 yum -y upgrade
-yum -y install net-tools
+yum -y install net-tools # ifconfig
 yum -y groupinstall 'Development Tools'
 yum -y install file vim
+
+yum -y install git
 
 # locate
 yum install -y mlocate
 updatedb
 
 # mimic libs
-# R XML failed with brew's libxml2
-# Some Perl modules need a system zlib
 yum install -y zlib-devel bzip2-devel
-yum install -y readline-devel ncurses-devel pcre-devel libxml2-devel
+yum install -y readline-devel ncurses-devel libxml2-devel
+yum install -y libcurl-devel pcre-devel
 yum install -y blas-devel lapack-devel
-yum install -y libpng-devel libjpeg-turbo-devel
-yum install -y freetype-devel fontconfig-devel
+yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
 
 #yum install -y libX11-devel libICE-devel libXt-devel libtirpc
-
 yum install -y cairo-devel pango-devel # HPCC has no -devel
 
-# Non linked
-yum install -y cmake3
-rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
-# can't use brewed patchelf
-
-# Install newer versions of git and curl
-# Linuxbrew need git 2.7.0 and cURL 7.41.0
-rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
-    && yum install -y git
-
-git --version
-# git version 2.31.1
-
-# libnghttp2 is in epel
+# epel
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-
-# curl need libnghttp2
-rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-release-2-2.rhel7.noarch.rpm
-
-yum install -y yum-utils
-
-yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
-
-curl --version
-# curl 7.82.0
-
-yum-config-manager --disable city-fan.org
-
-# https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
-yum remove -y yum-utils
+yum install -y cmake3
 
 ```
 
@@ -218,6 +202,7 @@ Rscript -e '
 SSH in as `wangq`
 
 ```shell
+
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
 # scp v2ray-linux-64.zip wangq@10.0.1.26:.
 # scp config.json wangq@10.0.1.26:.
@@ -242,11 +227,92 @@ bash ~/Scripts/dotfiles/r/install.sh
 
 ```
 
+## The VM for Linuxbrew
+
+SSH in as `root`.
+
+Present in the HPCC, `yum list installed | grep XXX`
+
+* ghostscript
+* `/usr/bin/java -version` openjdk version "1.8.0_222-ea"
+
+Absent:
+
+* imagemagick
+* gnuplot
+
+```shell
+# Development Tools
+yum -y upgrade
+yum -y install net-tools
+yum -y groupinstall 'Development Tools'
+yum -y install file vim
+
+# locate
+yum install -y mlocate
+updatedb
+
+# Some Perl modules need system libs
+#yum install -y zlib-devel expat-devel libxml2-devel
+
+rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
+# can't use brewed patchelf
+
+# Install newer versions of git and curl
+# Linuxbrew need git 2.7.0 and cURL 7.41.0
+rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
+    && yum install -y git
+
+git --version
+# git version 2.31.1
+
+# libnghttp2 is in epel
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+# curl need libnghttp2
+rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-release-2-2.rhel7.noarch.rpm
+
+yum install -y yum-utils
+
+yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
+
+curl --version
+# curl 7.82.0
+
+yum-config-manager --disable city-fan.org
+
+# https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
+yum remove -y yum-utils
+
+```
+
+Change Home as [above](#change-the-home-directory)
+
 ## Install Linuxbrew without sudo
 
 SSH in as `wangq`
 
 ```shell
+
+cat <<EOF >> ~/.bashrc
+
+# Prefer US English and use UTF-8.
+export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
+
+# Don’t clear the screen after quitting a manual page.
+export MANPAGER='less -X'
+
+# colors
+export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+
+EOF
 
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
@@ -254,6 +320,7 @@ export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebr
 export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
+
 /bin/bash brew-install/install.sh
 
 # can't sudo
@@ -288,7 +355,7 @@ source $HOME/.bashrc
 
 ## Brewed Packages
 
-### gcc and commonly used libraries
+### gcc, perl and commonly used libraries
 
 * Use bottled gcc@5 and gcc (gcc@11)
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
@@ -299,9 +366,11 @@ source $HOME/.bashrc
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
+brew update
+
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@10.0.1.26:.
-# scp config.json wangq@10.0.1.26:.
+# scp v2ray-linux-64.zip wangq@10.0.1.27:.
+# scp config.json wangq@10.0.1.27:.
 # 
 # mkdir ~/v2ray
 # unzip v2ray-linux-64.zip -d ~/v2ray
@@ -312,8 +381,22 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 brew install --only-dependencies gcc@5
 brew install --force-bottle gcc@5
 
+brew install linux-headers@4.4
+brew install --build-from-source glibc --verbose
+
+# https://github.com/Homebrew/discussions/discussions/2011
+# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
+# need su
+patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
+
+brew postinstall glibc
+
+strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
+strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
+# System glibc doesn't contain GLIBC_2.18 or later
+
 brew install --only-dependencies gcc
-brew install --force-bottle gcc
+brew install --force-bottle gcc 
 
 brew reinstall --force-bottle gfortran
 
@@ -321,21 +404,6 @@ brew reinstall --force-bottle gfortran
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
 # sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
 # sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
-
-brew install linux-headers@4.4
-brew install --build-from-source glibc
-
-## https://github.com/Homebrew/discussions/discussions/2011
-## https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
-#patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
-#
-#brew postinstall glibc
-#
-#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
-#
-#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
-#
-## System glibc doesn't contain GLIBC_2.18 or later
 
 # perl
 echo "==> Install Perl 5.34"
@@ -364,6 +432,9 @@ brew install stow
 curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
 
 bash ~/Scripts/dotfiles/install.sh
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall
 
 brew install proxychains-ng
 
@@ -534,6 +605,7 @@ CC=gcc-5 LD=gcc-5 make
 make test
 make install
 
+# Perl modules
 bash ~/Scripts/dotfiles/perl/install.sh
 
 # R
