@@ -5,8 +5,9 @@
     * [The VM for R](#the-vm-for-r)
     * [Change the Home directory](#change-the-home-directory)
         + [Sudo](#sudo)
-    * [Build R from source and install all packages](#build-r-from-source-and-install-all-packages)
+    * [Build R from sources](#build-r-from-sources)
         + [R Packages](#r-packages)
+    * [Rust](#rust)
     * [The VM for Linuxbrew](#the-vm-for-linuxbrew)
     * [Install Linuxbrew without sudo](#install-linuxbrew-without-sudo)
     * [Brewed Packages](#brewed-packages)
@@ -20,7 +21,10 @@ Mimic after the HPCC of NJU
 We will build two VMs here:
 
 1. System gcc and yum packages for R, linked to the system libc
+    * `rustup` in this VM
+
 2. Linuxbrew with everything linked to the brewed glibc
+    * Multiple versions of glibc confuse brewed cargo
 
 ## Install the system
 
@@ -79,6 +83,7 @@ yum install -y cairo-devel pango-devel # HPCC has no -devel
 # epel
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y cmake3
+yum install -y proxychains-ng
 
 ```
 
@@ -111,7 +116,7 @@ visudo
 
 ```
 
-## Build R from source and install all packages
+## Build R from sources
 
 SSH in as `wangq`
 
@@ -206,12 +211,12 @@ SSH in as `wangq`
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
 # scp v2ray-linux-64.zip wangq@10.0.1.26:.
 # scp config.json wangq@10.0.1.26:.
-# 
-# mkdir ~/v2ray
-# unzip v2ray-linux-64.zip -d ~/v2ray
-# ~/v2ray/v2ray -config ~/config.json
+ 
+mkdir ~/v2ray
+unzip v2ray-linux-64.zip -d ~/v2ray
+~/v2ray/v2ray -config ~/config.json
 
-# export ALL_PROXY=socks5h://localhost:1080
+export ALL_PROXY=socks5h://localhost:1080
 
 cd
 curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
@@ -240,6 +245,31 @@ bash ~/Scripts/dotfiles/r/install.sh
 #cd XML
 #./configure --with-xml-config=/usr/bin/xml2-config
 #CC=gcc-5 R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+
+```
+
+## Rust
+
+```shell
+mkdir -p ~/.proxychains/
+
+cat << EOF > ~/.proxychains/proxychains.conf
+strict_chain
+proxy_dns
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+localnet 127.0.0.0/255.0.0.0
+quiet_mode
+
+[ProxyList]
+socks5  127.0.0.1 1080
+
+EOF
+
+bash ~/Scripts/dotfiles/rust/install.sh
+
+proxychains cargo install bat
 
 ```
 
@@ -542,11 +572,6 @@ brew install graphviz
 
 brew install $( brew deps imagemagick )
 brew install imagemagick
-
-## rust
-## multiple glibc confuse cargo
-## bottled rust need GLIBC 2.18
-#brew install rust
 
 # others
 brew install bats-core  # replaces bats
