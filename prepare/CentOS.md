@@ -225,6 +225,22 @@ bash ~/Scripts/dotfiles/r/install.sh
 # units needs udunit2
 # survminer might need a high version of gcc
 
+## R
+## Can't use brewed libxml2
+#Rscript -e ' install.packages(
+#    "XML",
+#    repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN",
+#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+#    configure.vars= "CC=gcc-5"
+#    ) '
+#
+## manually
+#curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
+#    tar xvz
+#cd XML
+#./configure --with-xml-config=/usr/bin/xml2-config
+#CC=gcc-5 R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+
 ```
 
 ## The VM for Linuxbrew
@@ -251,6 +267,8 @@ yum -y install file vim
 # locate
 yum install -y mlocate
 updatedb
+
+yum install -y fontconfig perl-IPC-Cmd
 
 # Some Perl modules need system libs
 #yum install -y zlib-devel expat-devel libxml2-devel
@@ -478,7 +496,7 @@ fi
 
 brew install python@3.10
 
-brew install ruby
+brew install ruby --force-bottle
 
 # fontconfig
 brew install $( brew deps fontconfig )
@@ -489,61 +507,46 @@ brew install $( brew deps gd )
 brew install gd
 
 # gtk stuffs
-brew install glib --force-bottle
-brew test glib
+brew install glib
 brew install cairo
+brew install gobject-introspection
+brew install harfbuzz
+brew install pango
 
-# ninja or meson failed
-brew install gobject-introspection --force-bottle
-brew install harfbuzz --force-bottle
-brew install pango --force-bottle
-brew test pango
+brew install --force-bottle shared-mime-info
+brew install gdk-pixbuf
+brew install librsvg
 
-# rust
-# bottled rust need GLIBC 2.18
-brew install rust -s --cc gcc-5
+# Qt
+brew install --force-bottle systemd
+brew install --force-bottle libdrm
+brew install --force-bottle mesa
+brew install --force-bottle p11-kit # Test failed
+brew install --force-bottle pulseaudio
 
-# dazz
-brew install brewsci/science/poa
-brew install wang-q/tap/faops
-brew install --HEAD wang-q/tap/dazz_db
-brew install --HEAD wang-q/tap/daligner
-brew install wang-q/tap/intspan
+brew install $( brew deps qt@5 )
+brew install qt@5
+#brew install qt
 
+# Java
+brew install openjdk
 
 # ghostscript
 brew install $( brew deps ghostscript )
-#brew install ghostscript --cc gcc-5
-brew install ghostscript --force-bottle
-
-# r
-brew install $( brew deps r )
-brew install r
-
-# some r packages need udunits
-brew install udunits
-
-#brew install --force-bottle libdrm
-#brew install --force-bottle mesa
-#brew install --force-bottle systemd
-#brew install --force-bottle pulseaudio
-#brew install --force-bottle p11-kit
-#brew install qt
-#brew install qt@5
-#
-#brew install --force-bottle numpy
+brew install ghostscript
 
 # graphics
-brew install $( brew deps gnuplot )
-brew install --force-bottle gnuplot
+brew install gnuplot
 
-brew install --force-bottle shared-mime-info
-brew install $( brew deps graphviz )
 brew install graphviz
 
-brew install --force-bottle libheif
 brew install $( brew deps imagemagick )
 brew install imagemagick
+
+## rust
+## multiple glibc confuse cargo
+## bottled rust need GLIBC 2.18
+#brew install rust
 
 # others
 brew install bats-core  # replaces bats
@@ -555,7 +558,7 @@ brew install pandoc
 brew install aria2 wget
 brew install parallel pigz
 brew install cloc tree pv
-brew install jq pup datamash miller wang-q/tap/tsv-utils
+brew install jq pup datamash miller
 brew install hyperfine ripgrep
 
 # brew install openmpi
@@ -563,6 +566,15 @@ brew install hyperfine ripgrep
 ## Test your installation
 #brew install hello
 #brew test hello
+
+# dazz
+brew install brewsci/science/poa
+brew install wang-q/tap/faops
+brew install --HEAD wang-q/tap/dazz_db
+brew install --HEAD wang-q/tap/daligner
+brew install wang-q/tap/intspan
+
+brew install wang-q/tap/tsv-utils
 
 # bash-completion
 brew unlink util-linux
@@ -582,16 +594,6 @@ source ~/.bashrc
 ### Manually
 
 ```shell
-# SRA Toolkit
-curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
-
-tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
-
-rm -fr sratoolkit*/bin/ncbi
-
-cp sratoolkit*/bin/* ~/bin/
-
-# dotfiles/genomics.sh
 
 # Perl
 cpanm --look XML::Parser
@@ -601,30 +603,32 @@ make install
 
 cpanm --look Net::SSLeay
 OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
-CC=gcc-5 LD=gcc-5 make
+make
 make test
 make install
 
 # Perl modules
 bash ~/Scripts/dotfiles/perl/install.sh
 
-# R
-# Can't use brewed libxml2
-Rscript -e ' install.packages(
-    "XML",
-    repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN",
-    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-    configure.vars= "CC=gcc-5"
-    ) '
+# Python modules
+bash ~/Scripts/dotfiles/python/install.sh
 
-# manually
-curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
-    tar xvz
-cd XML
-./configure --with-xml-config=/usr/bin/xml2-config
-CC=gcc-5 R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+# Manually
+dotfiles/genomics.sh
 
-bash ~/Scripts/dotfiles/r/install.sh
+brew install numpy --force-bottle
+brew install scipy --force-bottle
+brew install matplotlib --force-bottle
+#brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
+
+# SRA Toolkit
+curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
+
+tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
+rm -fr sratoolkit*/bin/ncbi
+cp sratoolkit*/bin/* ~/bin/
+
+rm -fr sratoolkit*
 
 # anchr 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
