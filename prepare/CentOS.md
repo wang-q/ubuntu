@@ -219,7 +219,7 @@ SSH in as `wangq`
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
 # scp v2ray-linux-64.zip wangq@10.0.1.26:.
 # scp config.json wangq@10.0.1.26:.
- 
+
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
 
@@ -442,7 +442,7 @@ brew update
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
 # scp v2ray-linux-64.zip wangq@10.0.1.27:.
 # scp config.json wangq@10.0.1.27:.
-# 
+#
 # mkdir ~/v2ray
 # unzip v2ray-linux-64.zip -d ~/v2ray
 # ~/v2ray/v2ray -config ~/config.json
@@ -467,7 +467,7 @@ strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
 # System glibc doesn't contain GLIBC_2.18 or later
 
 brew install --only-dependencies gcc
-brew install --force-bottle gcc 
+brew install --force-bottle gcc
 
 brew reinstall --force-bottle gfortran
 
@@ -647,7 +647,7 @@ source ~/.bashrc
 cpanm --look XML::Parser
 perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
 make test
-make install 
+make install
 
 cpanm --look Net::SSLeay
 OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
@@ -681,7 +681,7 @@ cp sratoolkit*/bin/* ~/bin/
 
 rm -fr sratoolkit*
 
-# anchr 
+# anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
 
 # App::Egaz
