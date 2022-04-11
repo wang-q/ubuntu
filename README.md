@@ -184,3 +184,5 @@ Edit `.gitconfig` to your own manually.
 
 * [`prepare/Vagrant.md`](prepare/Vagrant.md): Vagrant managed box
 
+* [`prepare/CentOS.md`](prepare/CentOS.md): Steps for building CentOS 7 VMs
+
