@@ -92,6 +92,7 @@ $RECYCLE.BIN/
 *.ovf
 *.vdi
 *.vmdk
+*.aria2
 
 # packer and vagrant
 packer_cache/
