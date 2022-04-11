@@ -8,6 +8,7 @@
     * [Build R from sources](#build-r-from-sources)
         + [R Packages](#r-packages)
     * [Rust](#rust)
+    * [TinyTex and fonts](#tinytex-and-fonts)
     * [The VM for Linuxbrew](#the-vm-for-linuxbrew)
     * [Install Linuxbrew without sudo](#install-linuxbrew-without-sudo)
     * [Brewed Packages](#brewed-packages)
@@ -22,6 +23,7 @@ We will build two VMs here:
 
 1. System gcc and yum packages for R, linked to the system libc
     * `rustup` in this VM
+    * TinyTex is installed by R
 
 2. Linuxbrew with everything linked to the brewed glibc
     * Multiple versions of glibc confuse brewed cargo
@@ -76,6 +78,12 @@ yum install -y libcurl-devel pcre-devel
 yum install -y blas-devel lapack-devel
 yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
+
+# tlmgr need it
+yum install -y perl-Digest-MD5
+
+# fonts
+yum install -y cabextract
 
 #yum install -y libX11-devel libICE-devel libXt-devel libtirpc
 yum install -y cairo-devel pango-devel # HPCC has no -devel
@@ -214,6 +222,7 @@ SSH in as `wangq`
  
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
+
 ~/v2ray/v2ray -config ~/config.json
 
 export ALL_PROXY=socks5h://localhost:1080
@@ -272,6 +281,20 @@ bash ~/Scripts/dotfiles/rust/install.sh
 proxychains cargo install bat
 
 ```
+
+## TinyTex and fonts
+
+Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
+
+```shell
+proxychains Rscript -e '
+    install.packages("tinytex", repos="https://mirrors4.tuna.tsinghua.edu.cn/CRAN")
+    tinytex::install_tinytex()
+    tinytex:::install_yihui_pkgs()
+    '
+
+```
+
 
 ## The VM for Linuxbrew
 
@@ -579,7 +602,7 @@ brew install libaec     # replaces szip
 brew install elfutils   # replaces libelf
 
 brew install lua node
-brew install pandoc
+brew install pandoc gifsicle
 brew install aria2 wget
 brew install parallel pigz
 brew install cloc tree pv
@@ -634,6 +657,9 @@ make install
 
 # Perl modules
 bash ~/Scripts/dotfiles/perl/install.sh
+
+# latexindent
+cpanm --verbose YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
 
 # Python modules
 bash ~/Scripts/dotfiles/python/install.sh
