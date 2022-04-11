@@ -1,7 +1,7 @@
 # Instructions for getting an Ubuntu base box
 
-I'm tired of guessing parameters of other people's boxes. So just copy & paste codes from other
-repos to get my own packer template.
+I got tired of guessing the parameters of other people's boxes. So just copy and paste code from
+other repositories to get my own packer template.
 
 If the internet connection is OK, the building process costs about 30 minutes.
 
