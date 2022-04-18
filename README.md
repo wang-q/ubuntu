@@ -153,7 +153,7 @@ bash $HOME/Scripts/dotfiles/perl/ensembl.sh
 
 ```
 
-## MySQL
+## Optional: MySQL
 
 ```shell script
 bash $HOME/Scripts/dotfiles/mysql.sh
