@@ -223,7 +223,7 @@ SSH in as `wangq`
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
 
-~/v2ray/v2ray -config ~/config.json
+~/v2ray/v2ray run -config ~/config.json
 
 export ALL_PROXY=socks5h://localhost:1080
 
