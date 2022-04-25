@@ -78,7 +78,7 @@ sudo apt-get -y install gnuplot graphviz imagemagick
 # Mysql will be installed separately.
 # Remove system provided mysql package to avoid confusing linuxbrew.
 echo "==> Remove system provided mysql"
-sudo apt-get -y purge mysql-common
+# sudo apt-get -y purge mysql-common
 
 echo "==> Restore original sources.list"
 if [ -e /etc/apt/sources.list.bak ]; then

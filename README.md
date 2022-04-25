@@ -3,18 +3,17 @@
 [TOC levels=1-3]: # ""
 
 - [Setting-up scripts for Ubuntu 20.04](#setting-up-scripts-for-ubuntu-2004)
-  - [Bypass GFW blocking](#bypass-gfw-blocking)
-  - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
-  - [Optional: adjusting Desktop](#optional-adjusting-desktop)
-  - [Install Linuxbrew](#install-linuxbrew)
-  - [Download](#download)
-  - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
-  - [Packages of each language](#packages-of-each-language)
-  - [Bioinformatics Apps](#bioinformatics-apps)
-  - [MySQL](#mysql)
-  - [Optional: dotfiles](#optional-dotfiles)
-  - [Directory Organization](#directory-organization)
-
+    - [Bypass GFW blocking](#bypass-gfw-blocking)
+    - [Install packages needed by Linuxbrew and some others](#install-packages-needed-by-linuxbrew-and-some-others)
+    - [Optional: adjusting Desktop](#optional-adjusting-desktop)
+    - [Install Linuxbrew](#install-linuxbrew)
+    - [Download](#download)
+    - [Install packages managed by Linuxbrew](#install-packages-managed-by-linuxbrew)
+    - [Packages of each language](#packages-of-each-language)
+    - [Bioinformatics Apps](#bioinformatics-apps)
+    - [MySQL](#mysql)
+    - [Optional: dotfiles](#optional-dotfiles)
+    - [Directory Organization](#directory-organization)
 
 The whole developing environment is based on [Linuxbrew](http:s//linuxbrew.sh/). Many of the
 following steps also work under macOS via [Homebrew](https://brew.sh/).
@@ -43,8 +42,9 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/pre
 
 ## Optional: adjusting Desktop
 
-In GUI desktop, disable auto updates: `Software & updates -> Updates`, set `Automatically check for
-updates` to `Never`, untick all checkboxes, click close and click close again.
+In GUI desktop, disable auto updates: `Software & updates -> Updates`,
+set `Automatically check for updates` to `Never`, untick all checkboxes, click close and click close
+again.
 
 ```shell script
 # Removes nautilus bookmarks and disables lock screen
@@ -119,12 +119,11 @@ source $HOME/.bashrc
 Attentions:
 
 * There is a post-install step when installing perl, `cpan -i XML::Parser`. If the process stalled
-    there, just kill the `cpan` process.
+  there, just kill the `cpan` process.
 
 * `Test::RequiresInternet` wants to connect to google.com while it was blocked.
 
-* `r` and `gnuplot` have a lot of dependencies, many of which are from `linuxbrew/xorg`. Just be
-    patient.
+* `r` and `gnuplot` have a lot of dependencies. Just be patient.
 
 * Sometimes there are no binary packages; compiling from source codes may take extra time.
 
@@ -154,7 +153,7 @@ bash $HOME/Scripts/dotfiles/perl/ensembl.sh
 
 ```
 
-## MySQL
+## Optional: MySQL
 
 ```shell script
 bash $HOME/Scripts/dotfiles/mysql.sh
@@ -183,4 +182,6 @@ Edit `.gitconfig` to your own manually.
 * [`prepare/`](prepare): Scripts for setting-up Ubuntu
 
 * [`prepare/Vagrant.md`](prepare/Vagrant.md): Vagrant managed box
+
+* [`prepare/CentOS.md`](prepare/CentOS.md): Steps for building CentOS 7 VMs
 

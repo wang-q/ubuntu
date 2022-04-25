@@ -3,9 +3,18 @@
 ## Software versions
 
 * Ubuntu: 20.04
-* VirtualBox: 6.1.6
-* Vagrant: 2.2.7
-* Packer: v1.5.5
+* VirtualBox: 6.1.32
+* Vagrant: 2.2.19
+* Packer: v1.8.0
+
+```powershell
+winget install --id Oracle.VirtualBox
+
+winget install --id Hashicorp.Vagrant
+
+scoop install packer
+
+```
 
 ## Build Ubuntu base box `myfocal.box` with packer from .iso
 
