@@ -49,6 +49,7 @@ Present in the HPCC, `yum list installed | grep XXX`
 
 * blas, lapack
 * pcre-devel
+* openssl-devel
 * libcurl-devel
 
 Absent:
@@ -74,10 +75,11 @@ updatedb
 # mimic libs
 yum install -y zlib-devel bzip2-devel
 yum install -y readline-devel ncurses-devel libxml2-devel
-yum install -y libcurl-devel pcre-devel
+yum install -y openssl-devel libcurl-devel pcre-devel
 yum install -y blas-devel lapack-devel
 yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
+yum install -y udunits2-devel
 
 # tlmgr need it
 yum install -y perl-Digest-MD5
@@ -217,8 +219,8 @@ SSH in as `wangq`
 ```shell
 
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@10.0.1.26:.
-# scp config.json wangq@10.0.1.26:.
+# scp v2ray-linux-64.zip wangq@192.168.11.101:.
+# scp config.json wangq@192.168.11.101:.
 
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
@@ -440,12 +442,12 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 brew update
 
 # aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@10.0.1.27:.
-# scp config.json wangq@10.0.1.27:.
+# scp v2ray-linux-64.zip wangq@192.168.11.135:.
+# scp config.json wangq@192.168.11.135:.
 #
 # mkdir ~/v2ray
 # unzip v2ray-linux-64.zip -d ~/v2ray
-# ~/v2ray/v2ray -config ~/config.json
+# ~/v2ray/v2ray run -config ~/config.json
 
 # export ALL_PROXY=socks5h://localhost:1080
 
@@ -466,10 +468,10 @@ strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
 strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
 # System glibc doesn't contain GLIBC_2.18 or later
 
-brew install --only-dependencies gcc
-brew install --force-bottle gcc
-
-brew reinstall --force-bottle gfortran
+#brew install --only-dependencies gcc
+#brew install --force-bottle gcc
+#
+#brew reinstall --force-bottle gfortran
 
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
@@ -510,7 +512,7 @@ vim +PluginInstall +qall
 brew install proxychains-ng
 
 # Some building tools
-brew install autoconf libtool automake autogen
+brew install autoconf libtool automake # autogen
 brew install cmake
 brew install bison flex
 
@@ -547,7 +549,7 @@ else
     eval ${PYTHON_39_PATH}
 fi
 
-brew install python@3.10
+#brew install python@3.10
 
 brew install ruby --force-bottle
 
@@ -605,9 +607,10 @@ brew install lua node
 brew install pandoc gifsicle
 brew install aria2 wget
 brew install parallel pigz
-brew install cloc tree pv
+brew install pv
 brew install jq pup datamash miller
-brew install hyperfine ripgrep
+brew install bat exa tealdeer
+brew install hyperfine ripgrep tokei
 
 # brew install openmpi
 
@@ -624,18 +627,18 @@ brew install wang-q/tap/intspan
 
 brew install wang-q/tap/tsv-utils
 
-# bash-completion
-brew unlink util-linux
-brew install --build-from-source bash-completion
-
-cat <<EOF >> ~/.bashrc
-
-# bash-completion
-[[ -r "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh"
-
-EOF
-
-source ~/.bashrc
+## bash-completion
+#brew unlink util-linux
+#brew install --build-from-source bash-completion
+#
+#cat <<EOF >> ~/.bashrc
+#
+## bash-completion
+#[[ -r "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh"
+#
+#EOF
+#
+#source ~/.bashrc
 
 ```
 
