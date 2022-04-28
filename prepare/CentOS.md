@@ -22,7 +22,7 @@ Mimic after the HPCC of NJU
 We will build two VMs here:
 
 1. System gcc and yum packages for R, linked to the system libc
-    * `rustup` in this VM
+    * `rustup` in this VM. Bottled rust packages need GLIBC 2.18
     * TinyTex is installed by R
 
 2. Linuxbrew with everything linked to the brewed glibc
@@ -280,7 +280,7 @@ EOF
 
 bash ~/Scripts/dotfiles/rust/install.sh
 
-proxychains cargo install bat
+proxychains cargo install bat bottom
 
 ```
 
@@ -322,6 +322,8 @@ yum -y install file vim
 # locate
 yum install -y mlocate
 updatedb
+
+yum install -y screen
 
 yum install -y fontconfig perl-IPC-Cmd
 
@@ -432,12 +434,14 @@ source $HOME/.bashrc
 
 * Use bottled gcc@5 and gcc (gcc@11)
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
-* Invoke `brew install glibc` early
-    * Make as many programs as possible not link to the system `libc'.
+* Invoke `brew install glibc` later
+    * Make as many programs as possible link to the system `libc'
+    * Some bottles doesn't work with brewed glibc
 
 ```shell
 
 export HOMEBREW_NO_AUTO_UPDATE=1
+#export HOMEBREW_RELOCATE_BUILD_PREFIX=
 
 brew update
 
@@ -454,24 +458,12 @@ brew update
 brew install --only-dependencies gcc@5
 brew install --force-bottle gcc@5
 
-brew install linux-headers@4.4
-brew install --build-from-source glibc --verbose
-
-# https://github.com/Homebrew/discussions/discussions/2011
-# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
-# need su
-patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
-
-brew postinstall glibc
-
-strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
-strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
-# System glibc doesn't contain GLIBC_2.18 or later
+# These two can't be built with brewed glibc
+brew install ruby
+brew install util-linux
 
 #brew install --only-dependencies gcc
 #brew install --force-bottle gcc
-#
-#brew reinstall --force-bottle gfortran
 
 # # find /usr/ -name crt*
 # sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
@@ -523,15 +515,7 @@ brew install jemalloc
 brew install boost
 
 # background processes
-brew install screen htop
-
-```
-
-### Others
-
-The failed compilation package was installed with `--force-bottle`.
-
-```shell
+brew install htop
 
 # python
 brew install python@3.9
@@ -551,11 +535,34 @@ fi
 
 #brew install python@3.10
 
-brew install ruby --force-bottle
+```
+
+### Others
+
+The failed compilation package was installed with `--force-bottle`.
+
+```shell
 
 # fontconfig
 brew install $( brew deps fontconfig )
-brew install --force-bottle fontconfig
+
+# Build fontconfig need GLIBC_2.18
+
+brew install linux-headers@4.4
+brew install --build-from-source glibc --verbose
+
+# https://github.com/Homebrew/discussions/discussions/2011
+# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
+# need su
+patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
+
+brew postinstall glibc
+
+#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
+#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
+# System glibc doesn't contain GLIBC_2.18 or later
+
+brew install fontconfig
 
 # gd
 brew install $( brew deps gd )
@@ -670,10 +677,10 @@ bash ~/Scripts/dotfiles/python/install.sh
 # Manually
 dotfiles/genomics.sh
 
-brew install numpy --force-bottle
-brew install scipy --force-bottle
-brew install matplotlib --force-bottle
-#brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
+#brew install numpy --force-bottle
+#brew install scipy --force-bottle
+#brew install matplotlib --force-bottle
+##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
 
 # SRA Toolkit
 curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
