@@ -280,7 +280,8 @@ EOF
 
 bash ~/Scripts/dotfiles/rust/install.sh
 
-proxychains cargo install bat bottom
+proxychains cargo install bat exa bottom tealdeer
+proxychains cargo install hyperfine ripgrep tokei
 
 ```
 
@@ -582,6 +583,7 @@ brew install librsvg
 # Qt
 brew install --force-bottle systemd
 brew install --force-bottle libdrm
+brew install --force-bottle $( brew deps mesa ) # tons of X11 related deps
 brew install --force-bottle mesa
 brew install --force-bottle p11-kit # Test failed
 brew install --force-bottle pulseaudio
@@ -600,7 +602,7 @@ brew install ghostscript
 # graphics
 brew install gnuplot
 
-brew install graphviz
+brew install --force-bottle graphviz
 
 brew install $( brew deps imagemagick )
 brew install imagemagick
@@ -615,9 +617,10 @@ brew install pandoc gifsicle
 brew install aria2 wget
 brew install parallel pigz
 brew install pv
-brew install jq pup datamash miller
-brew install bat exa tealdeer
-brew install hyperfine ripgrep tokei
+brew install jq pup datamash miller prettier
+
+#brew install bat exa tealdeer
+#brew install hyperfine ripgrep tokei
 
 # brew install openmpi
 
@@ -665,6 +668,8 @@ make
 make test
 make install
 
+#cpanm --installdeps Statistics::R
+
 # Perl modules
 bash ~/Scripts/dotfiles/perl/install.sh
 
@@ -672,6 +677,7 @@ bash ~/Scripts/dotfiles/perl/install.sh
 cpanm --verbose YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
 
 # Python modules
+# pip3 install pysocks
 bash ~/Scripts/dotfiles/python/install.sh
 
 # Manually
@@ -692,7 +698,31 @@ cp sratoolkit*/bin/* ~/bin/
 rm -fr sratoolkit*
 
 # anchr
+curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
+
+cpanm --verbose install App::Dazz
+
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
+
+brew install --HEAD wang-q/tap/fastk
+brew install --HEAD wang-q/tap/merquryfk
+
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
+    ' ::: \
+        argparse minpack.lm \
+        ggplot2 scales viridis
+
+# Optional
+# assembly quality assessment. https://github.com/ablab/quast/issues/140
+brew install brewsci/bio/quast --HEAD
+quast --test
+
+# Optional: leading assemblers
+brew install spades
+spades.py --test
+brew install brewsci/bio/megahit
+brew install wang-q/tap/platanus
 
 # App::Egaz
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh | bash
