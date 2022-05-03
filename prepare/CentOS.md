@@ -755,9 +755,16 @@ parallel -j 1 -k --line-buffer '
 ## Mirror to remote server
 
 ```shell
+# CentOS L
 rsync -avP ~/.linuxbrew/ wangq@202.119.37.251:.linuxbrew
-rsync -avP ~/share/ wangq@202.119.37.251:share
 rsync -avP ~/bin/ wangq@202.119.37.251:bin
+
+# CentOS R
+rsync -avP ~/share/ wangq@202.119.37.251:share
+rsync -avP ~/.TinyTex/ wangq@202.119.37.251:.TinyTex
+rsync -avP ~/.cargo/ wangq@202.119.37.251:.cargo
+rsync -avP ~/.fonts/ wangq@202.119.37.251:.fonts
+
 rsync -avP ~/.bashrc wangq@202.119.37.251:.bashrc
 rsync -avP ~/.bash_profile wangq@202.119.37.251:.bash_profile
 
