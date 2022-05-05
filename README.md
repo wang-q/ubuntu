@@ -49,7 +49,8 @@ again.
 ```shell script
 # Removes nautilus bookmarks and disables lock screen
 echo '==> `Ctrl+Alt+T` to start a GUI terminal'
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnome.sh)"
+curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnome.sh |
+    bash
 
 ```
 

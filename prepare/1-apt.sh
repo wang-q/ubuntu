@@ -63,8 +63,8 @@ sudo apt-get -y install libdb-dev libxml2-dev libssl-dev libncurses5-dev # libgd
 # Gtk stuff, Need by alignDB
 # install them in a fresh machine to avoid problems
 echo "==> Install gtk3"
-sudo apt-get -y install libcairo2-dev libglib2.0-0 libglib2.0-dev libgtk-3-dev libgirepository1.0-dev
-sudo apt-get -y install gir1.2-glib-2.0 gir1.2-gtk-3.0 gir1.2-webkit-3.0
+#sudo apt-get -y install libcairo2-dev libglib2.0-0 libglib2.0-dev libgtk-3-dev libgirepository1.0-dev
+#sudo apt-get -y install gir1.2-glib-2.0 gir1.2-gtk-3.0 gir1.2-webkit-3.0
 
 echo "==> Install gtk3 related tools"
 # sudo apt-get -y install xvfb glade
