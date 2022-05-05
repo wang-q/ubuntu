@@ -761,7 +761,7 @@ rsync -avP ~/bin/ wangq@202.119.37.251:bin
 
 # CentOS R
 rsync -avP ~/share/ wangq@202.119.37.251:share
-rsync -avP ~/.TinyTex/ wangq@202.119.37.251:.TinyTex
+rsync -avP ~/.TinyTeX/ wangq@202.119.37.251:.TinyTeX
 rsync -avP ~/.cargo/ wangq@202.119.37.251:.cargo
 rsync -avP ~/.fonts/ wangq@202.119.37.251:.fonts
 
