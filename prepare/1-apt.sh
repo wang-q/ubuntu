@@ -48,8 +48,8 @@ echo "==> Install linuxbrew dependences"
 sudo apt-get -y update
 sudo apt-get -y upgrade
 sudo apt-get -y install build-essential curl file git
-sudo apt-get -y install libbz2-dev zlib1g-dev libzstd-dev
-# sudo apt-get -y install libcurl4-openssl-dev libexpat-dev libncurses-dev
+sudo apt-get -y install libbz2-dev zlib1g-dev libzstd-dev libexpat1-dev
+# sudo apt-get -y install libcurl4-openssl-dev libncurses-dev
 
 echo "==> Install other software"
 sudo apt-get -y install aptitude parallel vim screen xsltproc numactl
