@@ -139,9 +139,9 @@ cd
 mkdir -p $HOME/share/R
 
 cd
-curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.1.3.tar.gz |
+curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.2.1.tar.gz |
     tar xvz
-cd R-4.1.3
+cd R-4.2.1
 
 ./configure \
     --prefix="$HOME/share/R" \
@@ -169,7 +169,7 @@ bin/Rscript -e '
     '
 
 cd
-rm -fr ~/R-4.1.3
+rm -fr ~/R-4.2.1
 
 cat <<EOF >> ~/.bashrc
 
@@ -191,13 +191,13 @@ alias la='ls -A'
 
 EOF
 
-if grep -q -i R_413_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains R_413_PATH"
+if grep -q -i R_421_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains R_421_PATH"
 else
-    echo "==> Updating .bashrc with R_413_PATH..."
-    R_413_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
-    echo '# R_413_PATH' >> $HOME/.bashrc
-    echo $R_413_PATH    >> $HOME/.bashrc
+    echo "==> Updating .bashrc with R_421_PATH..."
+    R_421_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
+    echo '# R_421_PATH' >> $HOME/.bashrc
+    echo $R_421_PATH    >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
 
