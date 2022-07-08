@@ -21,12 +21,15 @@ Mimic after the HPCC of NJU
 
 We will build two VMs here:
 
-1. System gcc and yum packages for R, linked to the system libc
-    * `rustup` in this VM. Bottled rust packages need GLIBC 2.18
-    * TinyTex is installed by R
+1. System gcc and yum packages, linked to the system libc
+    * `R`
+    * `Python` and `pip`
+    * `rustup` in this VM
+        * Bottled rust packages need GLIBC 2.18
+        * Multiple versions of glibc confuse brewed cargo
+    * `TinyTex` is installed by R
 
 2. Linuxbrew with everything linked to the brewed glibc
-    * Multiple versions of glibc confuse brewed cargo
 
 ## Install the system
 
@@ -37,9 +40,13 @@ wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2009
 
 ```
 
-In Parallels/VMware, use the minimal installation. Customize the VM hardware before installation as
-4 or more cores, 4GB RAM, 80G disk, 800x600 screen and Bridged Network (Default Adapter). Remove all
-unnecessary devices, e.g. printer, camera, or sound card.
+In VMware/Parallels, Customize the VM hardware before installation as 4 or more cores, 4GB RAM, 80G
+disk, 800x600 screen and Bridged Network (Default Adapter). Remove all unnecessary devices, e.g.
+printer, camera, or sound card.
+
+* Asia/Shanghai
+* Minimal installation
+* Don't use LVM and don't set the `/home` mount point
 
 ## The VM for R
 
@@ -48,9 +55,11 @@ SSH in as `root`.
 Present in the HPCC, `yum list installed | grep XXX`
 
 * blas, lapack
-* pcre-devel
+* bzip2-devel
 * openssl-devel
 * libcurl-devel
+* pcre-devel
+* libffi-devel
 
 Absent:
 
@@ -77,9 +86,12 @@ yum install -y zlib-devel bzip2-devel
 yum install -y readline-devel ncurses-devel libxml2-devel
 yum install -y openssl-devel libcurl-devel pcre-devel
 yum install -y blas-devel lapack-devel
+yum install -y libffi-devel
 yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
 yum install -y udunits2-devel
+
+yum install -y screen htop
 
 # tlmgr need it
 yum install -y perl-Digest-MD5
@@ -218,14 +230,16 @@ SSH in as `wangq`
 
 ```shell
 
-# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@192.168.11.101:.
-# scp config.json wangq@192.168.11.101:.
+# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
+# scp v2ray-linux-64.zip wangq@192.168.31.38:.
+# scp config.json wangq@192.168.31.38:.
 
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
 
-~/v2ray/v2ray run -config ~/config.json
+screen -wipe # Remove dead screens
+screen -dmS op htop # Start a screen named `op` and run `htop`
+screen -S op -x -X screen ~/v2ray/v2ray run -config ~/config.json
 
 export ALL_PROXY=socks5h://localhost:1080
 
@@ -236,6 +250,9 @@ curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | b
 ln -s /usr/bin/cmake3 ~/bin/cmake
 
 bash ~/Scripts/dotfiles/r/install.sh
+
+Rscript -e 'library(remotes); options(repos = c(CRAN = "https://mirrors.tuna.tsinghua.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
+Rscript -e 'library(extrafont); font_import(prompt = FALSE); fonts();'
 
 # raster, classInt and spData need gdal
 # units needs udunit2
@@ -280,8 +297,10 @@ EOF
 
 bash ~/Scripts/dotfiles/rust/install.sh
 
-proxychains cargo install bat exa bottom tealdeer
-proxychains cargo install hyperfine ripgrep tokei
+source ~/.bashrc
+
+proxychains4 cargo install bat exa bottom tealdeer
+proxychains4 cargo install hyperfine ripgrep tokei
 
 ```
 
@@ -290,14 +309,16 @@ proxychains cargo install hyperfine ripgrep tokei
 Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
 
 ```shell
-proxychains Rscript -e '
+proxychains4 Rscript -e '
     install.packages("tinytex", repos="https://mirrors4.tuna.tsinghua.edu.cn/CRAN")
     tinytex::install_tinytex()
+    '
+
+proxychains4 Rscript -e '
     tinytex:::install_yihui_pkgs()
     '
 
 ```
-
 
 ## The VM for Linuxbrew
 
