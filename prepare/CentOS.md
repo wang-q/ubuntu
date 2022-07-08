@@ -344,6 +344,7 @@ git --version
 
 # libnghttp2 is in epel
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y libnghttp2
 
 # curl need libnghttp2
 rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-release-2-2.rhel7.noarch.rpm
@@ -441,14 +442,9 @@ source $HOME/.bashrc
 
 ```shell
 
-export HOMEBREW_NO_AUTO_UPDATE=1
-#export HOMEBREW_RELOCATE_BUILD_PREFIX=
-
-brew update
-
-# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.3/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@192.168.11.135:.
-# scp config.json wangq@192.168.11.135:.
+# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
+# scp v2ray-linux-64.zip wangq@192.168.31.133:.
+# scp config.json wangq@192.168.31.133:.
 #
 # mkdir ~/v2ray
 # unzip v2ray-linux-64.zip -d ~/v2ray
@@ -456,7 +452,12 @@ brew update
 
 # export ALL_PROXY=socks5h://localhost:1080
 
-brew install --only-dependencies gcc@5
+export HOMEBREW_NO_AUTO_UPDATE=1
+#export HOMEBREW_RELOCATE_BUILD_PREFIX=
+
+brew update
+
+#brew install --only-dependencies gcc@5
 brew install --force-bottle gcc@5
 
 # These two can't be built with brewed glibc
