@@ -311,6 +311,13 @@ source ~/.bashrc
 
 ~/share/Python/bin/python3 -m pip install --upgrade pip setuptools wheel
 
+```
+
+### Python Packages
+
+```shell
+cd
+
 bash ~/Scripts/dotfiles/python/install.sh
 
 # quast
@@ -318,6 +325,8 @@ pip3 install quast
 curl -L quast.sf.net/test_data.tar.gz |
     tar xvz
 quast.py --test
+
+rm -fr test_data quast_test_output
 
 ```
 
