@@ -23,10 +23,10 @@ We will build two VMs here:
 
 1. System gcc and yum packages, linked to the system libc
     * `R`
-    * `Python` and `pip`
     * `rustup` in this VM
         * Bottled rust packages need GLIBC 2.18
         * Multiple versions of glibc confuse brewed cargo
+    * `Python` and `pip`
     * `TinyTex` is installed by R
 
 2. Linuxbrew with everything linked to the brewed glibc
@@ -203,13 +203,13 @@ alias la='ls -A'
 
 EOF
 
-if grep -q -i R_421_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains R_421_PATH"
+if grep -q -i R_42_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains R_42_PATH"
 else
-    echo "==> Updating .bashrc with R_421_PATH..."
-    R_421_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
-    echo '# R_421_PATH' >> $HOME/.bashrc
-    echo $R_421_PATH    >> $HOME/.bashrc
+    echo "==> Updating .bashrc with R_42_PATH..."
+    R_42_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
+    echo '# R_42_PATH' >> $HOME/.bashrc
+    echo $R_42_PATH    >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
 
@@ -301,6 +301,43 @@ source ~/.bashrc
 
 proxychains4 cargo install bat exa bottom tealdeer
 proxychains4 cargo install hyperfine ripgrep tokei
+
+```
+
+## Python
+
+```shell
+cd
+mkdir -p $HOME/share/Python
+
+cd
+curl -L https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz |
+    tar xvz
+cd Python-3.9.13
+
+./configure --enable-optimizations --prefix=$HOME/share/Python
+
+make install
+#make altinstall # python3.9 and pip3.9
+
+cd
+rm -fr ~/Python-3.9.13
+
+if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains PYTHON_39_PATH"
+else
+    echo "==> Updating .bashrc with PYTHON_39_PATH..."
+    PYTHON_39_PATH="export PATH=\"$HOME/share/Python/bin:\$PATH\""
+    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
+    echo $PYTHON_39_PATH    >> $HOME/.bashrc
+    echo >> $HOME/.bashrc
+fi
+
+source ~/.bashrc
+
+~/share/Python/bin/python3 -m pip install --upgrade pip setuptools wheel
+
+bash ~/Scripts/dotfiles/python/install.sh
 
 ```
 
@@ -543,20 +580,20 @@ brew install htop
 # python
 brew install python@3.9
 
-if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains PYTHON_39_PATH"
-else
-    echo "==> Updating .bashrc with PYTHON_39_PATH..."
-    PYTHON_39_PATH="export PATH=\"$(brew --prefix)/opt/python@3.9/bin:$(brew --prefix)/opt/python@3.9/libexec/bin:\$PATH\""
-    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
-    echo ${PYTHON_39_PATH} >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-
-    # make the above environment variables available for the rest of this script
-    eval ${PYTHON_39_PATH}
-fi
-
-#brew install python@3.10
+#if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
+#    echo "==> .bashrc already contains PYTHON_39_PATH"
+#else
+#    echo "==> Updating .bashrc with PYTHON_39_PATH..."
+#    PYTHON_39_PATH="export PATH=\"$(brew --prefix)/opt/python@3.9/bin:$(brew --prefix)/opt/python@3.9/libexec/bin:\$PATH\""
+#    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
+#    echo ${PYTHON_39_PATH} >> $HOME/.bashrc
+#    echo >> $HOME/.bashrc
+#
+#    # make the above environment variables available for the rest of this script
+#    eval ${PYTHON_39_PATH}
+#fi
+#
+##brew install python@3.10
 
 ```
 
