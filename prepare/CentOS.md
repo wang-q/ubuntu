@@ -224,7 +224,7 @@ Rscript -e '
 
 ```
 
-### R Packages
+### Proxy
 
 SSH in as `wangq`
 
@@ -234,6 +234,7 @@ SSH in as `wangq`
 # scp v2ray-linux-64.zip wangq@192.168.31.38:.
 # scp config.json wangq@192.168.31.38:.
 
+cd
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
 
@@ -243,6 +244,11 @@ screen -S op -x -X screen ~/v2ray/v2ray run -config ~/config.json
 
 export ALL_PROXY=socks5h://localhost:1080
 
+```
+
+### R Packages
+
+```shell
 cd
 curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
 
@@ -604,22 +610,10 @@ brew install boost
 brew install htop
 
 # python
-brew install python@3.9
-
-#if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
-#    echo "==> .bashrc already contains PYTHON_39_PATH"
-#else
-#    echo "==> Updating .bashrc with PYTHON_39_PATH..."
-#    PYTHON_39_PATH="export PATH=\"$(brew --prefix)/opt/python@3.9/bin:$(brew --prefix)/opt/python@3.9/libexec/bin:\$PATH\""
-#    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
-#    echo ${PYTHON_39_PATH} >> $HOME/.bashrc
-#    echo >> $HOME/.bashrc
-#
-#    # make the above environment variables available for the rest of this script
-#    eval ${PYTHON_39_PATH}
-#fi
-#
-##brew install python@3.10
+# These two are required by other brewed packages
+brew install --force-bottle python # is now python@3.9
+brew install --force-bottle python@3.9
+brew install --force-bottle python@3.10
 
 ```
 
@@ -641,11 +635,15 @@ brew install gd
 # gtk stuffs
 brew install glib
 brew install cairo
+
+# linked to brewed glibc
+brew reinstall -s libffi
+
 brew install gobject-introspection
 brew install harfbuzz
 brew install pango
 
-brew install --force-bottle shared-mime-info
+brew install shared-mime-info
 brew install gdk-pixbuf
 brew install librsvg
 
@@ -653,6 +651,7 @@ brew install librsvg
 brew install --force-bottle systemd
 brew install --force-bottle libdrm
 brew install --force-bottle $( brew deps mesa ) # tons of X11 related deps
+brew unlink llvm
 brew install --force-bottle mesa
 brew install --force-bottle p11-kit # Test failed
 brew install --force-bottle pulseaudio
@@ -662,7 +661,7 @@ brew install qt@5
 #brew install qt
 
 # Java
-brew install openjdk
+brew install --force-bottle openjdk
 
 # ghostscript
 brew install $( brew deps ghostscript )
@@ -677,7 +676,8 @@ brew install $( brew deps imagemagick )
 brew install imagemagick
 
 # others
-brew install bats-core  # replaces bats
+brew install bats
+#brew install bats-core  # require coreutils, which is huge
 brew install libaec     # replaces szip
 brew install elfutils   # replaces libelf
 
@@ -688,14 +688,7 @@ brew install parallel pigz
 brew install pv
 brew install jq pup datamash miller prettier
 
-#brew install bat exa tealdeer
-#brew install hyperfine ripgrep tokei
-
-# brew install openmpi
-
-## Test your installation
-#brew install hello
-#brew test hello
+# Packages written in Rust are installed by cargo
 
 # dazz
 brew install brewsci/science/poa
@@ -737,17 +730,18 @@ make
 make test
 make install
 
-#cpanm --installdeps Statistics::R
+# We don't use this R
+brew install --force-bottle $( brew deps -n r )
+brew install --force-bottle r
+
+cpanm --verbose Statistics::R
 
 # Perl modules
 bash ~/Scripts/dotfiles/perl/install.sh
 
 # latexindent
-cpanm --verbose YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
-
-# Python modules
-# pip3 install pysocks
-bash ~/Scripts/dotfiles/python/install.sh
+cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
+    YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
 
 # Manually
 dotfiles/genomics.sh
@@ -758,7 +752,7 @@ dotfiles/genomics.sh
 ##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
 
 # SRA Toolkit
-curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
+aria2c -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
 
 tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
 rm -fr sratoolkit*/bin/ncbi
