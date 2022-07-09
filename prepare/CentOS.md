@@ -509,6 +509,7 @@ source $HOME/.bashrc
 
 ### gcc, perl and commonly used libraries
 
+* This gist <https://gist.github.com/warking/c9a9e6fb5938fbe8ff20>
 * Use bottled gcc@5 and gcc (gcc@11)
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
 * Invoke `brew install glibc` later
@@ -517,35 +518,43 @@ source $HOME/.bashrc
 
 ```shell
 
-# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@192.168.31.133:.
-# scp config.json wangq@192.168.31.133:.
-#
-# mkdir ~/v2ray
-# unzip v2ray-linux-64.zip -d ~/v2ray
-# ~/v2ray/v2ray run -config ~/config.json
-
-# export ALL_PROXY=socks5h://localhost:1080
-
 export HOMEBREW_NO_AUTO_UPDATE=1
-#export HOMEBREW_RELOCATE_BUILD_PREFIX=
 
-brew update
+# System gcc-4.8
+ln -s $(which gcc) `brew --prefix`/bin/gcc-$(gcc -dumpversion |cut -d. -f1,2)
+ln -s $(which g++) `brew --prefix`/bin/g++-$(g++ -dumpversion |cut -d. -f1,2)
+ln -s $(which gfortran) `brew --prefix`/bin/gfortran-$(gfortran -dumpversion |cut -d. -f1,2)
 
-#brew install --only-dependencies gcc@5
+brew doctor
+
+# install glibc@2.13
+brew install linux-headers@4.4
+brew install -s glibc@2.13
+
+brew install -s zlib
+brew install -s binutils
+
+brew install -s glibc
+
+# Not so good when building glibc with gcc-5
+#brew install linux-headers@4.4
+#brew install --build-from-source glibc --verbose
+#
+## https://github.com/Homebrew/discussions/discussions/2011
+## https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
+## need su
+#patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
+#
+#brew postinstall glibc
+
+#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
+#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
+# System glibc doesn't contain GLIBC_2.18 or later
+
+brew install --force-bottle util-linux
+
+# Homebrew gcc-5
 brew install --force-bottle gcc@5
-
-# These two can't be built with brewed glibc
-brew install ruby
-brew install util-linux
-
-#brew install --only-dependencies gcc
-#brew install --force-bottle gcc
-
-# # find /usr/ -name crt*
-# sudo ln -s /usr/lib64/crt1.o /usr/lib/crt1.o
-# sudo ln -s /usr/lib64/crti.o /usr/lib/crti.o
-# sudo ln -s /usr/lib64/crtn.o /usr/lib/crtn.o
 
 # perl
 echo "==> Install Perl 5.34"
@@ -621,24 +630,8 @@ The failed compilation package was installed with `--force-bottle`.
 ```shell
 
 # fontconfig
+## Build fontconfig need GLIBC_2.18
 brew install $( brew deps fontconfig )
-
-# Build fontconfig need GLIBC_2.18
-
-brew install linux-headers@4.4
-brew install --build-from-source glibc --verbose
-
-# https://github.com/Homebrew/discussions/discussions/2011
-# https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
-# need su
-patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
-
-brew postinstall glibc
-
-#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
-#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
-# System glibc doesn't contain GLIBC_2.18 or later
-
 brew install fontconfig
 
 # gd
