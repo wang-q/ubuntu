@@ -796,13 +796,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_d
 brew install --HEAD wang-q/tap/fastk
 brew install --HEAD wang-q/tap/merquryfk
 
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
-    ' ::: \
-        argparse minpack.lm \
-        ggplot2 scales viridis
-
-# Optional
 # assembly quality assessment. https://github.com/ablab/quast/issues/140
 brew install brewsci/bio/quast --HEAD
 quast --test
@@ -818,24 +811,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 
 # App::Plotr
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh | bash
-
-# bmr
-# R packages
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
-    ' ::: \
-        getopt foreach doParallel \
-        extrafont ggplot2 gridExtra \
-        survival survminer \
-        timeROC pROC verification \
-        tidyverse devtools BiocManager
-
-# BioC packages
-Rscript -e 'BiocManager::install(version = "3.14", ask = FALSE)'
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.14") } '\''
-    ' ::: \
-        Biobase GEOquery GenomicDataCommons
 
 # kat igvtools
 
