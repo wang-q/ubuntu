@@ -89,7 +89,6 @@ yum install -y blas-devel lapack-devel
 yum install -y libffi-devel
 yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
-yum install -y udunits2-devel
 
 yum install -y screen htop
 
@@ -104,8 +103,10 @@ yum install -y cairo-devel pango-devel # HPCC has no -devel
 
 # epel
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y udunits2-devel
 yum install -y cmake3
 yum install -y proxychains-ng
+yum install -y parallel
 
 ```
 
@@ -257,8 +258,33 @@ ln -s /usr/bin/cmake3 ~/bin/cmake
 
 bash ~/Scripts/dotfiles/r/install.sh
 
+# fonts
 Rscript -e 'library(remotes); options(repos = c(CRAN = "https://mirrors.tuna.tsinghua.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
 Rscript -e 'library(extrafont); font_import(prompt = FALSE); fonts();'
+
+# anchr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
+    ' ::: \
+        argparse minpack.lm \
+        ggplot2 scales viridis
+
+# bmr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="https://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
+    ' ::: \
+        getopt foreach doParallel \
+        extrafont ggplot2 gridExtra \
+        survival survminer \
+        timeROC pROC verification \
+        tidyverse devtools BiocManager
+
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.15", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.15") } '\''
+    ' ::: \
+        Biobase GEOquery GenomicDataCommons
 
 # raster, classInt and spData need gdal
 # units needs udunit2
