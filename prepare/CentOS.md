@@ -310,7 +310,9 @@ parallel -j 1 -k --line-buffer '
 
 ## Python
 
-Python updates in Homebrew are too frequent
+Python in Homebrew is updated too often. So I maintain a separate Python here.
+
+The brewed pip3 will also install all the modules.
 
 ```shell
 cd
@@ -351,14 +353,6 @@ source ~/.bashrc
 cd
 
 bash ~/Scripts/dotfiles/python/install.sh
-
-# quast
-pip3 install quast
-curl -L quast.sf.net/test_data.tar.gz |
-    tar xvz
-quast.py --test
-
-rm -fr test_data quast_test_output
 
 ```
 
@@ -633,7 +627,7 @@ brew install jemalloc
 brew install boost
 
 # background processes
-brew install htop
+brew install htop screen
 
 # python
 # These two are required by other brewed packages
@@ -688,6 +682,7 @@ brew install qt@5
 
 # Java
 brew install --force-bottle openjdk
+brew install ant maven
 
 # ghostscript
 brew install $( brew deps ghostscript )
@@ -769,7 +764,12 @@ bash ~/Scripts/dotfiles/perl/install.sh
 cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
     YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
 
+# for benchamrk
+brew install jrunlist
+brew install jrange
+
 # Manually
+brew install hdf5 # repeatmasker
 dotfiles/genomics.sh
 
 #brew install numpy --force-bottle
@@ -789,22 +789,31 @@ rm -fr sratoolkit*
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
 
-cpanm --verbose install App::Dazz
+cpanm -nq App::Dazz # need dazz in $PATH
+cpanm --verbose App::Dazz
 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
 
 brew install --HEAD wang-q/tap/fastk
 brew install --HEAD wang-q/tap/merquryfk
 
-# assembly quality assessment. https://github.com/ablab/quast/issues/140
-brew install brewsci/bio/quast --HEAD
-quast --test
-
-# Optional: leading assemblers
+# leading assemblers
 brew install spades
 spades.py --test
 brew install brewsci/bio/megahit
 brew install wang-q/tap/platanus
+
+# quast, assembly quality assessment
+# https://github.com/ablab/quast/issues/140
+brew install brewsci/bio/quast --HEAD
+quast --test
+
+#pip3 install quast
+#curl -L quast.sf.net/test_data.tar.gz |
+#    tar xvz
+#quast.py --test
+#
+#rm -fr test_data quast_test_output
 
 # App::Egaz
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh | bash
