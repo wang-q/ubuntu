@@ -196,14 +196,18 @@ systemctl reboot
 
 ## Proxy
 
+Windows host
+
+```powershell
+aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
+scp v2ray-linux-64.zip wangq@192.168.31.27:.
+scp config.json wangq@192.168.31.27:.
+
+```
+
 SSH in as `wangq`
 
 ```shell
-
-# aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
-# scp v2ray-linux-64.zip wangq@192.168.31.27:.
-# scp config.json wangq@192.168.31.27:.
-
 cd
 mkdir ~/v2ray
 unzip v2ray-linux-64.zip -d ~/v2ray
@@ -678,7 +682,10 @@ brew install pandoc gifsicle
 brew install aria2 wget
 brew install parallel pigz
 brew install pv
-brew install jq pup datamash miller prettier
+brew install jq pup datamash miller
+
+# nodejs
+bash ~/Scripts/dotfiles/nodejs/install.sh
 
 # Packages written in Rust are installed by cargo
 
@@ -787,7 +794,7 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # App::Plotr
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh | bash
 
-# kat igvtools
+# KAT igvtools
 
 ```
 
@@ -807,27 +814,53 @@ proxychains Rscript -e '
 
 ```
 
+## .ssh
+
+```powershell
+cd
+scp .ssh/config wangq@192.168.31.27:.ssh/
+scp .ssh/id_rsa wangq@192.168.31.27:.ssh/
+scp .ssh/id_rsa.pub wangq@192.168.31.27:.ssh/
+scp .ssh/known_hosts wangq@192.168.31.27:.ssh/
+
+
+```
+
+```shell
+chmod go-w ~/.ssh/config
+chmod 400 ~/.ssh/id_rsa
+
+```
+
 ## Mirror to remote server
 
 ```shell
+export HPCC=58.213.64.36
+export PORT=8804
+#export HPCC=202.119.37.253
+#export PORT=22
+
+# ssh-copy-id
+
 # CentOS L
-rsync -avP ~/.linuxbrew/ wangq@202.119.37.251:.linuxbrew
-rsync -avP ~/bin/ wangq@202.119.37.251:bin
-rsync -avP ~/share/ wangq@202.119.37.251:share
+rsync -avP -e "ssh -p ${PORT}" ~/.linuxbrew/ wangq@${HPCC}:.linuxbrew
 
-rsync -avP ~/.TinyTeX/ wangq@202.119.37.251:.TinyTeX
-rsync -avP ~/.cargo/ wangq@202.119.37.251:.cargo
-rsync -avP ~/.fonts/ wangq@202.119.37.251:.fonts
+rsync -avP -e "ssh -p ${PORT}" ~/bin/ wangq@${HPCC}:bin
+rsync -avP -e "ssh -p ${PORT}" ~/share/ wangq@${HPCC}:share
 
-rsync -avP ~/.bashrc wangq@202.119.37.251:.bashrc
-rsync -avP ~/.bash_profile wangq@202.119.37.251:.bash_profile
+rsync -avP -e "ssh -p ${PORT}" ~/.TinyTeX/ wangq@${HPCC}:.TinyTeX
+rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
+rsync -avP -e "ssh -p ${PORT}" ~/.fonts/ wangq@${HPCC}:.fonts
+
+rsync -avP ~/.bashrc wangq@${HPCC}:.bashrc
+rsync -avP ~/.bash_profile wangq@${HPCC}:.bash_profile
 
 # Sync back
-rsync -avP wangq@202.119.37.251:.linuxbrew/ ~/.linuxbrew
-rsync -avP wangq@202.119.37.251:share/ ~/share
-rsync -avP wangq@202.119.37.251:bin/ ~/bin
-rsync -avP wangq@202.119.37.251:.bashrc ~/.bashrc
-rsync -avP wangq@202.119.37.251:.bash_profile ~/.bash_profile
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.linuxbrew/ ~/.linuxbrew
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/ ~/share
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:bin/ ~/bin
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.bashrc ~/.bashrc
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.bash_profile ~/.bash_profile
 
 ```
 
