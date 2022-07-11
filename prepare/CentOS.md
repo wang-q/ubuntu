@@ -852,8 +852,8 @@ rsync -avP -e "ssh -p ${PORT}" ~/.TinyTeX/ wangq@${HPCC}:.TinyTeX
 rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
 rsync -avP -e "ssh -p ${PORT}" ~/.fonts/ wangq@${HPCC}:.fonts
 
-rsync -avP ~/.bashrc wangq@${HPCC}:.bashrc
-rsync -avP ~/.bash_profile wangq@${HPCC}:.bash_profile
+rsync -avP -e "ssh -p ${PORT}" ~/.bashrc wangq@${HPCC}:.bashrc
+rsync -avP -e "ssh -p ${PORT}" ~/.bash_profile wangq@${HPCC}:.bash_profile
 
 # Sync back
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.linuxbrew/ ~/.linuxbrew
