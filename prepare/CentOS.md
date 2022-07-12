@@ -13,9 +13,11 @@
     * [Build Python from sources](#build-python-from-sources)
     * [Rust](#rust)
     * [R Packages](#r-packages)
-    * [Others brew packages](#others-brew-packages)
-    * [Manually](#manually)
+    * [Other brew packages](#other-brew-packages)
+    * [My Perl modules](#my-perl-modules)
+    * [Manually install gnuplot and graphviz](#manually-install-gnuplot-and-graphviz)
     * [TinyTex and fonts](#tinytex-and-fonts)
+    * [.ssh](#ssh)
     * [Mirror to remote server](#mirror-to-remote-server)
 
 Mimic after the HPCC of NJU
@@ -600,7 +602,7 @@ parallel -j 1 -k --line-buffer '
 
 ```
 
-## Others brew packages
+## Other brew packages
 
 The failed compilation package was installed with `--force-bottle`.
 
@@ -662,6 +664,7 @@ brew install $( brew deps ghostscript )
 brew install ghostscript
 
 # graphics
+# All this need `mesa`
 #brew install --force-bottle netpbm
 
 #brew install --force-bottle gnuplot
@@ -713,7 +716,7 @@ brew install wang-q/tap/tsv-utils
 
 ```
 
-## Manually
+## My Perl modules
 
 ```shell
 
@@ -795,6 +798,90 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh | bash
 
 # KAT igvtools
+
+```
+
+## Manually install gnuplot and graphviz
+
+```shell
+# gnuplot
+mkdir -p $HOME/share/gnuplot
+
+curl -L https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz |
+    tar xvz
+
+cd gnuplot-*
+
+CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
+./configure \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --with-readline=builtin \
+    --without-aquaterm \
+    --disable-wxwidgets \
+    --without-qt \
+    --without-x \
+    --without-latex \
+    --without-gd \
+    --without-tektronix \
+    --prefix=$HOME/share/gnuplot
+
+make
+make install
+
+ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
+
+gnuplot <<- EOF
+    set term png
+    set output "output.png"
+    plot sin(x) with linespoints pointtype 3
+EOF
+
+cd
+rm -fr gnuplot-*
+
+# graphviz
+mkdir -p $HOME/share/graphviz
+
+curl -L https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/5.0.0/graphviz-5.0.0.tar.gz |
+    tar xvz
+
+cd graphviz-*
+
+CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
+./configure \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --disable-php \
+    --disable-swig \
+    --disable-tcl \
+    --without-quartz \
+    --without-freetype2 \
+    --without-gdk \
+    --without-gdk-pixbuf \
+    --without-glut \
+    --without-gtk \
+    --without-poppler \
+    --without-qt \
+    --without-x \
+    --without-gts \
+    --prefix=$HOME/share/graphviz
+
+# https://stackoverflow.com/questions/10279829/installing-glib-in-non-standard-prefix-fails
+make clean
+make
+make install
+
+find /share/home/wangq/share/graphviz/bin/ -type f |
+    parallel -j 1 -k --line-buffer '
+        >&2 echo {}
+        ln -s {} ~/bin/{/}
+        '
+
+dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
+
+cd
+rm -fr gnuplot-*
 
 ```
 
