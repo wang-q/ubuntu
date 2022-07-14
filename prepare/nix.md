@@ -12,6 +12,13 @@ chmod +x ~/bin/nix-user-chroot
 mkdir -m 0755 ~/.nix
 nix-user-chroot ~/.nix bash -c "curl -L https://nixos.org/nix/install | bash"
 
+#mkdir ~/.nix
+#export PROOT_NO_SECCOMP=1
+#proot -b ~/.nix:/nix
+#export PROOT_NO_SECCOMP=1
+#curl -L https://nixos.org/nix/install | sh
+
+
 ```
 
 ## Usage

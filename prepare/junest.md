@@ -3,20 +3,11 @@
 https://github.com/fsquillace/junest
 
 ```shell
-# CentOS had no user namespaces. We can't use `ns`, proot is fine.
-https://github.com/proot-me/proot/releases/download/v5.3.0/proot-v5.3.0-x86_64-static
-
-mv proot-v* ~/bin/proot
-chmod +x ~/bin/proot
-
-mkdir ~/.nix
-export PROOT_NO_SECCOMP=1
-proot -b ~/.nix:/nix
-export PROOT_NO_SECCOMP=1
-curl -L https://nixos.org/nix/install | sh
-
-# mv nix-user-chroot-bin-* ~/bin/nix-user-chroot
-# chmod +x ~/bin/nix-user-chroot
+## CentOS had no user namespaces. We can't use `ns`, proot is fine.
+#https://github.com/proot-me/proot/releases/download/v5.3.0/proot-v5.3.0-x86_64-static
+#
+#mv proot-v* ~/bin/proot
+#chmod +x ~/bin/proot
 
 git clone https://github.com/fsquillace/junest.git ~/.local/share/junest
 export PATH=~/.local/share/junest/bin:$PATH
@@ -34,6 +25,9 @@ junest setup
 # Remember to refresh the package databases from the server:
 #     pacman -Syy
 
-FATAL: kernel too old
+junest -f pacman -Syy
+
+# CentOS 7
+#FATAL: kernel too old
 
 ```
