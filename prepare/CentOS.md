@@ -881,7 +881,7 @@ find /share/home/wangq/share/graphviz/bin/ -type f |
 dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
 
 cd
-rm -fr gnuplot-*
+rm -fr graphviz-*
 
 ```
 
