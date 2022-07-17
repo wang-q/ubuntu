@@ -892,7 +892,7 @@ Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
 ```shell
 proxychains Rscript -e '
     install.packages("tinytex", repos="https://mirrors4.tuna.tsinghua.edu.cn/CRAN")
-    tinytex::install_tinytex()
+    tinytex::install_tinytex(force = TRUE)
     '
 
 proxychains Rscript -e '

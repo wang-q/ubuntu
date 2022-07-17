@@ -119,11 +119,6 @@ source $HOME/.bashrc
 
 Attentions:
 
-* There is a post-install step when installing perl, `cpan -i XML::Parser`. If the process stalled
-  there, just kill the `cpan` process.
-
-* `Test::RequiresInternet` wants to connect to google.com while it was blocked.
-
 * `r` and `gnuplot` have a lot of dependencies. Just be patient.
 
 * Sometimes there are no binary packages; compiling from source codes may take extra time.
