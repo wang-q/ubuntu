@@ -201,7 +201,7 @@ systemctl reboot
 Windows host
 
 ```powershell
-aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.7/v2ray-linux-64.zip
+aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.8/v2ray-linux-64.zip
 scp v2ray-linux-64.zip wangq@192.168.31.27:.
 scp config.json wangq@192.168.31.27:.
 
