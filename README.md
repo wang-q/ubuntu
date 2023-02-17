@@ -150,15 +150,6 @@ bash $HOME/Scripts/dotfiles/perl/ensembl.sh
 
 ```
 
-## Optional: MySQL
-
-```shell script
-bash $HOME/Scripts/dotfiles/mysql.sh
-
-# Following the prompts, create mysql users and install DBD::mysql
-
-```
-
 ## Optional: dotfiles
 
 ```shell script
