@@ -48,7 +48,7 @@ In VMware/Parallels, Customize the VM hardware before installation as 4 or more 
 disk, 800x600 screen and Bridged Network (Default Adapter). Remove all unnecessary devices, e.g.
 printer, camera, or sound card.
 
-Settings:
+Settings at installation:
 
 * Asia/Shanghai
 * Minimal installation
