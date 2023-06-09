@@ -107,7 +107,7 @@ git --version
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y libnghttp2
 
-rpm -Uvh http://www.city-fan.org/ftp/contrib/yum-repo/rhel7/x86_64/city-fan.org-release-2-2.rhel7.noarch.rpm
+rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
 
 yum install -y yum-utils
 
@@ -167,6 +167,16 @@ user's home directory. Adding `-m` (abbreviation for `--move-home` will also mov
 the user's current directory to the new directory.
 
 ```shell
+yum install passwd sudo -y
+
+myUsername=wangq
+adduser -G wheel $myUsername
+echo -e "[user]\ndefault=$myUsername" >> /etc/wsl.conf
+passwd $myUsername
+
+```
+
+```shell
 pkill -KILL -u wangq
 
 # Change the Home directory
@@ -191,36 +201,12 @@ visudo
 
 ## Change the hostname
 
+Can't change hostname inside WSL
+
 ```shell
-hostnamectl set-hostname centosl
+hostnamectl set-hostname centos
 
 systemctl reboot
-
-```
-
-## Proxy
-
-Windows host
-
-```powershell
-aria2c.exe https://github.com/v2fly/v2ray-core/releases/download/v5.0.8/v2ray-linux-64.zip
-scp v2ray-linux-64.zip wangq@192.168.31.27:.
-scp config.json wangq@192.168.31.27:.
-
-```
-
-SSH in as `wangq`
-
-```shell
-cd
-mkdir ~/v2ray
-unzip v2ray-linux-64.zip -d ~/v2ray
-
-screen -wipe # Remove dead screens
-screen -dmS op htop # Start a screen named `op` and run `htop`
-screen -S op -x -X screen ~/v2ray/v2ray run -config ~/config.json
-
-export ALL_PROXY=socks5h://localhost:1080
 
 ```
 
@@ -250,23 +236,19 @@ alias la='ls -A'
 
 EOF
 
-echo "==> Tuna mirrors of Homebrew/Linuxbrew"
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
+echo "==> USTC mirrors of Homebrew"
+export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
+export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
+export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
+export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
 
-git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
+cd
+mkdir homebrew &&
+    curl -L https://github.com/Homebrew/brew/tarball/master |
+        tar xz --strip 1 -C homebrew
 
-/bin/bash brew-install/install.sh
-
-# can't sudo
-# Ctrl+D to install linuxbrew to PATH=$HOME/.linuxbrew
-# RETURN to start installation
-
-#rm -rf brew-install
-
-test -d ~/.linuxbrew && PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
-test -d /home/linuxbrew/.linuxbrew && PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
+eval "$($HOME/homebrew/bin/brew shellenv)"
+brew update --force --quiet
 
 if grep -q -i Homebrew $HOME/.bashrc; then
     echo "==> .bashrc already contains Homebrew"
@@ -275,13 +257,12 @@ else
 
     echo >> $HOME/.bashrc
     echo '# Homebrew' >> $HOME/.bashrc
-    echo "export PATH='$(brew --prefix)/bin:$(brew --prefix)/sbin'":'"$PATH"' >> $HOME/.bashrc
-    echo "export MANPATH='$(brew --prefix)/share/man'":'"$MANPATH"' >> $HOME/.bashrc
-    echo "export INFOPATH='$(brew --prefix)/share/info'":'"$INFOPATH"' >> $HOME/.bashrc
     echo "export HOMEBREW_NO_ANALYTICS=1" >> $HOME/.bashrc
-    echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"' >> $HOME/.bashrc
-    echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"' >> $HOME/.bashrc
-    echo 'export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"' >> $HOME/.bashrc
+    echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"' >> $HOME/.bashrc
+    echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"' >> $HOME/.bashrc
+    echo 'export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"' >> $HOME/.bashrc
+    echo 'export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"' >> $HOME/.bashrc
+    echo 'eval "$($HOME/homebrew/bin/brew shellenv)"' >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
 
@@ -336,6 +317,8 @@ brew install -s glibc
 
 # Avoid installing ruby
 brew install --force-bottle util-linux
+
+brew install --force-bottle xz
 
 # Homebrew gcc-5
 brew install --force-bottle gcc@5
