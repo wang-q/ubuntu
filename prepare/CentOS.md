@@ -179,7 +179,7 @@ yum install -y libffi-devel libuuid-devel sqlite-devel
 
 # R
 yum install -y blas-devel lapack-devel
-yum install -y libpng-devel libjpeg-turbo-devel freetype-devel fontconfig-devel
+yum install -y libpng-devel libjpeg-turbo-devel libtiff-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
 
 #yum install -y libX11-devel libICE-devel libXt-devel libtirpc
@@ -393,7 +393,7 @@ parallel -j 1 -k --line-buffer '
 
 # raster, classInt and spData need gdal
 # units needs udunit2
-# survminer might need a high version of gcc
+# ranger, survminer might need a high version of gcc
 
 ```
 
@@ -478,6 +478,15 @@ dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
 
 cd
 rm -fr graphviz-*
+
+```
+
+### Backup WSL
+
+```powershell
+wsl --terminate CentOS
+
+wsl --export CentOS $HOME\VM\centos.manual.tar
 
 ```
 
@@ -734,7 +743,7 @@ make install
 
 cpanm --look Net::SSLeay
 # OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
-OPENSSL_PREFIX="/usr/lib64" perl Makefile.PL
+OPENSSL_PREFIX="/usr" perl Makefile.PL
 make
 make test
 make install
