@@ -185,7 +185,7 @@ yum install -y ghostscript
 #yum install -y libX11-devel libICE-devel libXt-devel libtirpc
 yum install -y cairo-devel pango-devel # HPCC has no -devel
 
-# tlmgr need it
+# tlmgr need these
 yum install -y perl-IPC-Cmd perl-Digest-MD5
 
 # fonts
@@ -299,8 +299,10 @@ All following binaries are built with system `gcc` and linked to the system `lib
 Avoid using graphic, gtk and x11 packages in brew.
 
 ```shell
+mkdir -p $HOME/Scripts
+cd $HOME/Scripts
+git clone https://github.com/wang-q/dotfiles.git
 cd
-ln -s /mnt/c/Users/wangq/Scripts/ Scripts
 
 # Builds
 bash Scripts/dotfiles/perl/build.sh
@@ -321,6 +323,8 @@ cargo install hyperfine ripgrep tokei
 bash ~/Scripts/dotfiles/perl/install.sh
 
 bash ~/Scripts/dotfiles/python/install.sh
+
+cpanm --verbose Statistics::R
 
 ```
 
@@ -632,8 +636,8 @@ brew install ghostscript
 
 #brew install --force-bottle graphviz
 
-#brew install $( brew deps imagemagick )
-#brew install imagemagick
+brew install $( brew deps imagemagick )
+brew install imagemagick
 
 # others
 brew install bats-core
@@ -644,6 +648,9 @@ brew install aria2 wget
 brew install parallel pigz
 brew install pv
 brew install jq pup datamash miller
+
+brew install node --force-bottle
+bash ~/Scripts/dotfiles/nodejs/install.sh
 
 # Packages written in Rust are installed by cargo
 
@@ -733,26 +740,23 @@ brew install --force-bottle gcc@5
 
 ```
 
-## My Perl modules
+## My modules
 
 ```shell
 
 # Perl
-cpanm --look XML::Parser
-perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
-make test
-make install
+# cpanm --look XML::Parser
+# perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
+# make test
+# make install
 
-cpanm --look Net::SSLeay
-# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
-OPENSSL_PREFIX="/usr" perl Makefile.PL
-make
-make test
-make install
+# cpanm --look Net::SSLeay
+# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" CC=gcc-13 perl Makefile.PL
+# make
+# make test
+# make install
 
-cpanm --verbose Statistics::R
-
-# Perl modules
+# Reinstall Perl modules missing from the previous steps
 bash ~/Scripts/dotfiles/perl/install.sh
 
 # latexindent
@@ -766,19 +770,21 @@ brew install jrange
 # Manually
 dotfiles/genomics.sh
 
+brew install wang-q/tap/mash@2.3
+
 #brew install numpy --force-bottle
 #brew install scipy --force-bottle
 #brew install matplotlib --force-bottle
 ##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
 
-# SRA Toolkit
-aria2c -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
+# # SRA Toolkit
+# aria2c -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
 
-tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
-rm -fr sratoolkit*/bin/ncbi
-cp sratoolkit*/bin/* ~/bin/
+# tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
+# rm -fr sratoolkit*/bin/ncbi
+# cp sratoolkit*/bin/* ~/bin/
 
-rm -fr sratoolkit*
+# rm -fr sratoolkit*
 
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
@@ -788,6 +794,7 @@ cpanm --verbose --force App::Dazz
 
 brew install --HEAD wang-q/tap/fastk
 brew install --HEAD wang-q/tap/merquryfk
+brew install wang-q/tap/bifrost@1.0.6
 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
 
@@ -817,6 +824,14 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check
 
 # KAT igvtools
 
+
+# Reinstall R modules missing from the previous steps
+
+# can be built by gcc-4
+Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("ranger", version = "0.14.1")'
+Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("RcppTOML", version = "0.1.7")'
+
+
 ```
 
 ## TinyTex and fonts
@@ -824,12 +839,12 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check
 Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
 
 ```shell
-proxychains Rscript -e '
-    install.packages("tinytex", repos="https://mirrors4.ustc.edu.cn/CRAN")
+Rscript -e '
+    install.packages("tinytex", repos="https://mirrors.ustc.edu.cn/CRAN")
     tinytex::install_tinytex(force = TRUE)
     '
 
-proxychains Rscript -e '
+Rscript -e '
     tinytex:::install_yihui_pkgs()
     '
 
@@ -837,19 +852,30 @@ proxychains Rscript -e '
 
 ## .ssh
 
+```shell
+cp -R /mnt/c/Users/wangq/.ssh/ ~/
+
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/known_hosts
+
+```
+
 ```powershell
-cd
-scp .ssh/config wangq@192.168.31.27:.ssh/
-scp .ssh/id_rsa wangq@192.168.31.27:.ssh/
-scp .ssh/id_rsa.pub wangq@192.168.31.27:.ssh/
-scp .ssh/known_hosts wangq@192.168.31.27:.ssh/
+# cd
+# scp .ssh/config wangq@192.168.31.27:.ssh/
+# scp .ssh/id_rsa wangq@192.168.31.27:.ssh/
+# scp .ssh/id_rsa.pub wangq@192.168.31.27:.ssh/
+# scp .ssh/known_hosts wangq@192.168.31.27:.ssh/
 
 
 ```
 
 ```shell
-chmod go-w ~/.ssh/config
-chmod 400 ~/.ssh/id_rsa
+# chmod go-w ~/.ssh/config
+# chmod 400 ~/.ssh/id_rsa
 
 ```
 
@@ -864,7 +890,7 @@ export PORT=8804
 # ssh-copy-id
 
 # CentOS L
-rsync -avP -e "ssh -p ${PORT}" ~/.linuxbrew/ wangq@${HPCC}:.linuxbrew
+rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew
 
 rsync -avP -e "ssh -p ${PORT}" ~/bin/ wangq@${HPCC}:bin
 rsync -avP -e "ssh -p ${PORT}" ~/share/ wangq@${HPCC}:share
