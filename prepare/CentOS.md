@@ -529,6 +529,150 @@ source $HOME/.bashrc
 
 ### gcc and commonly used libraries
 
+* Homebrew 4.0 brings glibc-bootstrap, which makes installing glibc and gcc much easier.
+
+
+```shell
+export HOMEBREW_NO_AUTO_UPDATE=1
+
+brew install glibc
+brew install --force-bottle xz
+brew install gcc
+
+brew install perl
+
+# Downloads
+brew install stow
+curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
+
+bash ~/Scripts/dotfiles/install.sh
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall
+
+# Some building tools
+brew install autoconf libtool automake # autogen
+brew install cmake
+brew install bison flex
+
+# libs
+brew install gsl
+brew install libssh2
+brew install jemalloc
+brew install boost
+
+# background processes
+brew install htop screen
+
+```
+
+### Other brew packages
+
+The failed compilation package was installed with `--force-bottle`.
+
+```shell
+
+# python
+brew install python # is now python@3.11
+
+# fontconfig
+## Build fontconfig need GLIBC_2.18
+brew install $( brew deps fontconfig )
+brew install fontconfig
+
+# gd
+brew install $( brew deps gd )
+brew install gd
+
+# gtk stuffs
+brew install glib
+brew install libX11 --force-bottle
+brew install cairo
+
+# linked to brewed glibc
+brew reinstall -s libffi
+
+brew install gobject-introspection
+brew install harfbuzz
+brew install pango
+
+brew install shared-mime-info
+brew install gdk-pixbuf
+brew install librsvg
+
+## Qt
+#brew install --force-bottle systemd
+#brew install --force-bottle libdrm
+#brew install --force-bottle wayland
+#brew install --force-bottle $( brew deps mesa ) # tons of X11 related deps
+#brew unlink llvm
+#brew unlink gcc@11
+#brew install --force-bottle mesa
+#brew install --force-bottle p11-kit # Test failed
+#brew install --force-bottle pulseaudio
+#
+#brew install $( brew deps qt@5 )
+#brew install qt@5
+##brew install qt
+
+# Java
+brew install $( brew deps openjdk )
+brew install openjdk --force-bottle
+brew install ant maven
+
+# ghostscript
+brew install $( brew deps ghostscript )
+brew install ghostscript
+
+# graphics
+# All this need `mesa`
+#brew install --force-bottle netpbm
+
+#brew install --force-bottle gnuplot
+
+#brew install --force-bottle graphviz
+
+#brew install $( brew deps imagemagick )
+#brew install imagemagick
+
+# others
+brew install bats-core
+
+brew install lua 
+brew install pandoc gifsicle
+brew install aria2 wget
+brew install parallel pigz
+brew install pv
+brew install jq pup datamash miller
+
+# Packages written in Rust are installed by cargo
+
+# dazz
+brew install brewsci/science/poa
+brew install wang-q/tap/faops
+brew install --HEAD wang-q/tap/dazz_db
+brew install --HEAD wang-q/tap/daligner
+brew install wang-q/tap/intspan
+
+brew install wang-q/tap/tsv-utils
+
+## bash-completion
+#brew unlink util-linux
+#brew install --build-from-source bash-completion
+#
+#cat <<EOF >> ~/.bashrc
+#
+## bash-completion
+#[[ -r "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh"
+#
+#EOF
+#
+#source ~/.bashrc
+
+```
+
+### Old Homebrew gcc
+
 * This gist <https://gist.github.com/warking/c9a9e6fb5938fbe8ff20>
 * Use system gcc to build glibc@2.13 and glibc
 * Use bottled gcc@5
@@ -536,7 +680,6 @@ source $HOME/.bashrc
     * `util-linux` don't work with brewed glibc
 
 ```shell
-
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 # System gcc-4.8
@@ -573,8 +716,6 @@ brew install -s glibc
 # Avoid installing ruby
 brew install --force-bottle util-linux
 
-brew install --force-bottle xz
-
 # Homebrew gcc-5
 brew install --force-bottle gcc@5
 
@@ -589,145 +730,6 @@ brew install --force-bottle gcc@5
 #        libm.so.6 => /lib64/libm.so.6 (0x00007fa167155000)
 #        libc.so.6 => /lib64/libc.so.6 (0x00007fa166d87000)
 #        /lib64/ld-linux-x86-64.so.2 (0x00007fa167457000)
-
-brew install perl
-
-# Downloads
-brew install stow
-curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
-
-bash ~/Scripts/dotfiles/install.sh
-
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
-
-# Some building tools
-brew install autoconf libtool automake # autogen
-brew install cmake
-brew install bison flex
-
-# libs
-brew install gsl
-brew install libssh2
-brew install jemalloc
-brew install boost
-
-# background processes
-brew install htop screen
-
-```
-
-### Other brew packages
-
-The failed compilation package was installed with `--force-bottle`.
-
-```shell
-
-# python
-# These two are required by other brewed packages
-brew install --force-bottle python@3.9
-brew install --force-bottle python # is now python@3.9
-brew install --force-bottle python@3.10
-
-# fontconfig
-## Build fontconfig need GLIBC_2.18
-brew install $( brew deps fontconfig )
-brew install fontconfig
-
-# gd
-brew install $( brew deps gd )
-brew install gd
-
-# gtk stuffs
-brew install glib
-brew install cairo
-
-# linked to brewed glibc
-brew reinstall -s libffi
-
-brew install gobject-introspection
-brew install harfbuzz
-brew install pango
-
-brew install shared-mime-info
-brew install gdk-pixbuf
-brew install librsvg
-
-## Qt
-#brew install --force-bottle systemd
-#brew install --force-bottle libdrm
-#brew install --force-bottle wayland
-#brew install --force-bottle $( brew deps mesa ) # tons of X11 related deps
-#brew unlink llvm
-#brew unlink gcc@11
-#brew install --force-bottle mesa
-#brew install --force-bottle p11-kit # Test failed
-#brew install --force-bottle pulseaudio
-#
-#brew install $( brew deps qt@5 )
-#brew install qt@5
-##brew install qt
-
-# Java
-brew install --force-bottle gcc@11
-brew unlink gcc@11
-brew install --force-bottle openjdk
-brew install ant maven
-
-# ghostscript
-brew install $( brew deps ghostscript )
-brew install ghostscript
-
-# graphics
-# All this need `mesa`
-#brew install --force-bottle netpbm
-
-#brew install --force-bottle gnuplot
-
-#brew install --force-bottle graphviz
-
-#brew install $( brew deps imagemagick )
-#brew install imagemagick
-
-# others
-brew install bats
-#brew install bats-core  # require coreutils, which is huge
-brew install libaec     # replaces szip
-brew install elfutils   # replaces libelf
-
-brew install lua node
-brew install pandoc gifsicle
-brew install aria2 wget
-brew install parallel pigz
-brew install pv
-brew install jq pup datamash miller
-
-# nodejs
-bash ~/Scripts/dotfiles/nodejs/install.sh
-
-# Packages written in Rust are installed by cargo
-
-# dazz
-brew install brewsci/science/poa
-brew install wang-q/tap/faops
-brew install --HEAD wang-q/tap/dazz_db
-brew install --HEAD wang-q/tap/daligner
-brew install wang-q/tap/intspan
-
-brew install wang-q/tap/tsv-utils
-
-## bash-completion
-#brew unlink util-linux
-#brew install --build-from-source bash-completion
-#
-#cat <<EOF >> ~/.bashrc
-#
-## bash-completion
-#[[ -r "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh"
-#
-#EOF
-#
-#source ~/.bashrc
 
 ```
 
