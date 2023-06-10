@@ -25,9 +25,10 @@ Mimic after the HPCC of NJU
 We will build the VM here:
 
 1. System gcc and yum packages, linked to the system libc
+    * `Perl`
     * `Python`
     * `R`
-    * `rustup` in this VM
+    * `rustup`
         * Bottled rust packages need GLIBC 2.18
     * `TinyTex` is installed by R
 
@@ -35,11 +36,50 @@ We will build the VM here:
 
 ## Install the system
 
+### In WSL
+
+This one is prefered.
+
+https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
+
+* Install Docker Desktop on Windows
+    * Use WSL 2
+    * Settings -> Resources -> WSL integration -> Tick Ubuntu
+
 ```shell
-# wget -N https://mirrors.nju.edu.cn/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-DVD-1908.iso
+docker pull centos:centos7
 
-# wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2009.iso
+# An arbitrary command to generate a container
+docker run -t centos:centos7 bash ls /
 
+dockerContainerID=$(docker container ls -a | grep -i centos | awk '{print $1}')
+
+docker export $dockerContainerID > /mnt/c/Users/wangq/centos.tar
+
+```
+
+```powershell
+mkdir -p $HOME\VM\CentOS
+
+mv centos.tar $HOME\VM
+
+wsl --import CentOS $HOME\VM\CentOS $HOME\VM\centos.tar
+
+# list all VMs
+wsl -l -v
+
+# Start CentOS
+wsl -d CentOS
+# wsl --terminate CentOS # To refresh wsl.conf
+
+# Totally remove CentOS
+# wsl --unregister CentOS
+
+```
+
+### In VMware/Parallels
+
+```shell
 wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2207-02.iso
 
 ```
@@ -54,7 +94,9 @@ Settings at installation:
 * Minimal installation
 * Don't use LVM and don't set the `/home` mount point
 
-## The VM for Linuxbrew
+## As `root`
+
+### Install libraries
 
 SSH in as `root`.
 
@@ -70,6 +112,7 @@ Present in the HPCC, `yum list installed | grep XXX`
 * ncurses-devel
 * readline-devel
 * libuuid-devel
+* gd
 
 * ghostscript
 * `/usr/bin/java -version` openjdk version "1.8.0_222-ea"
@@ -100,7 +143,7 @@ rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7
     && yum install -y git
 
 git --version
-# git version 2.31.1
+# git version 2.39.1
 
 # curl need libnghttp2
 # libnghttp2 is in epel
@@ -114,7 +157,7 @@ yum install -y yum-utils
 yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
 
 curl --version
-# curl 7.82.0
+# curl 8.1.2
 
 yum-config-manager --disable city-fan.org
 
@@ -160,7 +203,7 @@ yum install -y screen htop
 
 ```
 
-## Change the Home directory
+### Change the Home directory
 
 `usermod` is the command to edit an existing user. `-d` (abbreviation for `--home`) will change the
 user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
@@ -172,6 +215,7 @@ yum install passwd sudo -y
 myUsername=wangq
 adduser -G wheel $myUsername
 echo -e "[user]\ndefault=$myUsername" >> /etc/wsl.conf
+echo -e "[interop]\nappendWindowsPath=false" >> /etc/wsl.conf
 passwd $myUsername
 
 ```
@@ -199,7 +243,7 @@ visudo
 
 ```
 
-## Change the hostname
+### Change the hostname
 
 Can't change hostname inside WSL
 
@@ -210,12 +254,22 @@ systemctl reboot
 
 ```
 
-## Install Linuxbrew without sudo
+### Backup WSL
+
+```powershell
+wsl --terminate CentOS
+
+wsl --export CentOS $HOME\VM\centos.root.tar
+
+```
+
+## Install packages before installing Homebrew
 
 SSH in as `wangq`
 
-```shell
+### Prompts
 
+```shell
 cat <<EOF >> ~/.bashrc
 
 # Prefer US English and use UTF-8.
@@ -236,6 +290,200 @@ alias la='ls -A'
 
 EOF
 
+```
+
+### Perl, Python, R, and Rust with system `libc`
+
+All following binaries are built with system `gcc` and linked to the system `libc`.
+
+Avoid using graphic, gtk and x11 packages in brew.
+
+```shell
+cd
+ln -s /mnt/c/Users/wangq/Scripts/ Scripts
+
+# Builds
+bash Scripts/dotfiles/perl/build.sh
+
+bash Scripts/dotfiles/python/build.sh
+
+bash Scripts/dotfiles/r/build.sh
+
+# Rust
+bash ~/Scripts/dotfiles/rust/install.sh
+
+source $HOME/.bashrc
+
+cargo install bat exa bottom tealdeer
+cargo install hyperfine ripgrep tokei
+
+# Installing libraries
+bash ~/Scripts/dotfiles/perl/install.sh
+
+bash ~/Scripts/dotfiles/python/install.sh
+
+```
+
+### R Packages
+
+```shell
+# nloptr need `cmake`
+#ln -s /usr/bin/cmake3 ~/bin/cmake
+
+# brew unlink libxml2
+
+# Can't use brewed libxml2
+Rscript -e ' install.packages(
+    "XML",
+    repos="http://mirrors.ustc.edu.cn/CRAN",
+    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+    configure.vars = "CC=gcc"
+    ) '
+
+## manually
+#curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
+#    tar xvz
+#cd XML
+#./configure --with-xml-config=/usr/bin/xml2-config
+#CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+
+# export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
+# pkg-config --cflags libxml-2.0
+# pkg-config --libs libxml-2.0
+Rscript -e ' install.packages(
+    "xml2",
+    repos="http://mirrors.ustc.edu.cn/CRAN",
+    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
+    ) '
+
+bash ~/Scripts/dotfiles/r/install.sh
+
+# fonts
+Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
+Rscript -e '
+    library(extrafont);
+    options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN"));
+    font_import(prompt = FALSE);
+    fonts();
+    '
+
+# anchr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        argparse minpack.lm \
+        ggplot2 scales viridis
+
+# bmr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        getopt foreach doParallel \
+        extrafont ggplot2 gridExtra \
+        survival survminer \
+        timeROC pROC verification \
+        tidyverse devtools BiocManager
+
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.17", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.17") } '\''
+    ' ::: \
+        Biobase GEOquery GenomicDataCommons
+
+# raster, classInt and spData need gdal
+# units needs udunit2
+# survminer might need a high version of gcc
+
+```
+
+### Manually install gnuplot and graphviz
+
+```shell
+# gnuplot
+mkdir -p $HOME/share/gnuplot
+
+curl -L https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz |
+    tar xvz
+
+cd gnuplot-*
+
+CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
+./configure \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --with-readline=builtin \
+    --without-aquaterm \
+    --disable-wxwidgets \
+    --without-qt \
+    --without-x \
+    --without-latex \
+    --without-gd \
+    --without-tektronix \
+    --prefix=$HOME/share/gnuplot
+
+make
+make install
+
+ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
+
+gnuplot <<- EOF
+    set term png
+    set output "output.png"
+    plot sin(x) with linespoints pointtype 3
+EOF
+
+cd
+rm -fr gnuplot-*
+
+# graphviz
+mkdir -p $HOME/share/graphviz
+
+curl -L https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/5.0.0/graphviz-5.0.0.tar.gz |
+    tar xvz
+
+cd graphviz-*
+
+CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
+./configure \
+    --disable-dependency-tracking \
+    --disable-silent-rules \
+    --disable-php \
+    --disable-swig \
+    --disable-tcl \
+    --without-quartz \
+    --without-freetype2 \
+    --without-gdk \
+    --without-gdk-pixbuf \
+    --without-glut \
+    --without-gtk \
+    --without-poppler \
+    --without-qt \
+    --without-x \
+    --without-gts \
+    --prefix=$HOME/share/graphviz
+
+# https://stackoverflow.com/questions/10279829/installing-glib-in-non-standard-prefix-fails
+make clean
+make
+make install
+
+find $HOME/share/graphviz/bin/ -type f |
+    parallel -j 1 -k --line-buffer '
+        >&2 echo {}
+        ln -s {} ~/bin/{/}
+        '
+
+dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
+
+cd
+rm -fr graphviz-*
+
+```
+
+## Homebrew
+
+```shell
 echo "==> USTC mirrors of Homebrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
@@ -270,15 +518,13 @@ source $HOME/.bashrc
 
 ```
 
-## gcc, perl and commonly used libraries
+### gcc and commonly used libraries
 
 * This gist <https://gist.github.com/warking/c9a9e6fb5938fbe8ff20>
 * Use system gcc to build glibc@2.13 and glibc
 * Use bottled gcc@5
     * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
     * `util-linux` don't work with brewed glibc
-
-Set proxy as [above](#proxy)
 
 ```shell
 
@@ -335,27 +581,7 @@ brew install --force-bottle gcc@5
 #        libc.so.6 => /lib64/libc.so.6 (0x00007fa166d87000)
 #        /lib64/ld-linux-x86-64.so.2 (0x00007fa167457000)
 
-# perl
-echo "==> Install Perl 5.34"
 brew install perl
-
-if grep -q -i PERL_534_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains PERL_534_PATH"
-else
-    echo "==> Updating .bashrc with PERL_534_PATH..."
-    PERL_534_PATH="export PATH=\"$(brew --prefix perl)/bin:\$PATH\""
-    echo '# PERL_534_PATH' >> $HOME/.bashrc
-    echo $PERL_534_PATH    >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-
-    # Make the above environment variables available for the rest of this script
-    eval $PERL_534_PATH
-fi
-
-hash cpanm 2>/dev/null || {
-    curl -L https://cpanmin.us |
-        perl - -v --mirror-only --mirror http://mirrors.ustc.edu.cn/CPAN/ App::cpanminus
-}
 
 # Downloads
 brew install stow
@@ -382,212 +608,7 @@ brew install htop screen
 
 ```
 
-## Build R from sources
-
-SSH in as `wangq`
-
-All R-related binaries are built with system `gcc` and linked to the system `libc`.
-
-Avoid using graphic, gtk and x11 packages in brew.
-
-```shell
-mkdir -p $HOME/share/R
-
-# brewed binaries confuse configure
-brew unlink binutils # ld
-brew unlink pkg-config
-
-cd
-curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/base/R-4/R-4.2.1.tar.gz |
-    tar xvz
-cd R-4.2.1
-
-CC=gcc CXX=g++ FC=gfortran ./configure \
-    --prefix="$HOME/share/R" \
-    --disable-java \
-    --with-pcre1 \
-    --with-blas \
-    --with-lapack \
-    --without-x \
-    --without-tcltk \
-    --without-ICU \
-    --with-cairo \
-    --with-libpng \
-    --with-jpeglib \
-    --with-libtiff \
-    --with-gnu-ld
-
-make -j 8
-make check
-
-bin/Rscript -e '
-    capabilities();
-    png("test.png");
-    plot(rnorm(4000),rnorm(4000),col="#ff000018",pch=19,cex=2);
-    dev.off();
-    '
-
-make install
-
-cd
-rm -fr ~/R-4.2.1
-
-if grep -q -i R_42_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains R_42_PATH"
-else
-    echo "==> Updating .bashrc with R_42_PATH..."
-    R_42_PATH="export PATH=\"$HOME/share/R/bin:\$PATH\""
-    echo '# R_42_PATH' >> $HOME/.bashrc
-    echo $R_42_PATH    >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-fi
-
-source ~/.bashrc
-
-```
-
-## Build Python from sources
-
-Python in Homebrew is updated too often. So I maintain a separate Python here.
-
-```shell
-mkdir -p $HOME/share/Python
-
-cd
-curl -L https://mirrors.huaweicloud.com/python/3.9.13/Python-3.9.13.tgz |
-    tar xvz
-cd Python-3.9.13
-
-CC=gcc-4.8 ./configure \
-    --prefix=$HOME/share/Python \
-    --enable-optimizations \
-    --enable-ipv6 \
-    --enable-loadable-sqlite-extensions \
-    --with-lto
-
-make -j 8
-make test
-make install
-#make altinstall # binaries: python3.9 and pip3.9
-
-cd
-rm -fr ~/Python-3.9.13
-
-if grep -q -i PYTHON_39_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains PYTHON_39_PATH"
-else
-    echo "==> Updating .bashrc with PYTHON_39_PATH..."
-    PYTHON_39_PATH="export PATH=\"$HOME/share/Python/bin:\$PATH\""
-    echo '# PYTHON_39_PATH' >> $HOME/.bashrc
-    echo $PYTHON_39_PATH    >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-fi
-
-source ~/.bashrc
-
-ALL_PROXY= ~/share/Python/bin/python3 -m pip install \
-    --trusted-host mirror.nju.edu.cn \
-    -i http://mirror.nju.edu.cn/pypi/web/simple/ \
-    --upgrade pip setuptools wheel pysocks
-
-# Python Packages
-bash ~/Scripts/dotfiles/python/install.sh
-
-```
-
-## Rust
-
-```shell
-proxychains bash ~/Scripts/dotfiles/rust/install.sh
-
-source ~/.bashrc
-
-export CC=gcc
-export CXX=g++
-
-proxychains cargo install bat exa bottom tealdeer
-proxychains cargo install hyperfine ripgrep tokei
-
-```
-
-## R Packages
-
-```shell
-# nloptr need `cmake`
-#ln -s /usr/bin/cmake3 ~/bin/cmake
-
-export CC=gcc
-export FC=gfortran
-export CXX=g++
-
-brew unlink libxml2
-
-# Can't use brewed libxml2
-Rscript -e ' install.packages(
-    "XML",
-    repos="http://mirrors.tuna.tsinghua.edu.cn/CRAN",
-    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-    configure.vars = "CC=gcc"
-    ) '
-
-## manually
-#curl -L https://mirrors.tuna.tsinghua.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
-#    tar xvz
-#cd XML
-#./configure --with-xml-config=/usr/bin/xml2-config
-#CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
-
-# export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
-# pkg-config --cflags libxml-2.0
-# pkg-config --libs libxml-2.0
-Rscript -e ' install.packages(
-    "xml2",
-    repos="http://mirrors.tuna.tsinghua.edu.cn/CRAN",
-    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
-    ) '
-
-bash ~/Scripts/dotfiles/r/install.sh
-
-# fonts
-Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.tuna.tsinghua.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
-Rscript -e '
-    library(extrafont);
-    options(repos = c(CRAN = "http://mirrors.tuna.tsinghua.edu.cn/CRAN"));
-    font_import(prompt = FALSE);
-    fonts();
-    '
-
-# anchr
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
-    ' ::: \
-        argparse minpack.lm \
-        ggplot2 scales viridis
-
-# bmr
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.tuna.tsinghua.edu.cn/CRAN") } '\''
-    ' ::: \
-        getopt foreach doParallel \
-        extrafont ggplot2 gridExtra \
-        survival survminer \
-        timeROC pROC verification \
-        tidyverse devtools BiocManager
-
-# BioC packages
-Rscript -e 'BiocManager::install(version = "3.15", ask = FALSE)'
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.15") } '\''
-    ' ::: \
-        Biobase GEOquery GenomicDataCommons
-
-# raster, classInt and spData need gdal
-# units needs udunit2
-# survminer might need a high version of gcc
-
-```
-
-## Other brew packages
+### Other brew packages
 
 The failed compilation package was installed with `--force-bottle`.
 
@@ -712,7 +733,8 @@ make test
 make install
 
 cpanm --look Net::SSLeay
-OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
+# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" perl Makefile.PL
+OPENSSL_PREFIX="/usr/lib64" perl Makefile.PL
 make
 make test
 make install
@@ -786,97 +808,13 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check
 
 ```
 
-## Manually install gnuplot and graphviz
-
-```shell
-# gnuplot
-mkdir -p $HOME/share/gnuplot
-
-curl -L https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz |
-    tar xvz
-
-cd gnuplot-*
-
-CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
-./configure \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --with-readline=builtin \
-    --without-aquaterm \
-    --disable-wxwidgets \
-    --without-qt \
-    --without-x \
-    --without-latex \
-    --without-gd \
-    --without-tektronix \
-    --prefix=$HOME/share/gnuplot
-
-make
-make install
-
-ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
-
-gnuplot <<- EOF
-    set term png
-    set output "output.png"
-    plot sin(x) with linespoints pointtype 3
-EOF
-
-cd
-rm -fr gnuplot-*
-
-# graphviz
-mkdir -p $HOME/share/graphviz
-
-curl -L https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/5.0.0/graphviz-5.0.0.tar.gz |
-    tar xvz
-
-cd graphviz-*
-
-CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
-./configure \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --disable-php \
-    --disable-swig \
-    --disable-tcl \
-    --without-quartz \
-    --without-freetype2 \
-    --without-gdk \
-    --without-gdk-pixbuf \
-    --without-glut \
-    --without-gtk \
-    --without-poppler \
-    --without-qt \
-    --without-x \
-    --without-gts \
-    --prefix=$HOME/share/graphviz
-
-# https://stackoverflow.com/questions/10279829/installing-glib-in-non-standard-prefix-fails
-make clean
-make
-make install
-
-find /share/home/wangq/share/graphviz/bin/ -type f |
-    parallel -j 1 -k --line-buffer '
-        >&2 echo {}
-        ln -s {} ~/bin/{/}
-        '
-
-dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
-
-cd
-rm -fr graphviz-*
-
-```
-
 ## TinyTex and fonts
 
 Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
 
 ```shell
 proxychains Rscript -e '
-    install.packages("tinytex", repos="https://mirrors4.tuna.tsinghua.edu.cn/CRAN")
+    install.packages("tinytex", repos="https://mirrors4.ustc.edu.cn/CRAN")
     tinytex::install_tinytex(force = TRUE)
     '
 
