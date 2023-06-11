@@ -489,7 +489,7 @@ mkdir ~/.nwr
 # Put the files of appropriate time into this directory
 
 cd ~/Scripts/nwr
-cargo install --path . --force
+cargo install --path . --force --offline
 
 # Populate databases
 nwr download
