@@ -20,19 +20,24 @@
     * [.ssh](#ssh)
     * [Mirror to remote server](#mirror-to-remote-server)
 
-Mimic after the HPCC of NJU
 
-We will build the VM here:
 
-1. System gcc and yum packages, linked to the system libc
+We will build several VMs here:
+
+1. `centos.tar` - a VM exported from docker images
+
+2. `centos.root.tar` - Mimic after the HPCC of NJU; wangq as the default user
+
+3. `CentS` - system gcc and yum packages, linked to the system libc
     * `Perl`
     * `Python`
-    * `R`
+    * A minimal `R`
     * `rustup`
-        * Bottled rust packages need GLIBC 2.18
+        * Homebrew bottled rust packages can't be used as they need GLIBC 2.18
     * `TinyTex` is installed by R
 
-2. Everything else in Linuxbrew is linked to the brewed glibc
+4. `CentH` - everything else in Homebrew is linked to the brewed glibc
+    * `R` compiled by gcc@9
 
 ## Install the system
 
@@ -59,7 +64,7 @@ docker export $dockerContainerID > /mnt/c/Users/wangq/centos.tar
 ```
 
 ```powershell
-mkdir -p $HOME\VM\CentOS
+mkdir -p $HOME\VM
 
 mv centos.tar $HOME\VM
 
@@ -70,10 +75,8 @@ wsl -l -v
 
 # Start CentOS
 wsl -d CentOS
-# wsl --terminate CentOS # To refresh wsl.conf
 
-# Totally remove CentOS
-# wsl --unregister CentOS
+# wsl --terminate CentOS # To refresh wsl.conf
 
 ```
 
@@ -133,10 +136,6 @@ yum -y install net-tools # ifconfig
 yum -y groupinstall 'Development Tools'
 yum -y install file vim
 
-# locate
-yum install -y mlocate
-updatedb
-
 # Install newer versions of git and curl
 # Linuxbrew need git 2.7.0 and cURL 7.41.0
 rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
@@ -147,9 +146,15 @@ git --version
 
 # curl need libnghttp2
 # libnghttp2 is in epel
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y epel-release
+sed -e 's|^metalink=|#metalink=|g' \
+    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+    -i.bak \
+    /etc/yum.repos.d/epel.repo
 yum install -y libnghttp2
 
+# city-fan
 rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
 
 yum install -y yum-utils
@@ -164,18 +169,17 @@ yum-config-manager --disable city-fan.org
 # https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
 yum remove -y yum-utils
 
-#rpm -Uvh https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/patchelf-0.12-1.el7.x86_64.rpm
-## can't use brewed patchelf
-
 # mimic libs
 yum install -y zlib-devel bzip2-devel xz-devel
-yum install -y readline-devel ncurses-devel
-yum install -y libxml2-devel expat-devel libxslt-devel
+yum install -y readline readline-devel ncurses ncurses-devel
+yum install -y libxml2 libxml2-devel expat expat-devel libxslt libxslt-devel
 yum install -y libcurl-devel pcre-devel
 
 # Python
-yum install -y openssl openssl-devel openssl11-devel
-yum install -y libffi-devel libuuid-devel sqlite-devel
+yum install -y openssl openssl-devel
+yum install -y libffi libffi-devel
+yum install -y libuuid libuuid-devel
+yum install -y sqlite sqlite-devel
 
 # R
 yum install -y blas-devel lapack-devel
@@ -202,6 +206,10 @@ yum install -y parallel
 
 # background
 yum install -y screen htop
+
+# locate
+yum install -y mlocate
+updatedb
 
 ```
 
@@ -263,19 +271,19 @@ wsl --terminate CentOS
 
 wsl --export CentOS $HOME\VM\centos.root.tar
 
+# Totally remove CentOS
+# wsl --unregister CentOS
+
 ```
 
 ## CentS
 
-We will build the VM (CentOS in share/) with system gcc and yum packages, linked to the system libc
-
-* `Perl`
-* `Python`
-* `rustup`
-    * Bottled rust packages need GLIBC 2.18
+We will build the VM (almost all in share/) with system gcc and yum packages, linked to the system libc
 
 ```powershell
 wsl --import CentS $HOME\VM\CentS $HOME\VM\centos.root.tar
+
+wsl -d CentS
 
 ```
 
@@ -291,15 +299,16 @@ Avoid using graphic, gtk and x11 packages in brew.
 # git clone https://github.com/wang-q/dotfiles.git
 cd
 
+# Avoid rust target/
 ln -s /mnt/c/Users/wangq/Scripts/ Scripts
 
 # Builds
-bash Scripts/dotfiles/perl/build.sh
+bash ~/Scripts/dotfiles/perl/build.sh
 
-bash Scripts/dotfiles/python/build.sh
+bash ~/Scripts/dotfiles/python/build.sh
 
 # A minimal R built by gcc-4.8
-bash Scripts/dotfiles/r/build.sh
+bash ~/Scripts/dotfiles/r/build.sh
 
 # Rust
 bash ~/Scripts/dotfiles/rust/install.sh
@@ -309,7 +318,7 @@ source $HOME/.bashrc
 cargo install bat exa bottom tealdeer
 cargo install hyperfine ripgrep tokei
 
-# Installing libraries
+# Python libraries
 bash ~/Scripts/dotfiles/python/install.sh
 
 ```
@@ -318,6 +327,7 @@ bash ~/Scripts/dotfiles/python/install.sh
 
 ```shell
 # gnuplot
+mkdir -p $HOME/bin
 mkdir -p $HOME/share/gnuplot
 
 curl -L https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz |
@@ -422,6 +432,86 @@ cpanm --verbose Statistics::R
 cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
     YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
 
+# My modules
+cpanm -nq App::Dazz # need dazz in $PATH
+cpanm --verbose --force App::Dazz
+
+# App::Egaz
+curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh |
+    bash
+
+# App::Plotr
+curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh |
+    bash
+
+```
+
+### TinyTex and fonts
+
+Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
+
+```shell
+Rscript -e '
+    install.packages("tinytex", repos="https://mirrors.ustc.edu.cn/CRAN")
+    tinytex::install_tinytex(force = TRUE)
+    '
+
+Rscript -e '
+    tinytex:::install_yihui_pkgs()
+    '
+
+```
+
+### SRA Toolkit
+
+```shell
+cd
+
+# SRA Toolkit
+curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.5/sratoolkit.3.0.5-centos_linux64.tar.gz
+
+tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
+rm -fr sratoolkit*/bin/ncbi
+cp sratoolkit*/bin/* ~/bin/
+
+rm -fr sratoolkit*
+
+```
+
+### .nwr
+
+
+
+```shell
+cd
+
+mkdir ~/.nwr
+# Put the files of appropriate time into this directory
+
+cd ~/Scripts/nwr
+cargo install --path . --force
+
+# Populate databases
+nwr download
+
+nwr txdb
+
+nwr ardb
+nwr ardb --genbank
+
+```
+
+### .ssh
+
+```shell
+cp -R /mnt/c/Users/wangq/.ssh/ ~/
+
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/known_hosts
+
 ```
 
 ### Backup WSL
@@ -433,10 +523,14 @@ wsl --export CentS $HOME\VM\CentS.tar
 
 ```
 
-## Homebrew
+## CentH
+
+Homebrew
 
 ```powershell
 wsl --import CentH $HOME\VM\CentH $HOME\VM\centos.root.tar
+
+wsl -d CentH
 
 ```
 
@@ -740,25 +834,6 @@ brew install --force-bottle gcc@5
 
 ```shell
 
-# Perl
-# cpanm --look XML::Parser
-# perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
-# make test
-# make install
-
-# cpanm --look Net::SSLeay
-# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" CC=gcc-13 perl Makefile.PL
-# make
-# make test
-# make install
-
-# Reinstall Perl modules missing from the previous steps
-bash ~/Scripts/dotfiles/perl/install.sh
-
-# latexindent
-cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
-    YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
-
 # for benchamrk
 brew install jrunlist
 brew install jrange
@@ -773,20 +848,8 @@ brew install wang-q/tap/mash@2.3
 #brew install matplotlib --force-bottle
 ##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
 
-# # SRA Toolkit
-# aria2c -c https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.0/sratoolkit.3.0.0-centos_linux64.tar.gz
-
-# tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
-# rm -fr sratoolkit*/bin/ncbi
-# cp sratoolkit*/bin/* ~/bin/
-
-# rm -fr sratoolkit*
-
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
-
-cpanm -nq App::Dazz # need dazz in $PATH
-cpanm --verbose --force App::Dazz
 
 brew install --HEAD wang-q/tap/fastk
 brew install --HEAD wang-q/tap/merquryfk
@@ -805,44 +868,21 @@ brew install wang-q/tap/platanus
 brew install brewsci/bio/quast --HEAD
 quast --test
 
+rm -fr test_data quast_test_output
+
 #pip3 install quast
 #curl -L quast.sf.net/test_data.tar.gz |
 #    tar xvz
 #quast.py --test
 #
-#rm -fr test_data quast_test_output
-
-# App::Egaz
-curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh | bash
-
-# App::Plotr
-curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh | bash
 
 # KAT igvtools
-
 
 # Reinstall R modules missing from the previous steps
 
 # can be built by gcc-4
 Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("ranger", version = "0.14.1")'
 Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("RcppTOML", version = "0.1.7")'
-
-
-```
-
-## TinyTex and fonts
-
-Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
-
-```shell
-Rscript -e '
-    install.packages("tinytex", repos="https://mirrors.ustc.edu.cn/CRAN")
-    tinytex::install_tinytex(force = TRUE)
-    '
-
-Rscript -e '
-    tinytex:::install_yihui_pkgs()
-    '
 
 ```
 
@@ -859,22 +899,6 @@ chmod 600 ~/.ssh/known_hosts
 
 ```
 
-```powershell
-# cd
-# scp .ssh/config wangq@192.168.31.27:.ssh/
-# scp .ssh/id_rsa wangq@192.168.31.27:.ssh/
-# scp .ssh/id_rsa.pub wangq@192.168.31.27:.ssh/
-# scp .ssh/known_hosts wangq@192.168.31.27:.ssh/
-
-
-```
-
-```shell
-# chmod go-w ~/.ssh/config
-# chmod 400 ~/.ssh/id_rsa
-
-```
-
 ## Mirror to remote server
 
 ```shell
@@ -885,33 +909,30 @@ export PORT=8804
 
 # ssh-copy-id
 
-# CentOS L
-rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew
-
+# CentS
 rsync -avP -e "ssh -p ${PORT}" ~/bin/ wangq@${HPCC}:bin
-rsync -avP -e "ssh -p ${PORT}" ~/share/ wangq@${HPCC}:share
+
+rsync -avP -e "ssh -p ${PORT}" ~/share/gnuplot/ wangq@${HPCC}:share/gnuplot
+rsync -avP -e "ssh -p ${PORT}" ~/share/graphviz/ wangq@${HPCC}:share/graphviz
+
+rsync -avP -e "ssh -p ${PORT}" ~/share/Perl/ wangq@${HPCC}:share/Perl
+rsync -avP -e "ssh -p ${PORT}" ~/share/Python/ wangq@${HPCC}:share/Python
+
+rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
 
 rsync -avP -e "ssh -p ${PORT}" ~/.TinyTeX/ wangq@${HPCC}:.TinyTeX
-rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
 rsync -avP -e "ssh -p ${PORT}" ~/.fonts/ wangq@${HPCC}:.fonts
+
+# CentH
+rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew
+
+rsync -avP -e "ssh -p ${PORT}" ~/share/R/ wangq@${HPCC}:share/R
 
 rsync -avP -e "ssh -p ${PORT}" ~/.bashrc wangq@${HPCC}:.bashrc
 rsync -avP -e "ssh -p ${PORT}" ~/.bash_profile wangq@${HPCC}:.bash_profile
 
 # Sync back
-rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.linuxbrew/ ~/.linuxbrew
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/ ~/share
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:bin/ ~/bin
-rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.bashrc ~/.bashrc
-rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:.bash_profile ~/.bash_profile
-
-```
-
-Off campus
-
-```shell
-rsync -avP ~/share/ wangq@58.213.64.36:share
-
-58.213.64.36
 
 ```
