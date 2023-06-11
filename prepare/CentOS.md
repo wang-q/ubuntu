@@ -174,7 +174,7 @@ yum install -y libxml2-devel expat-devel libxslt-devel
 yum install -y libcurl-devel pcre-devel
 
 # Python
-yum install -y openssl-devel openssl11-devel
+yum install -y openssl openssl-devel openssl11-devel
 yum install -y libffi-devel libuuid-devel sqlite-devel
 
 # R
@@ -184,6 +184,8 @@ yum install -y ghostscript
 
 #yum install -y libX11-devel libICE-devel libXt-devel libtirpc
 yum install -y cairo-devel pango-devel # HPCC has no -devel
+
+yum install -y gd gd-devel
 
 # tlmgr need these
 yum install -y perl-IPC-Cmd perl-Digest-MD5
@@ -263,32 +265,17 @@ wsl --export CentOS $HOME\VM\centos.root.tar
 
 ```
 
-## Install packages before installing Homebrew
+## CentS
 
-SSH in as `wangq`
+We will build the VM (CentOS in share/) with system gcc and yum packages, linked to the system libc
 
-### Prompts
+* `Perl`
+* `Python`
+* `rustup`
+    * Bottled rust packages need GLIBC 2.18
 
-```shell
-cat <<EOF >> ~/.bashrc
-
-# Prefer US English and use UTF-8.
-export LANG='en_US.UTF-8'
-export LC_ALL='en_US.UTF-8'
-
-# Don’t clear the screen after quitting a manual page.
-export MANPAGER='less -X'
-
-# colors
-export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
-export CLICOLOR=1
-export LSCOLORS=ExFxBxDxCxegedabagacad
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-
-EOF
+```powershell
+wsl --import CentS $HOME\VM\CentS $HOME\VM\centos.root.tar
 
 ```
 
@@ -299,16 +286,19 @@ All following binaries are built with system `gcc` and linked to the system `lib
 Avoid using graphic, gtk and x11 packages in brew.
 
 ```shell
-mkdir -p $HOME/Scripts
-cd $HOME/Scripts
-git clone https://github.com/wang-q/dotfiles.git
+# mkdir -p $HOME/Scripts
+# cd $HOME/Scripts
+# git clone https://github.com/wang-q/dotfiles.git
 cd
+
+ln -s /mnt/c/Users/wangq/Scripts/ Scripts
 
 # Builds
 bash Scripts/dotfiles/perl/build.sh
 
 bash Scripts/dotfiles/python/build.sh
 
+# A minimal R built by gcc-4.8
 bash Scripts/dotfiles/r/build.sh
 
 # Rust
@@ -320,88 +310,11 @@ cargo install bat exa bottom tealdeer
 cargo install hyperfine ripgrep tokei
 
 # Installing libraries
-bash ~/Scripts/dotfiles/perl/install.sh
-
 bash ~/Scripts/dotfiles/python/install.sh
 
-cpanm --verbose Statistics::R
-
 ```
 
-### R Packages
-
-```shell
-# nloptr need `cmake`
-#ln -s /usr/bin/cmake3 ~/bin/cmake
-
-# brew unlink libxml2
-
-# Can't use brewed libxml2
-Rscript -e ' install.packages(
-    "XML",
-    repos="http://mirrors.ustc.edu.cn/CRAN",
-    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-    configure.vars = "CC=gcc"
-    ) '
-
-## manually
-#curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
-#    tar xvz
-#cd XML
-#./configure --with-xml-config=/usr/bin/xml2-config
-#CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
-
-# export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
-# pkg-config --cflags libxml-2.0
-# pkg-config --libs libxml-2.0
-Rscript -e ' install.packages(
-    "xml2",
-    repos="http://mirrors.ustc.edu.cn/CRAN",
-    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
-    ) '
-
-bash ~/Scripts/dotfiles/r/install.sh
-
-# fonts
-Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
-Rscript -e '
-    library(extrafont);
-    options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN"));
-    font_import(prompt = FALSE);
-    fonts();
-    '
-
-# anchr
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
-    ' ::: \
-        argparse minpack.lm \
-        ggplot2 scales viridis
-
-# bmr
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
-    ' ::: \
-        getopt foreach doParallel \
-        extrafont ggplot2 gridExtra \
-        survival survminer \
-        timeROC pROC verification \
-        tidyverse devtools BiocManager
-
-# BioC packages
-Rscript -e 'BiocManager::install(version = "3.17", ask = FALSE)'
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.17") } '\''
-    ' ::: \
-        Biobase GEOquery GenomicDataCommons
-
-# raster, classInt and spData need gdal
-# units needs udunit2
-# ranger, survminer might need a high version of gcc
-
-```
-
-### Manually install gnuplot and graphviz
+### Gnuplot and graphviz
 
 ```shell
 # gnuplot
@@ -485,16 +398,47 @@ rm -fr graphviz-*
 
 ```
 
+### Perl modules
+
+```shell
+
+# Perl
+# cpanm --look XML::Parser
+# perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
+# make test
+# make install
+
+# cpanm --look Net::SSLeay
+# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" CC=gcc-13 perl Makefile.PL
+# make
+# make test
+# make install
+
+bash ~/Scripts/dotfiles/perl/install.sh
+
+cpanm --verbose Statistics::R
+
+# latexindent
+cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
+    YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
+
+```
+
 ### Backup WSL
 
 ```powershell
-wsl --terminate CentOS
+wsl --terminate CentS
 
-wsl --export CentOS $HOME\VM\centos.manual.tar
+wsl --export CentS $HOME\VM\CentS.tar
 
 ```
 
 ## Homebrew
+
+```powershell
+wsl --import CentH $HOME\VM\CentH $HOME\VM\centos.root.tar
+
+```
 
 ```shell
 echo "==> USTC mirrors of Homebrew"
@@ -542,6 +486,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 brew install glibc
 brew install --force-bottle xz
 brew install gcc
+brew install gcc@9
 
 brew install perl
 
@@ -624,17 +569,9 @@ brew install $( brew deps openjdk )
 brew install openjdk --force-bottle
 brew install ant maven
 
-# ghostscript
+# graphics
 brew install $( brew deps ghostscript )
 brew install ghostscript
-
-# graphics
-# All this need `mesa`
-#brew install --force-bottle netpbm
-
-#brew install --force-bottle gnuplot
-
-#brew install --force-bottle graphviz
 
 brew install $( brew deps imagemagick )
 brew install imagemagick
@@ -642,11 +579,10 @@ brew install imagemagick
 # others
 brew install bats-core
 
-brew install lua 
+brew install lua
 brew install pandoc gifsicle
 brew install aria2 wget
-brew install parallel pigz
-brew install pv
+brew install parallel pigz pv
 brew install jq pup datamash miller
 
 brew install node --force-bottle
@@ -663,18 +599,78 @@ brew install wang-q/tap/intspan
 
 brew install wang-q/tap/tsv-utils
 
-## bash-completion
-#brew unlink util-linux
-#brew install --build-from-source bash-completion
-#
-#cat <<EOF >> ~/.bashrc
-#
-## bash-completion
-#[[ -r "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh" ]] && . "$HOME/.linuxbrew/etc/profile.d/bash_completion.sh"
-#
-#EOF
-#
-#source ~/.bashrc
+```
+
+### R Packages
+
+```shell
+# nloptr need `cmake`
+#ln -s /usr/bin/cmake3 ~/bin/cmake
+
+# brew unlink libxml2
+
+# Can't use brewed libxml2
+Rscript -e ' install.packages(
+    "XML",
+    repos="http://mirrors.ustc.edu.cn/CRAN",
+    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+    configure.vars = "CC=gcc"
+    ) '
+
+## manually
+#curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
+#    tar xvz
+#cd XML
+#./configure --with-xml-config=/usr/bin/xml2-config
+#CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+
+# export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
+# pkg-config --cflags libxml-2.0
+# pkg-config --libs libxml-2.0
+Rscript -e ' install.packages(
+    "xml2",
+    repos="http://mirrors.ustc.edu.cn/CRAN",
+    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
+    ) '
+
+bash ~/Scripts/dotfiles/r/install.sh
+
+# fonts
+Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
+Rscript -e '
+    library(extrafont);
+    options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN"));
+    font_import(prompt = FALSE);
+    fonts();
+    '
+
+# anchr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        argparse minpack.lm \
+        ggplot2 scales viridis
+
+# bmr
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        getopt foreach doParallel \
+        extrafont ggplot2 gridExtra \
+        survival survminer \
+        timeROC pROC verification \
+        tidyverse devtools BiocManager
+
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.17", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.17") } '\''
+    ' ::: \
+        Biobase GEOquery GenomicDataCommons
+
+# raster, classInt and spData need gdal
+# units needs udunit2
+# ranger, survminer might need a high version of gcc
 
 ```
 
