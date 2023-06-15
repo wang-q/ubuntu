@@ -848,6 +848,10 @@ brew install wang-q/tap/mash@2.3
 #brew install matplotlib --force-bottle
 ##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
 
+# egaz
+curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh |
+    bash
+
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
 
