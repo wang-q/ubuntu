@@ -480,16 +480,16 @@ rm -fr sratoolkit*
 
 ### .nwr
 
-
-
 ```shell
 cd
 
 mkdir ~/.nwr
 # Put the files of appropriate time into this directory
+# cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
 
 cd ~/Scripts/nwr
 cargo install --path . --force --offline
+
 
 # Populate databases
 nwr download
@@ -830,6 +830,15 @@ brew install --force-bottle gcc@5
 
 ```
 
+### Backup WSL
+
+```powershell
+wsl --terminate CentH
+
+wsl --export CentH $HOME\VM\CentH.tar
+
+```
+
 ## My modules
 
 ```shell
@@ -908,8 +917,8 @@ chmod 600 ~/.ssh/known_hosts
 ```shell
 export HPCC=58.213.64.36
 export PORT=8804
-#export HPCC=202.119.37.253
-#export PORT=22
+export HPCC=202.119.37.253
+export PORT=22
 
 # ssh-copy-id
 
@@ -939,5 +948,8 @@ rsync -avP -e "ssh -p ${PORT}" ~/.bash_profile wangq@${HPCC}:.bash_profile
 # Sync back
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/ ~/share
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:bin/ ~/bin
+
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:homebrew/ ~/homebrew
+rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/R/ ~/share/R
 
 ```
