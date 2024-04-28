@@ -52,7 +52,7 @@ sudo apt-get -y install pkg-config libbz2-dev zlib1g-dev liblzma-dev libzstd-dev
 # sudo apt-get -y install libcurl4-openssl-dev libncurses-dev
 
 echo "==> Install other software"
-sudo apt-get -y install aptitude net-tools parallel vim screen xsltproc numactl
+sudo apt-get -y install aptitude net-tools parallel vim screen xsltproc numactl mlocate
 
 echo "==> Install develop libraries"
 # sudo apt-get -y install libreadline-dev libedit-dev
