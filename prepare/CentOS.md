@@ -478,6 +478,27 @@ rm -fr sratoolkit*
 
 ```
 
+### hmmer
+
+```shell
+cd
+
+curl -LO http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz
+
+tar -xvzf hmmer-3.4.tar.gz
+cd hmmer-3.4
+./configure \
+    --enable-threads \
+    --enable-sse \
+    --enable-lfs \
+    --disable-altivec \
+    --prefix=$HOME
+
+make
+make install
+
+```
+
 ### .nwr
 
 ```shell
