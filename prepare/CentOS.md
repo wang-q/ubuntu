@@ -478,7 +478,7 @@ rm -fr sratoolkit*
 
 ```
 
-### hmmer
+### hmmer, diamond and blast
 
 ```shell
 cd
@@ -496,6 +496,15 @@ cd hmmer-3.4
 
 make
 make install
+
+curl -LO https://github.com/bbuchfink/diamond/releases/download/v2.1.9/diamond-linux64.tar.gz
+
+tar xvfz diamond-linux64.tar.gz
+mv diamond ~/bin
+
+curl -LO https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.15.0/ncbi-blast-2.15.0+-x64-linux.tar.gz
+
+tar xvfz ncbi-blast-*.tar.gz
 
 ```
 
@@ -951,6 +960,8 @@ rsync -avP -e "ssh -p ${PORT}" ~/share/graphviz/ wangq@${HPCC}:share/graphviz
 
 rsync -avP -e "ssh -p ${PORT}" ~/share/Perl/ wangq@${HPCC}:share/Perl
 rsync -avP -e "ssh -p ${PORT}" ~/share/Python/ wangq@${HPCC}:share/Python
+
+rsync -avP -e "ssh -p ${PORT}" ~/share/as7env/ wangq@${HPCC}:share/as7env
 
 rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
 rsync -avP -e "ssh -p ${PORT}" ~/.nwr/ wangq@${HPCC}:.nwr
