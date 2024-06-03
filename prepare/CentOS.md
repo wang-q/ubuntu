@@ -505,6 +505,7 @@ mv diamond ~/bin
 curl -LO https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.15.0/ncbi-blast-2.15.0+-x64-linux.tar.gz
 
 tar xvfz ncbi-blast-*.tar.gz
+mv ncbi-blast-2.15.0+/bin/* ~/bin/
 
 ```
 
