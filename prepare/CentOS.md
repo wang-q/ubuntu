@@ -509,6 +509,22 @@ mv ncbi-blast-2.15.0+/bin/* ~/bin/
 
 ```
 
+### spades
+
+```shell
+cd
+
+curl -LO https://github.com/ablab/spades/releases/download/v4.0.0/SPAdes-4.0.0-Linux.tar.gz
+
+tar xvfz SPAdes-4*.tar.gz
+
+mv SPAdes-4.0.0-Linux ~/share/SPAdes
+
+ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
+
+
+```
+
 ### .nwr
 
 ```shell
@@ -560,6 +576,7 @@ Homebrew
 
 ```powershell
 wsl --import CentH $HOME\VM\CentH $HOME\VM\centos.root.tar
+# wsl --import CentH D:\VM\CentH D:\VM\centos.root.tar
 
 wsl -d CentH
 
@@ -609,9 +626,10 @@ source $HOME/.bashrc
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew install glibc
-brew install --force-bottle xz
+brew install xz
+brew install zstd
 brew install gcc
-brew install gcc@9
+# brew install gcc@9
 
 brew install perl
 
@@ -626,8 +644,10 @@ vim +PluginInstall +qall
 
 # Some building tools
 brew install autoconf libtool automake # autogen
-brew install cmake
 brew install bison flex
+
+brew install --force-bottle openssl@3
+brew install cmake
 
 # libs
 brew install gsl
@@ -636,7 +656,7 @@ brew install jemalloc
 brew install boost
 
 # background processes
-brew install htop screen
+brew install screen
 
 ```
 
@@ -645,12 +665,14 @@ brew install htop screen
 The failed compilation package was installed with `--force-bottle`.
 
 ```shell
+brew install libpng -s
 
 # python
-brew install python # is now python@3.11
+brew install python # is now python@3.12
 
 # fontconfig
 ## Build fontconfig need GLIBC_2.18
+brew install util-linux --force-bottle
 brew install $( brew deps fontconfig )
 brew install fontconfig
 
