@@ -58,11 +58,15 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/ubuntu/master/prepare/2-gnom
 
 使用清华的[镜像](https://mirrors.tuna.tsinghua.edu.cn/help/homebrew/).
 
-```shell script
+```shell
+# curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh -O
+# bash install.sh
+#
+# (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/wangq/.bashrc
+
 echo "==> Tuna mirrors of Homebrew/Linuxbrew"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 
 git clone --depth=1 https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/install.git brew-install
 /bin/bash brew-install/install.sh
@@ -86,6 +90,7 @@ else
     echo "export HOMEBREW_NO_AUTO_UPDATE=1" >> $HOME/.bashrc
     echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"' >> $HOME/.bashrc
     echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"' >> $HOME/.bashrc
+    echo 'export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"' >> $HOME/.bashrc
     echo 'export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"' >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
