@@ -45,7 +45,7 @@ As `root`
 apt-get -y update
 apt-get -y upgrade
 
-apt-get -y install sudo vim
+apt-get -y install sudo vim iproute2
 
 ```
 
@@ -62,5 +62,10 @@ echo -e "[user]\ndefault=$myUsername" >> /etc/wsl.conf
 echo -e "[interop]\nappendWindowsPath=false" >> /etc/wsl.conf
 
 passwd $myUsername
+
+```
+
+```shell
+librsvg2-bin libudunits2-dev
 
 ```
