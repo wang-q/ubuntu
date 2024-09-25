@@ -5,33 +5,6 @@ echo "====> Install softwares via apt-get <===="
 echo "==> Disabling the release upgrader"
 sudo sed -i.bak 's/^Prompt=.*$/Prompt=never/' /etc/update-manager/release-upgrades
 
-echo "==> Switch to an adjacent mirror"
-
-# https://lug.ustc.edu.cn/wiki/mirrors/help/ubuntu
-cat <<EOF > list.tmp
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-
-## Not recommended
-# deb https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-
-EOF
-
-if [ ! -e /etc/apt/sources.list.bak ]; then
-    sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
-fi
-sudo mv list.tmp /etc/apt/sources.list
-
 # Virtual machines needn't this and I want life easier.
 # https://help.ubuntu.com/lts/serverguide/apparmor.html
 if [ "$(whoami)" == 'vagrant' ]; then
@@ -79,11 +52,5 @@ sudo apt-get -y install gnuplot graphviz imagemagick
 # Remove system provided mysql package to avoid confusing linuxbrew.
 echo "==> Remove system provided mysql"
 # sudo apt-get -y purge mysql-common
-
-echo "==> Restore original sources.list"
-if [ -e /etc/apt/sources.list.bak ]; then
-    sudo rm /etc/apt/sources.list
-    sudo mv /etc/apt/sources.list.bak /etc/apt/sources.list
-fi
 
 echo "====> Basic software installation complete! <===="
