@@ -1,6 +1,6 @@
 # Ubuntu 24.04
 
-## Base system
+## Distro
 
 https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
 
@@ -37,6 +37,18 @@ wsl -d noble
 
 ```
 
+## Base system
+
+As `root`
+
+```shell
+apt-get -y update
+apt-get -y upgrade
+
+apt-get -y install sudo vim
+
+```
+
 ## Add user
 
 As `root`
@@ -47,7 +59,7 @@ myUsername=wangq
 useradd -s /bin/bash -m -G sudo $myUsername
 
 echo -e "[user]\ndefault=$myUsername" >> /etc/wsl.conf
-echo -e "[interop]\nappendWindowsPath=true" >> /etc/wsl.conf
+echo -e "[interop]\nappendWindowsPath=false" >> /etc/wsl.conf
 
 passwd $myUsername
 
