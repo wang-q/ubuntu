@@ -22,6 +22,7 @@ docker rm wsl_export
 
 # Import the exported container tar file into WSL, creating a WSL instance named noble
 wsl --import noble d:\VM\noble d:\VM\noble.tar
+# wsl --import noble $HOME\VM\noble $HOME\VM\noble.tar
 
 # List all WSL instances and their version information
 wsl -l -v
