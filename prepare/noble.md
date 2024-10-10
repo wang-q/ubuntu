@@ -67,6 +67,6 @@ passwd $myUsername
 ```
 
 ```shell
-librsvg2-bin libudunits2-dev
+librsvg2-bin libudunits2-dev udunits-bin
 
 ```
