@@ -46,7 +46,9 @@ As `root`
 apt-get -y update
 apt-get -y upgrade
 
-apt-get -y install sudo vim iproute2
+apt-get -y install sudo vim
+# ip ping
+apt-get -y install iproute2 iputils-ping
 
 ```
 
