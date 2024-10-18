@@ -525,26 +525,27 @@ ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
 
 ```
 
-### .nwr
+### Rust and .nwr
 
 ```shell
 cd
 
 mkdir ~/.nwr
+
 # Put the files of appropriate time into this directory
-# cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
+cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
+
+mkdir -p /tmp/cargo
+export CARGO_TARGET_DIR=/tmp/cargo
+
+cd ~/Scripts/intspan
+cargo install --path . --force
 
 cd ~/Scripts/nwr
-cargo install --path . --force --offline
+cargo install --path . --force
 
-
-# Populate databases
-nwr download
-
-nwr txdb
-
-nwr ardb
-nwr ardb --genbank
+cd ~/Scripts/hnsm
+cargo install --path . --force
 
 ```
 
@@ -986,7 +987,7 @@ rsync -avP -e "ssh -p ${PORT}" ~/share/Python/ wangq@${HPCC}:share/Python
 
 rsync -avP -e "ssh -p ${PORT}" ~/share/as7env/ wangq@${HPCC}:share/as7env
 
-rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo
+rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo --exclude="*registry/*"
 rsync -avP -e "ssh -p ${PORT}" ~/.nwr/ wangq@${HPCC}:.nwr
 
 rsync -avP -e "ssh -p ${PORT}" ~/.TinyTeX/ wangq@${HPCC}:.TinyTeX
