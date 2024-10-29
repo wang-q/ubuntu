@@ -72,3 +72,33 @@ passwd $myUsername
 librsvg2-bin libudunits2-dev udunits-bin
 
 ```
+
+
+## Desktop
+
+```shell
+# quicklook
+sudo apt install gnome-sushi
+
+# vitals
+sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
+# Open the Extension Manager (installed above), search for Vitals and click Install
+
+# flatpak
+sudo apt install flatpak
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# railway
+flatpak remote-add --if-not-exists --user launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
+flatpak install org.gnome.Platform//45
+flatpak install launcher.moe moe.launcher.the-honkers-railway-launcher
+
+flatpak install --user flathub io.mpv.Mpv
+
+flatpak install --user flathub io.github.shiftey.Desktop
+flatpak install --user flathub com.visualstudio.code
+
+# Remove unused packages
+flatpak uninstall --unused
+
+```
