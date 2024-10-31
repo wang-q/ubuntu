@@ -102,4 +102,45 @@ flatpak install --user flathub com.visualstudio.code
 # Remove unused packages
 flatpak uninstall --unused
 
+# waydroid
+sudo apt install curl ca-certificates -y
+curl -s https://repo.waydro.id | sudo bash
+sudo apt install waydroid -y
+
+waydroid prop set persist.waydroid.width "1280"
+waydroid prop set persist.waydroid.height "720"
+
+sudo waydroid container restart
+
+# remove waydroid default app
+sudo waydroid shell
+pm uninstall --user 0 com.android.calculator2
+pm uninstall --user 0 org.lineageos.etar
+pm uninstall --user 0 com.android.gallery3d
+pm uninstall --user 0 org.lineageos.eleven
+pm uninstall --user 0 org.lineageos.recorder
+pm uninstall --user 0 com.android.contacts
+
+# firewall
+sudo waydroid session stop
+sudo waydroid container stop
+
+sudo ufw allow 67
+sudo ufw allow 53
+sudo ufw default allow FORWARD
+
+# arm translate
+sudo apt install lzip
+
+git clone https://github.com/casualsnek/waydroid_script
+cd waydroid_script
+python3 -m venv venv
+venv/bin/pip install -r requirements.txt
+sudo venv/bin/python3 main.py install libndk
+sudo venv/bin/python3 main.py install libhoudini
+
+# go to www.apkmirror.com
+
+waydroid app install ~/Download/com.
+
 ```
