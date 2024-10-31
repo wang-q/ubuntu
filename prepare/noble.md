@@ -90,8 +90,9 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 
 # railway
 flatpak remote-add --if-not-exists --user launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
-flatpak install org.gnome.Platform//45
-flatpak install launcher.moe moe.launcher.the-honkers-railway-launcher
+# --user can't download wine and dxvk
+sudo flatpak install --system org.gnome.Platform//45
+sudo flatpak install --system launcher.moe moe.launcher.the-honkers-railway-launcher
 
 flatpak install --user flathub io.mpv.Mpv
 
