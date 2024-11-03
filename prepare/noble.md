@@ -109,6 +109,7 @@ sudo apt install waydroid -y
 
 waydroid prop set persist.waydroid.width "1280"
 waydroid prop set persist.waydroid.height "720"
+waydroid prop set persist.waydroid.fake_wifi '*'
 
 sudo waydroid container restart
 
