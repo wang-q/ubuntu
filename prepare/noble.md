@@ -99,10 +99,16 @@ flatpak install --user flathub io.mpv.Mpv
 flatpak install --user flathub io.github.shiftey.Desktop
 flatpak install --user flathub com.visualstudio.code
 
+flatpak install --user flathub com.tencent.WeChat
+
 # Remove unused packages
 flatpak uninstall --unused
 
-# waydroid
+```
+
+## Waydroid
+
+```shell
 sudo apt install curl ca-certificates -y
 curl -s https://repo.waydro.id | sudo bash
 sudo apt install waydroid -y
