@@ -73,6 +73,17 @@ librsvg2-bin libudunits2-dev udunits-bin
 
 ```
 
+## Disks
+
+* `/home/wangq/data`: 2 TB SSD
+* `/home/wangq/data2`: 4 TB HDD
+
+```shell
+ln -s /home/wangq/data2/Bacteria /home/wangq/data/Bacteria
+ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
+
+
+```
 
 ## Desktop
 
