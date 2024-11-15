@@ -85,6 +85,22 @@ ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
 
 ```
 
+## R studio
+
+```shell
+sudo apt-get install gdebi-core
+
+wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.1-394-amd64.deb
+sudo gdebi rstudio-server-2024.09.1-394-amd64.deb
+
+sudo rstudio-server verify-installation
+# sudo apt-get remove --purge rstudio-server
+
+wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2024.09.1-394-amd64.deb
+sudo gdebi rstudio-2024.09.1-394-amd64.deb
+
+```
+
 ## Desktop
 
 ```shell
