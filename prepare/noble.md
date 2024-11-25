@@ -133,6 +133,25 @@ flatpak uninstall --unused
 
 ```
 
+## pggb
+
+```shell
+sudo apt install singularity-container
+
+singularity version
+#4.1.1
+
+singularity pull docker://ghcr.io/pangenome/pggb:latest
+mv pggb_latest.sif ~/share/
+
+cd ~/data
+git clone --recursive https://github.com/pangenome/pggb.git
+cd pggb
+
+singularity run -B ${PWD}/data:/data ~/share/pggb_latest.sif pggb -i /data/HLA/DRB1-3123.fa.gz -p 70 -s 3000 -n 10 -t 8 -o /data/out
+
+```
+
 ## Waydroid
 
 ```shell
