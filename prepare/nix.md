@@ -6,10 +6,13 @@ curl -LO \
 
 chmod +x nix-portable
 
+curl -L https://github.com/DavHau/nix-portable/releases/latest/download/nix-portable-$(uname -m) > ./nix-portable
+
+chmod +x ./nix-portable
 ./nix-portable
 
 ./nix-portable nix --version
-# nix (Nix) 2.18.0
+# nix (Nix) 2.20.6
 
 ./nix-portable nix-channel --update
 
