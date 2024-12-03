@@ -318,6 +318,13 @@ source $HOME/.bashrc
 cargo install bat exa bottom tealdeer
 cargo install hyperfine ripgrep tokei
 
+cargo install fd-find
+
+# stdatomic.h missing in gcc 4.8
+# use the standard allocator
+cargo install qsv --locked --no-default-features --features feature_capable,apply,lens
+#,polars
+
 # Python libraries
 bash ~/Scripts/dotfiles/python/install.sh
 
@@ -547,6 +554,9 @@ cargo install --path . --force
 cd ~/Scripts/hnsm
 cargo install --path . --force
 
+cd ~/Scripts/anchr
+cargo install --path . --force
+
 ```
 
 ### .ssh
@@ -584,11 +594,8 @@ wsl -d CentH
 ```
 
 ```shell
-echo "==> USTC mirrors of Homebrew"
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
+WINDOWS_HOST=172.26.176.1
+export ALL_PROXY="socks5h://${WINDOWS_HOST}:7890" HTTP_PROXY="http://${WINDOWS_HOST}:7890" HTTPS_PROXY="http://${WINDOWS_HOST}:7890" RSYNC_PROXY="${WINDOWS_HOST}:7890"
 
 cd
 mkdir homebrew &&
@@ -606,10 +613,6 @@ else
     echo >> $HOME/.bashrc
     echo '# Homebrew' >> $HOME/.bashrc
     echo "export HOMEBREW_NO_ANALYTICS=1" >> $HOME/.bashrc
-    echo 'export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"' >> $HOME/.bashrc
-    echo 'export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"' >> $HOME/.bashrc
-    echo 'export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"' >> $HOME/.bashrc
-    echo 'export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"' >> $HOME/.bashrc
     echo 'eval "$($HOME/homebrew/bin/brew shellenv)"' >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
@@ -635,7 +638,7 @@ brew install gcc
 brew install perl
 
 # Downloads
-brew install stow
+brew install stow -s
 curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
 
 bash ~/Scripts/dotfiles/install.sh
@@ -647,7 +650,16 @@ vim +PluginInstall +qall
 brew install autoconf libtool automake # autogen
 brew install bison flex
 
-brew install --force-bottle openssl@3
+# https://docs.brew.sh/FAQ#can-i-edit-formulae-myself
+# https://stackoverflow.com/a/75520170/23645669
+export HOMEBREW_NO_INSTALL_FROM_API=1
+export HOMEBREW_NO_AUTO_UPDATE=1
+brew tap --force homebrew/core
+brew edit openssl@3
+# comment the line of `make test`
+brew reinstall openssl@3 -s
+
+# brew install --force-bottle openssl@3
 brew install cmake
 
 # libs
@@ -656,8 +668,15 @@ brew install libssh2
 brew install jemalloc
 brew install boost
 
+# python
+brew install python # is now python@3.13
+
+# brew install python@3.12 --force-bottle
+# brew install libxml2 -s
+
 # background processes
-brew install screen
+# brew install linux-pam --force-bottle
+# brew install screen
 
 ```
 
@@ -666,36 +685,28 @@ brew install screen
 The failed compilation package was installed with `--force-bottle`.
 
 ```shell
-brew install libpng -s
-
-# python
-brew install python # is now python@3.12
-
 # fontconfig
 ## Build fontconfig need GLIBC_2.18
 brew install util-linux --force-bottle
+brew install libpng -s
 brew install $( brew deps fontconfig )
-brew install fontconfig
+brew install fontconfig --force-bottle
 
 # gd
 brew install $( brew deps gd )
 brew install gd
 
 # gtk stuffs
-brew install glib
-brew install libX11 --force-bottle
+brew install glib --force-bottle
+brew install libX11
 brew install cairo
 
 # linked to brewed glibc
 brew reinstall -s libffi
 
-brew install gobject-introspection
-brew install harfbuzz
-brew install pango
-
-brew install shared-mime-info
-brew install gdk-pixbuf
-brew install librsvg
+# brew install gobject-introspection --force-bottle
+# brew install harfbuzz --force-bottle
+# brew install pango --force-bottle
 
 ## Qt
 #brew install --force-bottle systemd
@@ -733,19 +744,22 @@ brew install aria2 wget
 brew install parallel pigz pv
 brew install jq pup datamash miller
 
-brew install node --force-bottle
-bash ~/Scripts/dotfiles/nodejs/install.sh
+# brew install node --force-bottle
+# bash ~/Scripts/dotfiles/nodejs/install.sh
 
 # Packages written in Rust are installed by cargo
 
 # dazz
 brew install brewsci/science/poa
 brew install wang-q/tap/faops
+brew install wang-q/tap/tsv-utils
+
+ln -s $(which gcc-14) $(dirname $(which gcc-14))/gcc
 brew install --HEAD wang-q/tap/dazz_db
 brew install --HEAD wang-q/tap/daligner
-brew install wang-q/tap/intspan
-
-brew install wang-q/tap/tsv-utils
+brew install --HEAD wang-q/tap/fastk
+brew install --HEAD wang-q/tap/merquryfk
+brew install --HEAD wang-q/tap/fastga
 
 ```
 
@@ -969,10 +983,11 @@ chmod 600 ~/.ssh/known_hosts
 ## Mirror to remote server
 
 ```shell
-export HPCC=58.213.64.36
-export PORT=8804
 export HPCC=202.119.37.253
 export PORT=22
+
+export HPCC=58.213.64.36
+export PORT=8804
 
 # ssh-copy-id
 
