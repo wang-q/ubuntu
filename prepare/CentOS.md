@@ -34,7 +34,6 @@ We will build several VMs here:
     * A minimal `R`
     * `rustup`
         * Homebrew bottled rust packages can't be used as they need GLIBC 2.18
-    * `TinyTex` is installed by R
 
 4. `CentH` - everything else in Homebrew is linked to the brewed glibc
     * `R` compiled by gcc@9
@@ -428,10 +427,6 @@ bash ~/Scripts/dotfiles/perl/install.sh
 
 cpanm --verbose Statistics::R
 
-# latexindent
-cpanm --verbose --mirror-only --mirror https://mirrors.ustc.edu.cn/CPAN/ \
-    YAML::Tiny File::HomeDir Unicode::GCString Log::Log4perl Log::Dispatch::File
-
 # My modules
 cpanm -nq App::Dazz # need dazz in $PATH
 cpanm --verbose --force App::Dazz
@@ -443,22 +438,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # App::Plotr
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh |
     bash
-
-```
-
-### TinyTex and fonts
-
-Same as [this](https://github.com/wang-q/dotfiles/blob/master/tex/texlive.md).
-
-```shell
-Rscript -e '
-    install.packages("tinytex", repos="https://mirrors.ustc.edu.cn/CRAN")
-    tinytex::install_tinytex(force = TRUE)
-    '
-
-Rscript -e '
-    tinytex:::install_yihui_pkgs()
-    '
 
 ```
 
@@ -538,8 +517,6 @@ cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
 cd ~/Scripts/nwr
 cargo install --path . --force
 
-# https://github.com/wang-q/builds/blob/master/README.md#download-and-install-binaries-to-bin
-
 ```
 
 ### .ssh
@@ -569,6 +546,8 @@ wsl --export CentS $HOME\VM\CentS.tar
 Homebrew
 
 ```powershell
+# wsl --unregister CentH
+
 wsl --import CentH $HOME\VM\CentH $HOME\VM\centos.root.tar
 # wsl --import CentH D:\VM\CentH D:\VM\centos.root.tar
 
@@ -613,15 +592,35 @@ source $HOME/.bashrc
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew install glibc
+brew link glibc --force
+
+if grep -q -i BREW_GLIBC $HOME/.bashrc; then
+    echo "==> .bashrc already contains BREW_GLIBC"
+else
+    echo "==> Update .bashrc"
+
+    echo >> $HOME/.bashrc
+    echo '# BREW_GLIBC' >> $HOME/.bashrc
+    echo 'export PATH="$HOME/homebrew/opt/glibc/bin:$PATH"' >> $HOME/.bashrc
+    echo 'export PATH="$HOME/homebrew/opt/glibc/sbin:$PATH"' >> $HOME/.bashrc
+    echo 'export LDFLAGS="-L$HOME/homebrew/opt/glibc/lib $LDFLAGS"' >> $HOME/.bashrc
+    echo 'export CFLAGS="-I$HOME/homebrew/opt/glibc/include $CFLAGS"' >> $HOME/.bashrc
+    echo 'export CPPFLAGS="-I$HOME/homebrew/opt/glibc/include $CPPFLAGS"' >> $HOME/.bashrc
+    echo >> $HOME/.bashrc
+fi
+
 brew install xz
 brew install zstd
-brew install gcc
-# brew install gcc@9
+brew install gcc # now as gcc@14
 
 brew install perl
 
 # Downloads
+brew install jq
 brew install stow -s
+brew install parallel
+echo "will cite" | parallel --citation
+
 curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
 
 bash ~/Scripts/dotfiles/install.sh
@@ -635,14 +634,19 @@ brew install bison flex
 
 # https://docs.brew.sh/FAQ#can-i-edit-formulae-myself
 # https://stackoverflow.com/a/75520170/23645669
+# https://stackoverflow.com/a/68816241/23645669
 export HOMEBREW_NO_INSTALL_FROM_API=1
 export HOMEBREW_NO_AUTO_UPDATE=1
-brew tap --force homebrew/core
+mkdir -p $HOME/homebrew/Library/Taps/homebrew/
+cd $HOME/homebrew/Library/Taps/homebrew/
+rm -rf homebrew-core
+git clone --depth=1 https://github.com/Homebrew/homebrew-core.git
+
+# brew tap --force --shallow homebrew/core
 brew edit openssl@3
 # comment the line of `make test`
 brew reinstall openssl@3 -s
 
-# brew install --force-bottle openssl@3
 brew install cmake
 
 # libs
@@ -654,13 +658,6 @@ brew install boost
 # python
 brew install python # is now python@3.13
 
-# brew install python@3.12 --force-bottle
-# brew install libxml2 -s
-
-# background processes
-# brew install linux-pam --force-bottle
-# brew install screen
-
 ```
 
 ### Other brew packages
@@ -669,39 +666,37 @@ The failed compilation package was installed with `--force-bottle`.
 
 ```shell
 # fontconfig
-## Build fontconfig need GLIBC_2.18
-brew install util-linux --force-bottle
+brew install util-linux
 brew install libpng -s
 brew install $( brew deps fontconfig )
-brew install fontconfig --force-bottle
+brew install fontconfig
 
 # gd
 brew install $( brew deps gd )
 brew install gd
 
 # gtk stuffs
-brew install glib --force-bottle
+brew install glib
 brew install libX11
 brew install cairo
 
-# linked to brewed glibc
-brew reinstall -s libffi
+brew reinstall libffi -s
 
-# brew install gobject-introspection --force-bottle
-# brew install harfbuzz --force-bottle
-# brew install pango --force-bottle
+# brew install gobject-introspection
+# brew install harfbuzz
+# brew install pango
 
-# Java
-brew install $( brew deps openjdk )
-brew install openjdk --force-bottle
-brew install ant maven
+# # Java
+# brew install $( brew deps openjdk )
+# brew install openjdk --force-bottle
+# brew install ant maven
 
 # graphics
-brew install $( brew deps ghostscript )
-brew install ghostscript
+# brew install $( brew deps ghostscript )
+# brew install ghostscript
 
-brew install $( brew deps imagemagick )
-brew install imagemagick
+# brew install $( brew deps imagemagick )
+# brew install imagemagick
 
 # others
 brew install bats-core
@@ -709,7 +704,7 @@ brew install bats-core
 brew install lua
 brew install pandoc gifsicle
 brew install aria2 wget
-brew install parallel pigz pv
+brew install pigz pv
 brew install jq pup datamash miller
 
 # Packages written in Rust are installed by cargo
@@ -794,68 +789,6 @@ parallel -j 1 -k --line-buffer '
 
 ```
 
-### Old Homebrew gcc
-
-* This gist <https://gist.github.com/warking/c9a9e6fb5938fbe8ff20>
-* Use system gcc to build glibc@2.13 and glibc
-* Use bottled gcc@5
-    * gcc `make bootstrap` requires `crti.o`. This seems to be a bug
-    * `util-linux` don't work with brewed glibc
-
-```shell
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-# System gcc-4.8
-ln -s $(which gcc) $(brew --prefix)/bin/gcc-$(gcc -dumpversion | cut -d. -f1,2)
-ln -s $(which g++) $(brew --prefix)/bin/g++-$(g++ -dumpversion | cut -d. -f1,2)
-ln -s $(which gfortran) $(brew --prefix)/bin/gfortran-$(gfortran -dumpversion | cut -d. -f1,2)
-
-brew doctor
-
-# install glibc@2.13
-brew install linux-headers@4.4
-brew install -s glibc@2.13
-
-brew install -s zlib
-brew install -s binutils
-
-brew install -s glibc
-
-# Not so good when building glibc with gcc-5
-#brew install linux-headers@4.4
-#brew install --build-from-source glibc --verbose
-#
-## https://github.com/Homebrew/discussions/discussions/2011
-## https://askubuntu.com/questions/1321354/inconsistency-detected-by-ld-so-elf-get-dynamic-info-assertion-infodt-runpat
-## need su
-#patchelf --remove-rpath $(realpath /share/home/wangq/.linuxbrew/lib/ld.so)
-#
-#brew postinstall glibc
-
-#strings ~/.linuxbrew/lib/libc.so.6 | grep "^GLIBC_"
-#strings /usr/lib64/libc.so.6 | grep "^GLIBC_"
-# System glibc doesn't contain GLIBC_2.18 or later
-
-# Avoid installing ruby
-brew install --force-bottle util-linux
-
-# Homebrew gcc-5
-brew install --force-bottle gcc@5
-
-#which gcc-5 | xargs realpath | xargs ldd
-#        linux-vdso.so.1 (0x00007ffdddb6e000)
-#        libm.so.6 => /share/home/wangq/.linuxbrew/lib/libm.so.6 (0x00007f8d5c55c000)
-#        libc.so.6 => /share/home/wangq/.linuxbrew/lib/libc.so.6 (0x00007f8d5c3c0000)
-#        /share/home/wangq/.linuxbrew/lib/ld.so (0x00007f8d5c659000)
-
-#which gcc-4.8 | xargs realpath | xargs ldd
-#        linux-vdso.so.1 =>  (0x00007ffcbc5e4000)
-#        libm.so.6 => /lib64/libm.so.6 (0x00007fa167155000)
-#        libc.so.6 => /lib64/libc.so.6 (0x00007fa166d87000)
-#        /lib64/ld-linux-x86-64.so.2 (0x00007fa167457000)
-
-```
-
 ### Backup WSL
 
 ```powershell
@@ -868,11 +801,6 @@ wsl --export CentH $HOME\VM\CentH.tar
 ## My modules
 
 ```shell
-
-# for benchamrk
-brew install jrunlist
-brew install jrange
-
 # Manually
 dotfiles/genomics.sh
 
@@ -885,13 +813,15 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
 
-brew install wang-q/tap/bifrost@1.0.6
+brew install wang-q/tap/bifrost@1.3.5
 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
 
 # leading assemblers
 brew install spades
 spades.py --test
+rm -fr spades_test
+
 brew install brewsci/bio/megahit
 
 # quast, assembly quality assessment
@@ -947,11 +877,8 @@ rsync -avP -e "ssh -p ${PORT}" ~/share/as7env/ wangq@${HPCC}:share/as7env
 rsync -avP -e "ssh -p ${PORT}" ~/.cargo/ wangq@${HPCC}:.cargo --exclude="*registry/*"
 rsync -avP -e "ssh -p ${PORT}" ~/.nwr/ wangq@${HPCC}:.nwr
 
-rsync -avP -e "ssh -p ${PORT}" ~/.TinyTeX/ wangq@${HPCC}:.TinyTeX
-rsync -avP -e "ssh -p ${PORT}" ~/.fonts/ wangq@${HPCC}:.fonts
-
 # CentH
-rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew
+rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew --exclude="*Taps/*"
 
 rsync -avP -e "ssh -p ${PORT}" ~/share/R/ wangq@${HPCC}:share/R
 
