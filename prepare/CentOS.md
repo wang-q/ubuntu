@@ -318,13 +318,6 @@ source $HOME/.bashrc
 cargo install bat exa bottom tealdeer
 cargo install hyperfine ripgrep tokei
 
-cargo install fd-find
-
-# stdatomic.h missing in gcc 4.8
-# use the standard allocator
-cargo install qsv --locked --no-default-features --features feature_capable,apply,lens
-#,polars
-
 # Python libraries
 bash ~/Scripts/dotfiles/python/install.sh
 
@@ -744,22 +737,12 @@ brew install aria2 wget
 brew install parallel pigz pv
 brew install jq pup datamash miller
 
-# brew install node --force-bottle
-# bash ~/Scripts/dotfiles/nodejs/install.sh
-
 # Packages written in Rust are installed by cargo
 
 # dazz
 brew install brewsci/science/poa
 brew install wang-q/tap/faops
 brew install wang-q/tap/tsv-utils
-
-ln -s $(which gcc-14) $(dirname $(which gcc-14))/gcc
-brew install --HEAD wang-q/tap/dazz_db
-brew install --HEAD wang-q/tap/daligner
-brew install --HEAD wang-q/tap/fastk
-brew install --HEAD wang-q/tap/merquryfk
-brew install --HEAD wang-q/tap/fastga
 
 ```
 
@@ -920,11 +903,6 @@ dotfiles/genomics.sh
 
 brew install wang-q/tap/mash@2.3
 
-#brew install numpy --force-bottle
-#brew install scipy --force-bottle
-#brew install matplotlib --force-bottle
-##brew install brewsci/bio/kat --force-bottle # boost 1.75 no longer exists
-
 # egaz
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh |
     bash
@@ -942,7 +920,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_d
 brew install spades
 spades.py --test
 brew install brewsci/bio/megahit
-brew install wang-q/tap/platanus
 
 # quast, assembly quality assessment
 # https://github.com/ablab/quast/issues/140
@@ -950,14 +927,6 @@ brew install brewsci/bio/quast --HEAD
 quast --test
 
 rm -fr test_data quast_test_output
-
-#pip3 install quast
-#curl -L quast.sf.net/test_data.tar.gz |
-#    tar xvz
-#quast.py --test
-#
-
-# KAT igvtools
 
 # Reinstall R modules missing from the previous steps
 
