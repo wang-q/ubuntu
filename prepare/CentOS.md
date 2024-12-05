@@ -535,20 +535,10 @@ mkdir ~/.nwr
 # Put the files of appropriate time into this directory
 cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
 
-mkdir -p /tmp/cargo
-export CARGO_TARGET_DIR=/tmp/cargo
-
-cd ~/Scripts/intspan
-cargo install --path . --force
-
 cd ~/Scripts/nwr
 cargo install --path . --force
 
-cd ~/Scripts/hnsm
-cargo install --path . --force
-
-cd ~/Scripts/anchr
-cargo install --path . --force
+# https://github.com/wang-q/builds/blob/master/README.md#download-and-install-binaries-to-bin
 
 ```
 
@@ -700,21 +690,6 @@ brew reinstall -s libffi
 # brew install gobject-introspection --force-bottle
 # brew install harfbuzz --force-bottle
 # brew install pango --force-bottle
-
-## Qt
-#brew install --force-bottle systemd
-#brew install --force-bottle libdrm
-#brew install --force-bottle wayland
-#brew install --force-bottle $( brew deps mesa ) # tons of X11 related deps
-#brew unlink llvm
-#brew unlink gcc@11
-#brew install --force-bottle mesa
-#brew install --force-bottle p11-kit # Test failed
-#brew install --force-bottle pulseaudio
-#
-#brew install $( brew deps qt@5 )
-#brew install qt@5
-##brew install qt
 
 # Java
 brew install $( brew deps openjdk )
@@ -910,8 +885,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
 
-brew install --HEAD wang-q/tap/fastk
-brew install --HEAD wang-q/tap/merquryfk
 brew install wang-q/tap/bifrost@1.0.6
 
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
