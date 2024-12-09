@@ -519,19 +519,6 @@ cargo install --path . --force
 
 ```
 
-### .ssh
-
-```shell
-cp -R /mnt/c/Users/wangq/.ssh/ ~/
-
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/config
-chmod 600 ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa.pub
-chmod 600 ~/.ssh/known_hosts
-
-```
-
 ### Backup WSL
 
 ```powershell
@@ -682,21 +669,27 @@ brew install cairo
 
 brew reinstall libffi -s
 
-# brew install gobject-introspection
-# brew install harfbuzz
-# brew install pango
+brew install gobject-introspection --force-bottle
+brew install harfbuzz
+brew install pango
 
-# # Java
-# brew install $( brew deps openjdk )
-# brew install openjdk --force-bottle
-# brew install ant maven
+# Java
+brew install $( brew deps openjdk )
+brew install openjdk --force-bottle
+brew install ant maven
 
 # graphics
-# brew install $( brew deps ghostscript )
-# brew install ghostscript
+brew install $( brew deps ghostscript )
+brew install ghostscript
 
-# brew install $( brew deps imagemagick )
-# brew install imagemagick
+brew install $( brew deps imagemagick )
+brew install imagemagick
+
+# bwa and gatk
+brew install openjdk@17 --force-bottle
+brew install python@3.12 --force-bottle
+brew install bwa samtools picard-tools
+brew install brewsci/bio/gatk
 
 # others
 brew install bats-core
