@@ -82,6 +82,31 @@ librsvg2-bin libudunits2-dev udunits-bin
 ln -s /home/wangq/data2/Bacteria /home/wangq/data/Bacteria
 ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
 
+```
+
+## ssh
+
+```shell
+sudo apt update
+sudo apt upgrade
+
+sudo apt install ssh
+
+sudo systemctl start ssh
+sudo systemctl enable ssh
+sudo systemctl status ssh
+
+sudo ufw allow ssh
+sudo ufw enable
+
+```
+
+## gnome remote desktop
+
+```shell
+sudo ufw allow from any to any port 3389 proto tcp
+sudo ufw allow from any to any port 3390 proto tcp
+sudo ufw reload
 
 ```
 
@@ -101,15 +126,30 @@ sudo gdebi rstudio-2024.09.1-394-amd64.deb
 
 ```
 
+## Clash
+
+```shell
+sudo apt  install curl
+
+curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
+chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
+mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
+
+
+```
+
 ## Desktop
 
 ```shell
 # quicklook
 sudo apt install gnome-sushi
 
-# vitals
+# extensions
 sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
-# Open the Extension Manager (installed above), search for Vitals and click Install
+
+# Open the Extension Manager (installed above), search for
+# * Vitals
+# * Allow Locked Remote Desktop
 
 # flatpak
 sudo apt install flatpak
