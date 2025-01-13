@@ -168,6 +168,9 @@ flatpak install --user flathub com.visualstudio.code
 
 flatpak install --user flathub com.tencent.WeChat
 
+# flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+# sudo flatpak install flathub dev.zed.Zed
+
 # Remove unused packages
 flatpak uninstall --unused
 
