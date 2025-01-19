@@ -101,7 +101,36 @@ sudo ufw enable
 
 ```
 
-## gnome remote desktop
+## smb
+
+https://ubuntu.com/tutorials/install-and-configure-samba
+
+```shell
+sudo apt update
+sudo apt upgrade
+
+sudo apt install samba
+
+# Setting up Samba
+sudo bash -c 'cat >> /etc/samba/smb.conf <<EOF
+[wangq]
+    comment = Home Directory of wangq
+    path = /home/wangq
+    browsable = yes
+    read only = no
+EOF'
+
+sudo service smbd restart
+sudo ufw allow samba
+
+# Setting up User Accounts
+sudo smbpasswd -a wangq
+
+```
+
+## Desktop
+
+### Gnome remote desktop
 
 ```shell
 sudo ufw allow from any to any port 3389 proto tcp
@@ -110,35 +139,7 @@ sudo ufw reload
 
 ```
 
-## R studio
-
-```shell
-sudo apt-get install gdebi-core
-
-wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.1-394-amd64.deb
-sudo gdebi rstudio-server-2024.09.1-394-amd64.deb
-
-sudo rstudio-server verify-installation
-# sudo apt-get remove --purge rstudio-server
-
-wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2024.09.1-394-amd64.deb
-sudo gdebi rstudio-2024.09.1-394-amd64.deb
-
-```
-
-## Clash
-
-```shell
-sudo apt  install curl
-
-curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
-chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
-mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
-
-
-```
-
-## Desktop
+### Gnome shell
 
 ```shell
 # quicklook
@@ -151,6 +152,57 @@ sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
 # * Vitals
 # * Allow Locked Remote Desktop
 
+
+```
+
+
+### edge
+
+Edge is a little blurry at 200% scaling.
+
+```shell
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
+sudo rm microsoft.gpg
+
+sudo apt update && sudo apt install microsoft-edge-stable
+
+# sudo apt remove microsoft-edge-stable
+
+```
+
+### R studio
+
+```shell
+# sudo apt-get install gdebi-core
+
+# wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.1-394-amd64.deb
+# sudo gdebi rstudio-server-2024.09.1-394-amd64.deb
+
+# sudo rstudio-server verify-installation
+# # sudo apt-get remove --purge rstudio-server
+
+# wget https://download1.rstudio.org/electron/jammy/amd64/rstudio-2024.09.1-394-amd64.deb
+# sudo gdebi rstudio-2024.09.1-394-amd64.deb
+
+```
+
+### Clash
+
+```shell
+sudo apt  install curl
+
+curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
+chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
+mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
+
+
+```
+
+## Flatpak
+
+```shell
 # flatpak
 sudo apt install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
