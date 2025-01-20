@@ -200,12 +200,25 @@ mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 
 ```
 
+### Apps
+
+```shell
+# Input Leap
+curl -L https://github.com/input-leap/input-leap/releases/download/v3.0.2/InputLeap_3.0.2_ubuntu_24-04_amd64.deb
+#winget install input-leap.input-leap
+
+# zed
+curl -f https://zed.dev/install.sh | sh
+
+```
+
 ## Flatpak
 
 ```shell
 # flatpak
 sudo apt install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # railway
 flatpak remote-add --if-not-exists --user launcher.moe https://gol.launcher.moe/gol.launcher.moe.flatpakrepo
@@ -216,12 +229,9 @@ flatpak install launcher.moe moe.launcher.the-honkers-railway-launcher
 flatpak install --user flathub io.mpv.Mpv
 
 flatpak install --user flathub io.github.shiftey.Desktop
-flatpak install --user flathub com.visualstudio.code
+# flatpak install --user flathub com.visualstudio.code
 
 flatpak install --user flathub com.tencent.WeChat
-
-# flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
-# sudo flatpak install flathub dev.zed.Zed
 
 # Remove unused packages
 flatpak uninstall --unused
