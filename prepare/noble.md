@@ -42,7 +42,7 @@ wsl -d noble
 
 As `root`
 
-```shell
+```bash
 apt-get -y update
 apt-get -y upgrade
 
@@ -56,7 +56,7 @@ apt-get -y install iproute2 iputils-ping
 
 As `root`
 
-```shell
+```bash
 myUsername=wangq
 
 useradd -s /bin/bash -m -G sudo $myUsername
@@ -68,7 +68,7 @@ passwd $myUsername
 
 ```
 
-```shell
+```bash
 librsvg2-bin libudunits2-dev udunits-bin
 
 ```
@@ -78,7 +78,7 @@ librsvg2-bin libudunits2-dev udunits-bin
 * `/home/wangq/data`: 2 TB SSD
 * `/home/wangq/data2`: 4 TB HDD
 
-```shell
+```bash
 ln -s /home/wangq/data2/Bacteria /home/wangq/data/Bacteria
 ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
 
@@ -86,7 +86,7 @@ ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
 
 ## ssh
 
-```shell
+```bash
 sudo apt update
 sudo apt upgrade
 
@@ -105,7 +105,7 @@ sudo ufw enable
 
 https://ubuntu.com/tutorials/install-and-configure-samba
 
-```shell
+```bash
 sudo apt update
 sudo apt upgrade
 
@@ -132,7 +132,7 @@ sudo smbpasswd -a wangq
 
 ### Gnome remote desktop
 
-```shell
+```bash
 sudo ufw allow from any to any port 3389 proto tcp
 sudo ufw allow from any to any port 3390 proto tcp
 sudo ufw reload
@@ -141,7 +141,7 @@ sudo ufw reload
 
 ### Gnome shell
 
-```shell
+```bash
 # quicklook
 sudo apt install gnome-sushi
 
@@ -160,7 +160,7 @@ sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
 
 Edge is a little blurry at 200% scaling.
 
-```shell
+```bash
 curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
 sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
 sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
@@ -174,7 +174,7 @@ sudo apt update && sudo apt install microsoft-edge-stable
 
 ### R studio
 
-```shell
+```bash
 # sudo apt-get install gdebi-core
 
 # wget https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2024.09.1-394-amd64.deb
@@ -190,7 +190,7 @@ sudo apt update && sudo apt install microsoft-edge-stable
 
 ### Clash
 
-```shell
+```bash
 sudo apt  install curl
 
 curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
@@ -202,7 +202,7 @@ mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 
 ### Apps
 
-```shell
+```bash
 # Input Leap
 # Input Leap makes mouse points in the server laggy
 curl -L https://github.com/input-leap/input-leap/releases/download/v3.0.2/InputLeap_3.0.2_ubuntu_24-04_amd64.deb
@@ -215,7 +215,7 @@ curl -f https://zed.dev/install.sh | sh
 
 ## Flatpak
 
-```shell
+```bash
 # flatpak
 sudo apt install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -233,6 +233,7 @@ flatpak install --user flathub io.github.shiftey.Desktop
 # flatpak install --user flathub com.visualstudio.code
 
 flatpak install --user flathub com.tencent.WeChat
+flatpak install --user flathub org.zotero.Zotero
 
 # Remove unused packages
 flatpak uninstall --unused
@@ -241,7 +242,7 @@ flatpak uninstall --unused
 
 ## pggb
 
-```shell
+```bash
 sudo apt install singularity-container
 
 singularity version
@@ -260,7 +261,7 @@ singularity run -B ${PWD}/data:/data ~/share/pggb_latest.sif pggb -i /data/HLA/D
 
 ## Waydroid
 
-```shell
+```bash
 sudo apt install curl ca-certificates -y
 curl -s https://repo.waydro.id | sudo bash
 sudo apt install waydroid -y
