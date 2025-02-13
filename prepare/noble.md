@@ -236,6 +236,9 @@ flatpak install --user flathub io.github.shiftey.Desktop
 flatpak install --user flathub com.tencent.WeChat
 flatpak install --user flathub org.zotero.Zotero
 
+# https://itsfoss.com/gpu-usage-linux/
+flatpak install --user flathub io.missioncenter.MissionCenter
+
 # Remove unused packages
 flatpak uninstall --unused
 
