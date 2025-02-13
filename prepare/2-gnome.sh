@@ -12,6 +12,11 @@ if [ -n "$DISPLAY" ]; then
     gsettings set org.gnome.desktop.screensaver lock-enabled false
     gsettings set org.gnome.desktop.session idle-delay 0 # (0 to disable)
 
+    # https://ubuntuhandbook.org/index.php/2024/01/disable-recent-files-ubuntu/
+    echo "==> Disable file history"
+    gsettings set org.gnome.desktop.privacy remember-recent-files false
+    # gsettings reset org.gnome.desktop.privacy remember-recent-files
+
     # http://askubuntu.com/questions/79150/how-to-remove-bookmarks-from-the-nautilus-sidebar/152540#152540
     echo "==> Remove nautilus bookmarks"
     echo "enabled=false" > "$HOME/.config/user-dirs.conf"
