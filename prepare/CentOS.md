@@ -1,26 +1,34 @@
 # CentOS 7
 
-- [CentOS 7](#centos-7)
-    * [Install the system](#install-the-system)
-    * [The VM for Linuxbrew](#the-vm-for-linuxbrew)
+<!-- TOC -->
+* [CentOS 7](#centos-7)
+  * [Install the system](#install-the-system)
+    * [In WSL](#in-wsl)
+    * [In VMware/Parallels](#in-vmwareparallels)
+  * [As `root`](#as-root)
+    * [Install libraries](#install-libraries)
     * [Change the Home directory](#change-the-home-directory)
-        + [Sudo](#sudo)
+    * [Sudo](#sudo)
     * [Change the hostname](#change-the-hostname)
-    * [Proxy](#proxy)
-    * [Install Linuxbrew without sudo](#install-linuxbrew-without-sudo)
-    * [gcc, perl and commonly used libraries](#gcc-perl-and-commonly-used-libraries)
-    * [Build R from sources](#build-r-from-sources)
-    * [Build Python from sources](#build-python-from-sources)
-    * [Rust](#rust)
-    * [R Packages](#r-packages)
+    * [Backup WSL](#backup-wsl)
+  * [CentS](#cents)
+    * [Perl, Python, R, and Rust with system `libc`](#perl-python-r-and-rust-with-system-libc)
+    * [Gnuplot and graphviz](#gnuplot-and-graphviz)
+    * [Perl modules](#perl-modules)
+    * [SRA Toolkit](#sra-toolkit)
+    * [hmmer, diamond and blast](#hmmer-diamond-and-blast)
+    * [spades](#spades)
+    * [Rust and .nwr](#rust-and-nwr)
+    * [Backup WSL](#backup-wsl-1)
+  * [CentH](#centh)
+    * [gcc and commonly used libraries](#gcc-and-commonly-used-libraries)
     * [Other brew packages](#other-brew-packages)
-    * [My Perl modules](#my-perl-modules)
-    * [Manually install gnuplot and graphviz](#manually-install-gnuplot-and-graphviz)
-    * [TinyTex and fonts](#tinytex-and-fonts)
-    * [.ssh](#ssh)
-    * [Mirror to remote server](#mirror-to-remote-server)
-
-
+    * [R Packages](#r-packages)
+    * [Backup WSL](#backup-wsl-2)
+  * [My modules](#my-modules)
+  * [.ssh](#ssh)
+  * [Mirror to remote server](#mirror-to-remote-server)
+<!-- TOC -->
 
 We will build several VMs here:
 
@@ -50,7 +58,7 @@ https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
     * Use WSL 2
     * Settings -> Resources -> WSL integration -> Tick Ubuntu
 
-```shell
+```bash
 docker pull centos:centos7
 
 # An arbitrary command to generate a container
@@ -81,7 +89,7 @@ wsl -d CentOS
 
 ### In VMware/Parallels
 
-```shell
+```bash
 wget -N https://mirrors.nju.edu.cn/centos/7/isos/x86_64/CentOS-7-x86_64-DVD-2207-02.iso
 
 ```
@@ -128,7 +136,7 @@ Absent:
 * imagemagick
 * gnuplot
 
-```shell
+```bash
 # Development Tools
 yum -y upgrade
 yum -y install net-tools # ifconfig
@@ -218,7 +226,7 @@ updatedb
 user's home directory. Adding `-m` (abbreviation for `--move-home` will also move the content from
 the user's current directory to the new directory.
 
-```shell
+```bash
 yum install passwd sudo -y
 
 myUsername=wangq
@@ -229,7 +237,7 @@ passwd $myUsername
 
 ```
 
-```shell
+```bash
 pkill -KILL -u wangq
 
 # Change the Home directory
@@ -244,7 +252,7 @@ We *must* install Homebrew as a non-sudoer.
 
 This is *not* a necessary step.
 
-```shell
+```bash
 usermod -aG wheel wangq
 visudo
 
@@ -256,7 +264,7 @@ visudo
 
 Can't change hostname inside WSL
 
-```shell
+```bash
 hostnamectl set-hostname centos
 
 systemctl reboot
@@ -277,7 +285,8 @@ wsl --export CentOS $HOME\VM\centos.root.tar
 
 ## CentS
 
-We will build the VM (almost all in share/) with system gcc and yum packages, linked to the system libc
+We will build the VM (almost all in share/) with system gcc and yum packages, linked to the system
+libc
 
 ```powershell
 wsl --import CentS $HOME\VM\CentS $HOME\VM\centos.root.tar
@@ -286,13 +295,33 @@ wsl -d CentS
 
 ```
 
+CentOS Vault
+
+```bash
+minorver=7.9.2009
+sudo sed -e "s|^mirrorlist=|#mirrorlist=|g" \
+         -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.cernet.edu.cn/centos-vault/$minorver|g" \
+         -i.bak \
+         /etc/yum.repos.d/CentOS-*.repo
+
+sudo sed -e 's|^metalink=|#metalink=|g' \
+    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel-archive/|g' \
+    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel-archive/|g' \
+    -i.bak \
+    /etc/yum.repos.d/epel.repo
+
+sudo yum makecache
+
+```
+
+
 ### Perl, Python, R, and Rust with system `libc`
 
 All following binaries are built with system `gcc` and linked to the system `libc`.
 
 Avoid using graphic, gtk and x11 packages in brew.
 
-```shell
+```bash
 # mkdir -p $HOME/Scripts
 # cd $HOME/Scripts
 # git clone https://github.com/wang-q/dotfiles.git
@@ -324,7 +353,7 @@ bash ~/Scripts/dotfiles/python/install.sh
 
 ### Gnuplot and graphviz
 
-```shell
+```bash
 # gnuplot
 mkdir -p $HOME/bin
 mkdir -p $HOME/share/gnuplot
@@ -409,7 +438,7 @@ rm -fr graphviz-*
 
 ### Perl modules
 
-```shell
+```bash
 
 # Perl
 # cpanm --look XML::Parser
@@ -443,7 +472,7 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check
 
 ### SRA Toolkit
 
-```shell
+```bash
 cd
 
 # SRA Toolkit
@@ -459,7 +488,7 @@ rm -fr sratoolkit*
 
 ### hmmer, diamond and blast
 
-```shell
+```bash
 cd
 
 curl -LO http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz
@@ -490,23 +519,43 @@ mv ncbi-blast-2.15.0+/bin/* ~/bin/
 
 ### spades
 
-```shell
+CMake 3.16 or higher
+
+SPAdes requires gcc version 9.1 or later
+
+```bash
 cd
 
-curl -LO https://github.com/ablab/spades/releases/download/v4.0.0/SPAdes-4.0.0-Linux.tar.gz
+curl -LO https://github.com/Kitware/CMake/releases/download/v3.31.5/cmake-3.31.5-linux-x86_64.tar.gz
+tar xvfz cmake-3*.tar.gz
+mv cmake-3.31.5-linux-x86_64 ~/share/cmake
+ln -sf ~/share/cmake/bin/cmake ~/bin/cmake
 
-tar xvfz SPAdes-4*.tar.gz
+```
 
-mv SPAdes-4.0.0-Linux ~/share/SPAdes
-
-ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
-
+```bash
+#cd
+#
+##curl -LO https://github.com/ablab/spades/releases/download/v4.0.0/SPAdes-4.0.0-Linux.tar.gz
+#
+#curl -LO https://github.com/ablab/spades/releases/download/v4.0.0/SPAdes-4.0.0.tar.gz
+#
+#tar xvfz SPAdes-4*.tar.gz
+#cd SPAdes-4*
+#
+#./spades_compile.sh
+#
+#mv SPAdes-4.0.0-Linux ~/share/SPAdes
+#
+#ln -sf ~/share/SPAdes/bin/spades.py ~/bin/spades.py
+#
+#spades.py --test
 
 ```
 
 ### Rust and .nwr
 
-```shell
+```bash
 cd
 
 mkdir ~/.nwr
@@ -542,8 +591,8 @@ wsl -d CentH
 
 ```
 
-```shell
-WINDOWS_HOST=172.26.176.1
+```bash
+WINDOWS_HOST=192.168.32.1
 export ALL_PROXY="socks5h://${WINDOWS_HOST}:7890" HTTP_PROXY="http://${WINDOWS_HOST}:7890" HTTPS_PROXY="http://${WINDOWS_HOST}:7890" RSYNC_PROXY="${WINDOWS_HOST}:7890"
 
 cd
@@ -574,8 +623,7 @@ source $HOME/.bashrc
 
 * Homebrew 4.0 brings glibc-bootstrap, which makes installing glibc and gcc much easier.
 
-
-```shell
+```bash
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew install glibc
@@ -596,9 +644,12 @@ else
     echo >> $HOME/.bashrc
 fi
 
-brew install xz
+brew install xz -s
 brew install zstd
 brew install gcc # now as gcc@14
+
+brew install binutils
+brew link binutils --force
 
 brew install perl
 
@@ -651,7 +702,7 @@ brew install python # is now python@3.13
 
 The failed compilation package was installed with `--force-bottle`.
 
-```shell
+```bash
 # fontconfig
 brew install util-linux
 brew install libpng -s
@@ -698,12 +749,12 @@ brew install lua
 brew install pandoc gifsicle
 brew install aria2 wget
 brew install pigz pv
-brew install jq pup datamash miller
+brew install jq pup datamash
 
 # Packages written in Rust are installed by cargo
 
 # dazz
-brew install brewsci/science/poa
+#brew install brewsci/science/poa
 brew install wang-q/tap/faops
 brew install wang-q/tap/tsv-utils
 
@@ -711,35 +762,38 @@ brew install wang-q/tap/tsv-utils
 
 ### R Packages
 
-```shell
-# nloptr need `cmake`
-#ln -s /usr/bin/cmake3 ~/bin/cmake
-
-# brew unlink libxml2
-
-# Can't use brewed libxml2
-Rscript -e ' install.packages(
-    "XML",
-    repos="http://mirrors.ustc.edu.cn/CRAN",
-    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-    configure.vars = "CC=gcc"
-    ) '
-
+```bash
+## nloptr need `cmake`
+##ln -s /usr/bin/cmake3 ~/bin/cmake
+#
+## brew unlink libxml2
+#
+## Can't use brewed libxml2
+#Rscript -e ' install.packages(
+#    "XML",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+#    configure.vars = "CC=gcc"
+#    ) '
+#
 ## manually
-#curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.9.tar.gz |
-#    tar xvz
-#cd XML
-#./configure --with-xml-config=/usr/bin/xml2-config
-#CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+##curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.18.tar.gz |
+##    tar xvz
+##cd XML
+##./configure --with-xml-config=/usr/bin/xml2-config
+##CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+#
+## export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
+## pkg-config --cflags libxml-2.0
+## pkg-config --libs libxml-2.0
+#Rscript -e ' install.packages(
+#    "xml2",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
+#    ) '
 
-# export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
-# pkg-config --cflags libxml-2.0
-# pkg-config --libs libxml-2.0
-Rscript -e ' install.packages(
-    "xml2",
-    repos="http://mirrors.ustc.edu.cn/CRAN",
-    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
-    ) '
+brew install r
+brew pin r
 
 bash ~/Scripts/dotfiles/r/install.sh
 
@@ -769,16 +823,34 @@ parallel -j 1 -k --line-buffer '
         timeROC pROC verification \
         tidyverse devtools BiocManager
 
-# BioC packages
-Rscript -e 'BiocManager::install(version = "3.17", ask = FALSE)'
+# cellranger
 parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.17") } '\''
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        Seurat dplyr tibble \
+        ggplot2 pheatmap \
+        ggsci ggrepel \
+        viridis devtools NMF \
+        tidyr clustree patchwork
+
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.20", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
     ' ::: \
         Biobase GEOquery GenomicDataCommons
 
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
+    ' ::: \
+        monocle slingshot clusterProfiler org.Hs.eg.db GSVA GSEABase rtracklayer biomaRt harmony infercnv
+Rscript -e 'devtools::install_github("cole-trapnell-lab/monocle3")'  #monocle3
+
 # raster, classInt and spData need gdal
-# units needs udunit2
+# units needs udunits2
 # ranger, survminer might need a high version of gcc
+# infercnv need jags
+# nloptr need nlopt
 
 ```
 
@@ -793,7 +865,7 @@ wsl --export CentH $HOME\VM\CentH.tar
 
 ## My modules
 
-```shell
+```bash
 # Manually
 dotfiles/genomics.sh
 
@@ -834,7 +906,7 @@ Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.
 
 ## .ssh
 
-```shell
+```bash
 cp -R /mnt/c/Users/wangq/.ssh/ ~/
 
 chmod 700 ~/.ssh
@@ -847,7 +919,7 @@ chmod 600 ~/.ssh/known_hosts
 
 ## Mirror to remote server
 
-```shell
+```bash
 export HPCC=202.119.37.253
 export PORT=22
 

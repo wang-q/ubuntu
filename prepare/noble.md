@@ -152,7 +152,6 @@ sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
 # * Vitals
 # * Allow Locked Remote Desktop
 
-
 ```
 
 
@@ -227,7 +226,9 @@ flatpak remote-add --if-not-exists --user launcher.moe https://gol.launcher.moe/
 sudo flatpak install org.gnome.Platform//47
 flatpak install launcher.moe moe.launcher.the-honkers-railway-launcher
 
-flatpak install --user flathub io.mpv.Mpv
+# flatpak install --user flathub io.mpv.Mpv
+# flatpak install --user flathub info.smplayer.SMPlayer
+flatpak install --user flathub io.github.celluloid_player.Celluloid
 
 flatpak install --user flathub io.github.shiftey.Desktop
 # flatpak install --user flathub com.visualstudio.code
