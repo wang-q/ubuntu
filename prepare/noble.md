@@ -233,7 +233,7 @@ flatpak install --user flathub io.github.celluloid_player.Celluloid
 flatpak install --user flathub io.github.shiftey.Desktop
 # flatpak install --user flathub com.visualstudio.code
 
-flatpak --user install fr.handbrake.ghb
+flatpak install --user fr.handbrake.ghb
 flatpak install --user flathub com.tencent.WeChat
 flatpak install --user flathub org.zotero.Zotero
 
