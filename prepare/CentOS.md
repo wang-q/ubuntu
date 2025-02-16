@@ -595,6 +595,8 @@ wsl -d CentH
 WINDOWS_HOST=192.168.32.1
 export ALL_PROXY="socks5h://${WINDOWS_HOST}:7890" HTTP_PROXY="http://${WINDOWS_HOST}:7890" HTTPS_PROXY="http://${WINDOWS_HOST}:7890" RSYNC_PROXY="${WINDOWS_HOST}:7890"
 
+ln -s /mnt/c/Users/wangq/Scripts/ Scripts
+
 cd
 mkdir homebrew &&
     curl -L https://github.com/Homebrew/brew/tarball/master |
