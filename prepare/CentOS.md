@@ -208,7 +208,6 @@ yum install -y cabextract
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y udunits2-devel
 yum install -y cmake3
-yum install -y proxychains-ng
 yum install -y parallel
 
 # background
@@ -755,11 +754,6 @@ brew install jq pup datamash
 
 # Packages written in Rust are installed by cargo
 
-# dazz
-#brew install brewsci/science/poa
-brew install wang-q/tap/faops
-brew install wang-q/tap/tsv-utils
-
 ```
 
 ### R Packages
@@ -871,8 +865,6 @@ wsl --export CentH $HOME\VM\CentH.tar
 # Manually
 dotfiles/genomics.sh
 
-brew install wang-q/tap/mash@2.3
-
 # egaz
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh |
     bash
@@ -880,16 +872,12 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # anchr
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/install_dep.sh | bash
 
-brew install wang-q/tap/bifrost@1.3.5
-
 curl -fsSL https://raw.githubusercontent.com/wang-q/anchr/main/templates/check_dep.sh | bash
 
 # leading assemblers
 brew install spades
 spades.py --test
 rm -fr spades_test
-
-brew install brewsci/bio/megahit
 
 # quast, assembly quality assessment
 # https://github.com/ablab/quast/issues/140
