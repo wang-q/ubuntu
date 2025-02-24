@@ -957,10 +957,13 @@ rsync -avP -e "ssh -p ${PORT}" ~/.nwr/ wangq@${HPCC}:.nwr
 # CentH
 rsync -avP -e "ssh -p ${PORT}" ~/homebrew/ wangq@${HPCC}:homebrew --exclude="*Taps/*"
 
-rsync -avP -e "ssh -p ${PORT}" ~/share/R/ wangq@${HPCC}:share/R
+#rsync -avP -e "ssh -p ${PORT}" ~/share/R/ wangq@${HPCC}:share/R
 
 rsync -avP -e "ssh -p ${PORT}" ~/.bashrc wangq@${HPCC}:.bashrc
 rsync -avP -e "ssh -p ${PORT}" ~/.bash_profile wangq@${HPCC}:.bash_profile
+
+# Ubuntu
+rsync -avP -e "ssh -p ${PORT}" ~/.fonts/ wangq@${HPCC}:.fonts
 
 # Sync back
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/ ~/share
