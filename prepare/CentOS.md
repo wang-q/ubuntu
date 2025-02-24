@@ -15,10 +15,10 @@
     * [Perl, Python, R, and Rust with system `libc`](#perl-python-r-and-rust-with-system-libc)
     * [Gnuplot and graphviz](#gnuplot-and-graphviz)
     * [Perl modules](#perl-modules)
-    * [SRA Toolkit](#sra-toolkit)
-    * [hmmer, diamond and blast](#hmmer-diamond-and-blast)
+    * [SRA Toolkit and blast](#sra-toolkit-and-blast)
     * [spades](#spades)
     * [Rust and .nwr](#rust-and-nwr)
+    * [Old R](#old-r)
     * [Backup WSL](#backup-wsl-1)
   * [CentH](#centh)
     * [gcc and commonly used libraries](#gcc-and-commonly-used-libraries)
@@ -313,7 +313,6 @@ sudo yum makecache
 
 ```
 
-
 ### Perl, Python, R, and Rust with system `libc`
 
 All following binaries are built with system `gcc` and linked to the system `libc`.
@@ -469,7 +468,7 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check
 
 ```
 
-### SRA Toolkit
+### SRA Toolkit and blast
 
 ```bash
 cd
@@ -483,32 +482,7 @@ cp sratoolkit*/bin/* ~/bin/
 
 rm -fr sratoolkit*
 
-```
-
-### hmmer, diamond and blast
-
-```bash
-cd
-
-curl -LO http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz
-
-tar -xvzf hmmer-3.4.tar.gz
-cd hmmer-3.4
-./configure \
-    --enable-threads \
-    --enable-sse \
-    --enable-lfs \
-    --disable-altivec \
-    --prefix=$HOME
-
-make
-make install
-
-curl -LO https://github.com/bbuchfink/diamond/releases/download/v2.1.9/diamond-linux64.tar.gz
-
-tar xvfz diamond-linux64.tar.gz
-mv diamond ~/bin
-
+# blast
 curl -LO https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.15.0/ncbi-blast-2.15.0+-x64-linux.tar.gz
 
 tar xvfz ncbi-blast-*.tar.gz
@@ -564,6 +538,40 @@ cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
 
 cd ~/Scripts/nwr
 cargo install --path . --force
+
+```
+
+### Old R
+
+```bash
+## nloptr need `cmake`
+##ln -s /usr/bin/cmake3 ~/bin/cmake
+#
+## brew unlink libxml2
+#
+## Can't use brewed libxml2
+#Rscript -e ' install.packages(
+#    "XML",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+#    configure.vars = "CC=gcc"
+#    ) '
+#
+## manually
+##curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.18.tar.gz |
+##    tar xvz
+##cd XML
+##./configure --with-xml-config=/usr/bin/xml2-config
+##CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+#
+## export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
+## pkg-config --cflags libxml-2.0
+## pkg-config --libs libxml-2.0
+#Rscript -e ' install.packages(
+#    "xml2",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
+#    ) '
 
 ```
 
@@ -634,23 +642,25 @@ if grep -q -i BREW_GLIBC $HOME/.bashrc; then
     echo "==> .bashrc already contains BREW_GLIBC"
 else
     echo "==> Update .bashrc"
-
     echo >> $HOME/.bashrc
     echo '# BREW_GLIBC' >> $HOME/.bashrc
     echo 'export PATH="$HOME/homebrew/opt/glibc/bin:$PATH"' >> $HOME/.bashrc
     echo 'export PATH="$HOME/homebrew/opt/glibc/sbin:$PATH"' >> $HOME/.bashrc
-    echo 'export LDFLAGS="-L$HOME/homebrew/opt/glibc/lib $LDFLAGS"' >> $HOME/.bashrc
-    echo 'export CFLAGS="-I$HOME/homebrew/opt/glibc/include $CFLAGS"' >> $HOME/.bashrc
-    echo 'export CPPFLAGS="-I$HOME/homebrew/opt/glibc/include $CPPFLAGS"' >> $HOME/.bashrc
+#    echo 'export LDFLAGS="-L$HOME/homebrew/opt/glibc/lib $LDFLAGS"' >> $HOME/.bashrc
+#    echo 'export CFLAGS="-I$HOME/homebrew/opt/glibc/include $CFLAGS"' >> $HOME/.bashrc
+#    echo 'export CPPFLAGS="-I$HOME/homebrew/opt/glibc/include $CPPFLAGS"' >> $HOME/.bashrc
     echo >> $HOME/.bashrc
 fi
+source ~/.bashrc
 
-brew install xz -s
-brew install zstd
 brew install gcc # now as gcc@14
+brew install gcc@9
 
 brew install binutils
 brew link binutils --force
+
+brew test gcc
+brew test gcc@9
 
 brew install perl
 
@@ -660,12 +670,12 @@ brew install stow -s
 brew install parallel
 echo "will cite" | parallel --citation
 
-curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
+# curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
 
-bash ~/Scripts/dotfiles/install.sh
+# bash ~/Scripts/dotfiles/install.sh
 
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-vim +PluginInstall +qall
+# git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+# vim +PluginInstall +qall
 
 # Some building tools
 brew install autoconf libtool automake # autogen
@@ -693,6 +703,7 @@ brew install gsl
 brew install libssh2
 brew install jemalloc
 brew install boost
+brew install sqlite
 
 # python
 brew install python # is now python@3.13
@@ -714,14 +725,19 @@ brew install fontconfig
 brew install $( brew deps gd )
 brew install gd
 
+brew test gd
+
 # gtk stuffs
-brew install glib
 brew install libX11
+brew install glib
 brew install cairo
+
+brew test glib
+brew test cairo
 
 brew reinstall libffi -s
 
-brew install gobject-introspection --force-bottle
+brew install gobject-introspection
 brew install harfbuzz
 brew install pango
 
@@ -730,14 +746,20 @@ brew install $( brew deps openjdk )
 brew install openjdk --force-bottle
 brew install ant maven
 
+brew test openjdk
+
 # graphics
 brew install $( brew deps ghostscript )
 brew install ghostscript
 
+brew test ghostscript
+
 brew install $( brew deps imagemagick )
 brew install imagemagick
 
-# bwa and gatk
+brew test imagemagick
+
+# gatk
 brew install openjdk@17 --force-bottle
 brew install python@3.12 --force-bottle
 brew install bwa samtools picard-tools
@@ -759,39 +781,40 @@ brew install jq pup datamash
 ### R Packages
 
 ```bash
-## nloptr need `cmake`
-##ln -s /usr/bin/cmake3 ~/bin/cmake
-#
-## brew unlink libxml2
-#
-## Can't use brewed libxml2
-#Rscript -e ' install.packages(
-#    "XML",
-#    repos="http://mirrors.ustc.edu.cn/CRAN",
-#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-#    configure.vars = "CC=gcc"
-#    ) '
-#
-## manually
-##curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.18.tar.gz |
-##    tar xvz
-##cd XML
-##./configure --with-xml-config=/usr/bin/xml2-config
-##CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
-#
-## export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
-## pkg-config --cflags libxml-2.0
-## pkg-config --libs libxml-2.0
-#Rscript -e ' install.packages(
-#    "xml2",
-#    repos="http://mirrors.ustc.edu.cn/CRAN",
-#    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
-#    ) '
-
 brew install r
 brew pin r
 
+# raster, classInt and spData need gdal
+# units needs udunits2
+# ranger, survminer might need a high version of gcc
+# infercnv needs jags
+# nloptr needs nlopt
+# gert needs libgit2
+#brew install gdal # gdal is huge
+brew install udunits
+brew install jags
+brew install nlopt
+brew install libgit2
+
+cd
+ln -s /mnt/c/Users/wangq/Scripts/ Scripts
+
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        Rcpp cpp11 openssl pkgconfig remotes XML xml2 usethis testthat devtools
+
 bash ~/Scripts/dotfiles/r/install.sh
+
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = FALSE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
+    ' ::: \
+        units ranger survminer nloptr \
+        chron clusterGeneration conditionz \
+        docopt  downloader expm fontcm  \
+        gsubfn influenceR interp latticeExtra  mnormt \
+        phylocomr phytools proto qlcMatrix reshape \
+        shadowtext sparsesvd sqldf webshot
 
 # fonts
 Rscript -e 'library(remotes); options(repos = c(CRAN = "http://mirrors.ustc.edu.cn/CRAN")); remotes::install_version("Rttf2pt1", version = "1.3.8")'
@@ -819,6 +842,18 @@ parallel -j 1 -k --line-buffer '
         timeROC pROC verification \
         tidyverse devtools BiocManager
 
+# BioC packages
+Rscript -e 'BiocManager::install(version = "3.20", ask = FALSE)'
+parallel -j 1 -k --line-buffer '
+    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
+    ' ::: \
+        Biobase GEOquery GenomicDataCommons \
+        biomaRt bsseq DSS scran scater edgeR pheatmap monocle DESeq2 clusterProfiler factoextra \
+        DO.db genefilter geneplotter
+
+# not available
+# bold brranching maptools
+
 # cellranger
 parallel -j 1 -k --line-buffer '
     Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { install.packages("{}", repos="http://mirrors.ustc.edu.cn/CRAN") } '\''
@@ -829,24 +864,11 @@ parallel -j 1 -k --line-buffer '
         viridis devtools NMF \
         tidyr clustree patchwork
 
-# BioC packages
-Rscript -e 'BiocManager::install(version = "3.20", ask = FALSE)'
-parallel -j 1 -k --line-buffer '
-    Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
-    ' ::: \
-        Biobase GEOquery GenomicDataCommons
-
 parallel -j 1 -k --line-buffer '
     Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
     ' ::: \
         monocle slingshot clusterProfiler org.Hs.eg.db GSVA GSEABase rtracklayer biomaRt harmony infercnv
 Rscript -e 'devtools::install_github("cole-trapnell-lab/monocle3")'  #monocle3
-
-# raster, classInt and spData need gdal
-# units needs udunits2
-# ranger, survminer might need a high version of gcc
-# infercnv need jags
-# nloptr need nlopt
 
 ```
 
