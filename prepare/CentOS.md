@@ -867,8 +867,12 @@ parallel -j 1 -k --line-buffer '
 parallel -j 1 -k --line-buffer '
     Rscript -e '\'' if (!requireNamespace("{}", quietly = TRUE)) { BiocManager::install("{}", version = "3.20") } '\''
     ' ::: \
-        monocle slingshot clusterProfiler org.Hs.eg.db GSVA GSEABase rtracklayer biomaRt harmony infercnv
+        org.Hs.eg.db GSEABase biomaRt \
+        DoubletFinder presto \
+        monocle slingshot clusterProfiler GSVA  rtracklayer  harmony infercnv
 Rscript -e 'devtools::install_github("cole-trapnell-lab/monocle3")'  #monocle3
+Rscript -e 'devtools::install_github("chris-mcginnis-ucsf/DoubletFinder")' #DoubleFinder
+Rscript -e 'devtools::install_github("immunogenomics/presto")' #presto
 
 ```
 
