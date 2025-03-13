@@ -50,7 +50,7 @@ We will build several VMs here:
 
 ### In WSL
 
-This one is prefered.
+This one is preferred.
 
 https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
 
@@ -341,8 +341,8 @@ bash ~/Scripts/dotfiles/rust/install.sh
 
 source $HOME/.bashrc
 
-cargo install bat exa bottom tealdeer
-cargo install hyperfine ripgrep tokei
+#cargo install bat exa bottom tealdeer
+#cargo install hyperfine ripgrep tokei
 
 # Python libraries
 bash ~/Scripts/dotfiles/python/install.sh
