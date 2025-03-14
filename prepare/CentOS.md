@@ -204,6 +204,9 @@ yum install -y perl-IPC-Cmd perl-Digest-MD5
 # fonts
 yum install -y cabextract
 
+# clang
+yum install -y cmake gcc-c++ make llvm-devel clang-devel
+
 # epel
 rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y udunits2-devel
