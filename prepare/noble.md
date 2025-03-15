@@ -196,7 +196,6 @@ curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/
 chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
 mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 
-
 ```
 
 ### Apps
