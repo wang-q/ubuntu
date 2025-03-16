@@ -134,84 +134,21 @@ Absent:
 * gnuplot
 
 ```bash
-# Development Tools
+# Most required basic packages are already installed in the docker image
 yum -y upgrade
-yum -y install net-tools # ifconfig
-yum -y groupinstall 'Development Tools'
-yum -y install file vim
 
 # Install newer versions of git and curl
 # Linuxbrew need git 2.7.0 and cURL 7.41.0
-rpm -U http://opensource.wandisco.com/centos/7/git/x86_64/wandisco-git-release-7-2.noarch.rpm \
-    && yum install -y git
-
 git --version
-# git version 2.39.1
-
-# curl need libnghttp2
-# libnghttp2 is in epel
-yum install -y epel-release
-sed -e 's|^metalink=|#metalink=|g' \
-    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
-    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
-    -i.bak \
-    /etc/yum.repos.d/epel.repo
-yum install -y libnghttp2
-
-# city-fan
-rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
-
-yum install -y yum-utils
-
-yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
-
-curl --version
-# curl 8.1.2
-
-yum-config-manager --disable city-fan.org
-
-# https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
-yum remove -y yum-utils
-
-# mimic libs
-yum install -y zlib-devel bzip2-devel xz-devel
-yum install -y readline readline-devel ncurses ncurses-devel
-yum install -y libxml2 libxml2-devel expat expat-devel libxslt libxslt-devel
-yum install -y libcurl-devel pcre-devel
-
-# Python
-yum install -y openssl openssl-devel
-yum install -y libffi libffi-devel
-yum install -y libuuid libuuid-devel
-yum install -y sqlite sqlite-devel
+# git version 2.41.0
 
 # R
-yum install -y blas-devel lapack-devel
-yum install -y libpng-devel libjpeg-turbo-devel libtiff-devel freetype-devel fontconfig-devel
 yum install -y ghostscript
-
-#yum install -y libX11-devel libICE-devel libXt-devel libtirpc
 yum install -y cairo-devel pango-devel # HPCC has no -devel
-
 yum install -y gd gd-devel
 
-# tlmgr need these
-yum install -y perl-IPC-Cmd perl-Digest-MD5
-
-# fonts
-yum install -y cabextract
-
-# clang
-yum install -y cmake gcc-c++ make llvm-devel clang-devel
-
-# epel
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y udunits2-devel
-yum install -y cmake3
-yum install -y parallel
-
-# background
-yum install -y screen htop
+## clang
+#yum install -y llvm-devel clang-devel
 
 # locate
 yum install -y mlocate
@@ -226,7 +163,7 @@ user's home directory. Adding `-m` (abbreviation for `--move-home` will also mov
 the user's current directory to the new directory.
 
 ```bash
-yum install passwd sudo -y
+yum install -y passwd sudo
 
 myUsername=wangq
 adduser -G wheel $myUsername
@@ -264,9 +201,39 @@ visudo
 Can't change hostname inside WSL
 
 ```bash
-hostnamectl set-hostname centos
+#hostnamectl set-hostname centos
+#
+#systemctl reboot
 
-systemctl reboot
+```
+
+### Old codes
+
+```bash
+## curl need libnghttp2
+## libnghttp2 is in epel
+#yum install -y epel-release
+#sed -e 's|^metalink=|#metalink=|g' \
+#    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+#    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+#    -i.bak \
+#    /etc/yum.repos.d/epel.repo
+#yum install -y libnghttp2
+#
+## city-fan
+#rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
+#
+#yum install -y yum-utils
+#
+#yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
+#
+#curl --version
+## curl 8.1.2
+#
+#yum-config-manager --disable city-fan.org
+#
+## https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
+#yum remove -y yum-utils
 
 ```
 
