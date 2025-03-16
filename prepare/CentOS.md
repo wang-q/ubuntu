@@ -59,22 +59,19 @@ https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro
     * Settings -> Resources -> WSL integration -> Tick Ubuntu
 
 ```bash
-docker pull centos:centos7
+docker pull wangq/centos:master
 
 # An arbitrary command to generate a container
-docker run -t centos:centos7 bash ls /
+docker run -t wangq/centos:master bash -c 'ls -l /'
 
 dockerContainerID=$(docker container ls -a | grep -i centos | awk '{print $1}')
 
-docker export $dockerContainerID > /mnt/c/Users/wangq/centos.tar
+mkdir -p /mnt/c/Users/wangq/VM
+docker export $dockerContainerID > /mnt/c/Users/wangq/VM/centos.tar
 
 ```
 
 ```powershell
-mkdir -p $HOME\VM
-
-mv centos.tar $HOME\VM
-
 wsl --import CentOS $HOME\VM\CentOS $HOME\VM\centos.tar
 
 # list all VMs
