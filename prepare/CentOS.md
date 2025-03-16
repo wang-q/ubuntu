@@ -278,16 +278,16 @@ rm cbp.linux
 
 # tools
 cbp install curl cmake ninja
-cbp install jq pup
 cbp install pigz pv
 cbp install sqlite3
-cbp install pandoc
 cbp install datamash tsv-utils
-cbp install eza fd ripgrep
+cbp install jq pup
+cbp install pandoc
+cbp install bat eza fd ripgrep
+cbp install hyperfine tealdeer tokei
 
 # gnuplot and graphviz
 cbp install gnuplot
-
 gnuplot <<- EOF
     set term png
     set output "output.png"
@@ -295,7 +295,6 @@ gnuplot <<- EOF
 EOF
 
 cbp install graphviz
-
 dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
 
 # blast and sratoolkit
@@ -307,7 +306,38 @@ cbp install picard fastqc
 
 ```
 
-### Perl, Python, R, and Rust with system `libc`
+### Python and Java
+
+```bash
+# Python
+cbp install python3.11 uv
+
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip setuptools wheel
+
+uv pip install --system numpy matplotlib
+
+# Java
+mkdir -p ~/share
+curl -k -o openjdk.tar.gz -L https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz
+
+tar xvfz openjdk.tar.gz
+mv jdk-* ~/share/openjdk
+
+if grep -q -i OPENJDK_17_PATH $HOME/.bashrc; then
+    echo "==> .bashrc already contains OPENJDK_17_PATH"
+else
+    echo "==> Updating .bashrc with OPENJDK_17_PATH..."
+    OPENJDK_17_PATH="export PATH=\"\$HOME/share/openjdk/bin:\$PATH\""
+    echo '# OPENJDK_17_PATH' >> $HOME/.bashrc
+    echo $OPENJDK_17_PATH     >> $HOME/.bashrc
+    echo >> $HOME/.bashrc
+fi
+source $HOME/.bashrc
+
+```
+
+### Perl and R with system `libc`
 
 All following binaries are built with system `gcc` and linked to the system `libc`.
 
@@ -315,28 +345,15 @@ Avoid using graphic, gtk and x11 packages in brew.
 
 ```bash
 cd
+ln -sf /mnt/c/Users/wangq/Scripts/ Scripts
 
-# Avoid rust target/
-ln -s /mnt/c/Users/wangq/Scripts/ Scripts
-
-# Builds
+# Perl
 bash ~/Scripts/dotfiles/perl/build.sh
-
-bash ~/Scripts/dotfiles/python/build.sh
 
 # A minimal R built by gcc-4.8
 bash ~/Scripts/dotfiles/r/build.sh
 
-# Rust
-bash ~/Scripts/dotfiles/rust/install.sh
-
 source $HOME/.bashrc
-
-#cargo install bat exa bottom tealdeer
-#cargo install hyperfine ripgrep tokei
-
-# Python libraries
-bash ~/Scripts/dotfiles/python/install.sh
 
 ```
 
@@ -559,10 +576,6 @@ echo "will cite" | parallel --citation
 # git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 # vim +PluginInstall +qall
 
-# Some building tools
-brew install autoconf libtool automake # autogen
-brew install bison flex
-
 # https://docs.brew.sh/FAQ#can-i-edit-formulae-myself
 # https://stackoverflow.com/a/75520170/23645669
 # https://stackoverflow.com/a/68816241/23645669
@@ -580,12 +593,6 @@ brew reinstall openssl@3 -s
 
 brew install cmake
 
-# libs
-brew install gsl
-brew install libssh2
-brew install jemalloc
-brew install boost
-
 # python
 brew install python # is now python@3.13
 
@@ -596,39 +603,6 @@ brew install python # is now python@3.13
 The failed compilation package was installed with `--force-bottle`.
 
 ```bash
-# fontconfig
-brew install util-linux
-brew install libpng -s
-brew install $( brew deps fontconfig )
-brew install fontconfig
-
-# gd
-brew install $( brew deps gd )
-brew install gd
-
-brew test gd
-
-# gtk stuffs
-brew install libX11
-brew install glib
-brew install cairo
-
-brew test glib
-brew test cairo
-
-brew reinstall libffi -s
-
-brew install gobject-introspection
-brew install harfbuzz
-brew install pango
-
-# Java
-brew install $( brew deps openjdk )
-brew install openjdk --force-bottle
-brew install ant maven
-
-brew test openjdk
-
 # graphics
 brew install $( brew deps imagemagick )
 brew install imagemagick
@@ -636,9 +610,9 @@ brew install imagemagick
 brew test imagemagick
 
 # gatk
-brew install openjdk@17 --force-bottle
-brew install python@3.12 --force-bottle
-brew install brewsci/bio/gatk
+#brew install openjdk@17 --force-bottle
+#brew install python@3.12 --force-bottle
+#brew install brewsci/bio/gatk
 
 # others
 brew install bats-core
