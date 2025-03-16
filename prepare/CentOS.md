@@ -276,8 +276,13 @@ chmod +x cbp.linux
 source ~/.bashrc
 rm cbp.linux
 
+# curl
+cbp install curl
+curl -k -o $(cbp prefix)/share/cacert.pem -L https://curl.se/ca/cacert-2025-02-25.pem
+echo "cacert $(cbp prefix)/share/cacert.pem" > $HOME/.curlrc
+
 # tools
-cbp install curl cmake ninja
+cbp install cmake ninja
 cbp install pigz pv
 cbp install sqlite3
 cbp install datamash tsv-utils
