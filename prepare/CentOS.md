@@ -261,22 +261,49 @@ wsl -d CentS
 
 ```
 
-CentOS Vault
+### cbp
 
 ```bash
-minorver=7.9.2009
-sudo sed -e "s|^mirrorlist=|#mirrorlist=|g" \
-         -e "s|^#baseurl=http://mirror.centos.org/centos/\$releasever|baseurl=https://mirrors.cernet.edu.cn/centos-vault/$minorver|g" \
-         -i.bak \
-         /etc/yum.repos.d/CentOS-*.repo
+WINDOWS_HOST=192.168.32.1
+export ALL_PROXY="socks5h://${WINDOWS_HOST}:7890" HTTP_PROXY="http://${WINDOWS_HOST}:7890" HTTPS_PROXY="http://${WINDOWS_HOST}:7890" RSYNC_PROXY="${WINDOWS_HOST}:7890"
 
-sudo sed -e 's|^metalink=|#metalink=|g' \
-    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel-archive/|g' \
-    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel-archive/|g' \
-    -i.bak \
-    /etc/yum.repos.d/epel.repo
+cd
 
-sudo yum makecache
+# Install cbp
+curl -LO https://github.com/wang-q/cbp/releases/latest/download/cbp.linux
+chmod +x cbp.linux
+./cbp.linux init
+source ~/.bashrc
+rm cbp.linux
+
+# tools
+cbp install curl cmake ninja
+cbp install jq pup
+cbp install pigz pv
+cbp install sqlite3
+cbp install pandoc
+cbp install datamash tsv-utils
+cbp install eza fd ripgrep
+
+# gnuplot and graphviz
+cbp install gnuplot
+
+gnuplot <<- EOF
+    set term png
+    set output "output.png"
+    plot sin(x) with linespoints pointtype 3
+EOF
+
+cbp install graphviz
+
+dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
+
+# blast and sratoolkit
+cbp install blast sratoolkit
+
+# ngs
+cbp install bwa samtools bcftools
+cbp install picard fastqc
 
 ```
 
@@ -287,9 +314,6 @@ All following binaries are built with system `gcc` and linked to the system `lib
 Avoid using graphic, gtk and x11 packages in brew.
 
 ```bash
-# mkdir -p $HOME/Scripts
-# cd $HOME/Scripts
-# git clone https://github.com/wang-q/dotfiles.git
 cd
 
 # Avoid rust target/
@@ -316,95 +340,9 @@ bash ~/Scripts/dotfiles/python/install.sh
 
 ```
 
-### Gnuplot and graphviz
-
-```bash
-# gnuplot
-mkdir -p $HOME/bin
-mkdir -p $HOME/share/gnuplot
-
-curl -L https://downloads.sourceforge.net/project/gnuplot/gnuplot/5.4.3/gnuplot-5.4.3.tar.gz |
-    tar xvz
-
-cd gnuplot-*
-
-CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
-./configure \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --with-readline=builtin \
-    --without-aquaterm \
-    --disable-wxwidgets \
-    --without-qt \
-    --without-x \
-    --without-latex \
-    --without-gd \
-    --without-tektronix \
-    --prefix=$HOME/share/gnuplot
-
-make
-make install
-
-ln -sf ~/share/gnuplot/bin/gnuplot ~/bin/gnuplot
-
-gnuplot <<- EOF
-    set term png
-    set output "output.png"
-    plot sin(x) with linespoints pointtype 3
-EOF
-
-cd
-rm -fr gnuplot-*
-
-# graphviz
-mkdir -p $HOME/share/graphviz
-
-curl -L https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/5.0.0/graphviz-5.0.0.tar.gz |
-    tar xvz
-
-cd graphviz-*
-
-CC=gcc CXX=g++ PKG_CONFIG=/usr/bin/pkg-config PKG_CONFIG_PATH=/usr/lib64/pkgconfig/ \
-./configure \
-    --disable-dependency-tracking \
-    --disable-silent-rules \
-    --disable-php \
-    --disable-swig \
-    --disable-tcl \
-    --without-quartz \
-    --without-freetype2 \
-    --without-gdk \
-    --without-gdk-pixbuf \
-    --without-glut \
-    --without-gtk \
-    --without-poppler \
-    --without-qt \
-    --without-x \
-    --without-gts \
-    --prefix=$HOME/share/graphviz
-
-# https://stackoverflow.com/questions/10279829/installing-glib-in-non-standard-prefix-fails
-make clean
-make
-make install
-
-find $HOME/share/graphviz/bin/ -type f |
-    parallel -j 1 -k --line-buffer '
-        >&2 echo {}
-        ln -s {} ~/bin/{/}
-        '
-
-dot -Tpdf -o sample.pdf <(echo "digraph G { a -> b }")
-
-cd
-rm -fr graphviz-*
-
-```
-
 ### Perl modules
 
 ```bash
-
 # Perl
 # cpanm --look XML::Parser
 # perl Makefile.PL EXPATLIBPATH="$(brew --prefix expat)/lib" EXPATINCPATH="$(brew --prefix expat)/include"
@@ -432,28 +370,6 @@ curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_
 # App::Plotr
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh |
     bash
-
-```
-
-### SRA Toolkit and blast
-
-```bash
-cd
-
-# SRA Toolkit
-curl -LO https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/3.0.5/sratoolkit.3.0.5-centos_linux64.tar.gz
-
-tar -xvzf sratoolkit*.tar.gz --wildcards "*/bin/*"
-rm -fr sratoolkit*/bin/ncbi
-cp sratoolkit*/bin/* ~/bin/
-
-rm -fr sratoolkit*
-
-# blast
-curl -LO https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.15.0/ncbi-blast-2.15.0+-x64-linux.tar.gz
-
-tar xvfz ncbi-blast-*.tar.gz
-mv ncbi-blast-2.15.0+/bin/* ~/bin/
 
 ```
 
@@ -632,7 +548,6 @@ brew test gcc@9
 brew install perl
 
 # Downloads
-brew install jq
 brew install stow -s
 brew install parallel
 echo "will cite" | parallel --citation
@@ -660,7 +575,7 @@ git clone --depth=1 https://github.com/Homebrew/homebrew-core.git
 
 # brew tap --force --shallow homebrew/core
 brew edit openssl@3
-# comment the line of `make test`
+# comment out the line of `make test`
 brew reinstall openssl@3 -s
 
 brew install cmake
@@ -670,7 +585,6 @@ brew install gsl
 brew install libssh2
 brew install jemalloc
 brew install boost
-brew install sqlite
 
 # python
 brew install python # is now python@3.13
@@ -716,11 +630,6 @@ brew install ant maven
 brew test openjdk
 
 # graphics
-brew install $( brew deps ghostscript )
-brew install ghostscript
-
-brew test ghostscript
-
 brew install $( brew deps imagemagick )
 brew install imagemagick
 
@@ -729,17 +638,12 @@ brew test imagemagick
 # gatk
 brew install openjdk@17 --force-bottle
 brew install python@3.12 --force-bottle
-brew install bwa samtools picard-tools
 brew install brewsci/bio/gatk
 
 # others
 brew install bats-core
 
 brew install lua
-brew install pandoc gifsicle
-brew install aria2 wget
-brew install pigz pv
-brew install jq pup datamash
 
 # Packages written in Rust are installed by cargo
 
