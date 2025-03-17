@@ -10,19 +10,19 @@
     * [Change the Home directory](#change-the-home-directory)
     * [Sudo](#sudo)
     * [Change the hostname](#change-the-hostname)
+    * [Old codes](#old-codes)
     * [Backup WSL](#backup-wsl)
   * [CentS](#cents)
-    * [Perl, Python, R, and Rust with system `libc`](#perl-python-r-and-rust-with-system-libc)
-    * [Gnuplot and graphviz](#gnuplot-and-graphviz)
+    * [cbp](#cbp)
+    * [Perl, Python, and Java](#perl-python-and-java)
+    * [R with system `libc`](#r-with-system-libc)
     * [Perl modules](#perl-modules)
-    * [SRA Toolkit and blast](#sra-toolkit-and-blast)
     * [spades](#spades)
     * [Rust and .nwr](#rust-and-nwr)
     * [Old R](#old-r)
     * [Backup WSL](#backup-wsl-1)
   * [CentH](#centh)
     * [gcc and commonly used libraries](#gcc-and-commonly-used-libraries)
-    * [Other brew packages](#other-brew-packages)
     * [R Packages](#r-packages)
     * [Backup WSL](#backup-wsl-2)
   * [My modules](#my-modules)
@@ -288,7 +288,7 @@ cbp install sqlite3
 cbp install datamash tsv-utils
 cbp install jq pup
 cbp install pandoc
-cbp install bat eza fd ripgrep
+cbp install bat dust eza fd ripgrep
 cbp install hyperfine tealdeer tokei
 
 # gnuplot and graphviz
@@ -311,9 +311,14 @@ cbp install picard fastqc
 
 ```
 
-### Python and Java
+### Perl, Python, and Java
 
 ```bash
+# Perl
+cbp install perl5.34
+
+curl -L https://cpanmin.us | perl - App::cpanminus
+
 # Python
 cbp install python3.11 uv
 
@@ -324,7 +329,7 @@ uv pip install --system numpy matplotlib
 
 # Java
 mkdir -p ~/share
-curl -k -o openjdk.tar.gz -L https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz
+curl -o openjdk.tar.gz -L https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz
 
 tar xvfz openjdk.tar.gz
 mv jdk-* ~/share/openjdk
@@ -342,18 +347,15 @@ source $HOME/.bashrc
 
 ```
 
-### Perl and R with system `libc`
+### R with system `libc`
 
-All following binaries are built with system `gcc` and linked to the system `libc`.
+R was built with system `gcc` and linked to the system `libc`.
 
 Avoid using graphic, gtk and x11 packages in brew.
 
 ```bash
 cd
 ln -sf /mnt/c/Users/wangq/Scripts/ Scripts
-
-# Perl
-bash ~/Scripts/dotfiles/perl/build.sh
 
 # A minimal R built by gcc-4.8
 bash ~/Scripts/dotfiles/r/build.sh
@@ -372,7 +374,7 @@ source $HOME/.bashrc
 # make install
 
 # cpanm --look Net::SSLeay
-# OPENSSL_PREFIX="$(brew --prefix openssl@1.1)" CC=gcc-13 perl Makefile.PL
+# OPENSSL_PREFIX="$(cbp prefix)" perl Makefile.PL
 # make
 # make test
 # make install
@@ -601,30 +603,10 @@ brew install cmake
 # python
 brew install python # is now python@3.13
 
-```
-
-### Other brew packages
-
-The failed compilation package was installed with `--force-bottle`.
-
-```bash
-# graphics
-brew install $( brew deps imagemagick )
-brew install imagemagick
-
-brew test imagemagick
-
-# gatk
-#brew install openjdk@17 --force-bottle
-#brew install python@3.12 --force-bottle
-#brew install brewsci/bio/gatk
-
 # others
 brew install bats-core
 
 brew install lua
-
-# Packages written in Rust are installed by cargo
 
 ```
 
