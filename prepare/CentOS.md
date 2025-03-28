@@ -281,7 +281,7 @@ cbp install curl
 curl -k -o $(cbp prefix)/share/cacert.pem -L https://curl.se/ca/cacert-2025-02-25.pem
 echo "cacert $(cbp prefix)/share/cacert.pem" > $HOME/.curlrc
 
-# tools
+# CLI tools
 cbp install cmake ninja
 cbp install pigz pv
 cbp install sqlite3
@@ -328,22 +328,7 @@ python3 -m pip install --upgrade pip setuptools wheel
 uv pip install --system numpy matplotlib
 
 # Java
-mkdir -p ~/share
-curl -o openjdk.tar.gz -L https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14%2B7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz
-
-tar xvfz openjdk.tar.gz
-mv jdk-* ~/share/openjdk
-
-if grep -q -i OPENJDK_17_PATH $HOME/.bashrc; then
-    echo "==> .bashrc already contains OPENJDK_17_PATH"
-else
-    echo "==> Updating .bashrc with OPENJDK_17_PATH..."
-    OPENJDK_17_PATH="export PATH=\"\$HOME/share/openjdk/bin:\$PATH\""
-    echo '# OPENJDK_17_PATH' >> $HOME/.bashrc
-    echo $OPENJDK_17_PATH     >> $HOME/.bashrc
-    echo >> $HOME/.bashrc
-fi
-source $HOME/.bashrc
+cbp install openjdk
 
 ```
 
@@ -386,10 +371,6 @@ cpanm --verbose Statistics::R
 # My modules
 cpanm -nq App::Dazz # need dazz in $PATH
 cpanm --verbose --force App::Dazz
-
-# App::Egaz
-curl -fsSL https://raw.githubusercontent.com/wang-q/App-Egaz/master/share/check_dep.sh |
-    bash
 
 # App::Plotr
 curl -fsSL https://raw.githubusercontent.com/wang-q/App-Plotr/master/share/check_dep.sh |
@@ -561,27 +542,17 @@ fi
 source ~/.bashrc
 
 brew install gcc # now as gcc@14
-brew install gcc@9
 
 brew install binutils
 brew link binutils --force
 
 brew test gcc
-brew test gcc@9
 
 brew install perl
 
 # Downloads
-brew install stow -s
 brew install parallel
 echo "will cite" | parallel --citation
-
-# curl -L https://raw.githubusercontent.com/wang-q/dotfiles/master/download.sh | bash
-
-# bash ~/Scripts/dotfiles/install.sh
-
-# git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-# vim +PluginInstall +qall
 
 # https://docs.brew.sh/FAQ#can-i-edit-formulae-myself
 # https://stackoverflow.com/a/75520170/23645669
@@ -602,11 +573,6 @@ brew install cmake
 
 # python
 brew install python # is now python@3.13
-
-# others
-brew install bats-core
-
-brew install lua
 
 ```
 
