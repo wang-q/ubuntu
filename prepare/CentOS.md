@@ -9,17 +9,13 @@
     * [Install libraries](#install-libraries)
     * [Change the Home directory](#change-the-home-directory)
     * [Sudo](#sudo)
-    * [Change the hostname](#change-the-hostname)
-    * [Old codes](#old-codes)
     * [Backup WSL](#backup-wsl)
   * [CentS](#cents)
     * [cbp](#cbp)
     * [Perl, Python, and Java](#perl-python-and-java)
-    * [R with system `libc`](#r-with-system-libc)
     * [Perl modules](#perl-modules)
     * [spades](#spades)
-    * [Rust and .nwr](#rust-and-nwr)
-    * [Old R](#old-r)
+    * [nwr](#nwr)
     * [Backup WSL](#backup-wsl-1)
   * [CentH](#centh)
     * [gcc and commonly used libraries](#gcc-and-commonly-used-libraries)
@@ -28,6 +24,11 @@
   * [My modules](#my-modules)
   * [.ssh](#ssh)
   * [Mirror to remote server](#mirror-to-remote-server)
+  * [Old codes](#old-codes)
+    * [curl](#curl)
+    * [Change the hostname](#change-the-hostname)
+    * [R with system `libc`](#r-with-system-libc)
+    * [Old R](#old-r)
 <!-- TOC -->
 
 We will build several VMs here:
@@ -147,9 +148,6 @@ yum install -y ghostscript
 yum install -y cairo-devel pango-devel # HPCC has no -devel
 yum install -y gd gd-devel
 
-## clang
-#yum install -y llvm-devel clang-devel
-
 # locate
 yum install -y mlocate
 updatedb
@@ -193,47 +191,6 @@ usermod -aG wheel wangq
 visudo
 
 # wangq  ALL=(ALL) NOPASSWD:ALL
-
-```
-
-### Change the hostname
-
-Can't change hostname inside WSL
-
-```bash
-#hostnamectl set-hostname centos
-#
-#systemctl reboot
-
-```
-
-### Old codes
-
-```bash
-## curl need libnghttp2
-## libnghttp2 is in epel
-#yum install -y epel-release
-#sed -e 's|^metalink=|#metalink=|g' \
-#    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
-#    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
-#    -i.bak \
-#    /etc/yum.repos.d/epel.repo
-#yum install -y libnghttp2
-#
-## city-fan
-#rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
-#
-#yum install -y yum-utils
-#
-#yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
-#
-#curl --version
-## curl 8.1.2
-#
-#yum-config-manager --disable city-fan.org
-#
-## https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
-#yum remove -y yum-utils
 
 ```
 
@@ -332,23 +289,6 @@ cbp install openjdk
 
 ```
 
-### R with system `libc`
-
-R was built with system `gcc` and linked to the system `libc`.
-
-Avoid using graphic, gtk and x11 packages in brew.
-
-```bash
-cd
-ln -sf /mnt/c/Users/wangq/Scripts/ Scripts
-
-# A minimal R built by gcc-4.8
-bash ~/Scripts/dotfiles/r/build.sh
-
-source $HOME/.bashrc
-
-```
-
 ### Perl modules
 
 ```bash
@@ -366,7 +306,7 @@ source $HOME/.bashrc
 
 bash ~/Scripts/dotfiles/perl/install.sh
 
-cpanm --verbose Statistics::R
+#cpanm --verbose Statistics::R
 
 # My modules
 cpanm -nq App::Dazz # need dazz in $PATH
@@ -414,52 +354,13 @@ ln -sf ~/share/cmake/bin/cmake ~/bin/cmake
 
 ```
 
-### Rust and .nwr
+### nwr
 
 ```bash
-cd
-
 mkdir ~/.nwr
 
 # Put the files of appropriate time into this directory
 cp /mnt/c/Users/wangq/.nwr/* ~/.nwr/
-
-cd ~/Scripts/nwr
-cargo install --path . --force
-
-```
-
-### Old R
-
-```bash
-## nloptr need `cmake`
-##ln -s /usr/bin/cmake3 ~/bin/cmake
-#
-## brew unlink libxml2
-#
-## Can't use brewed libxml2
-#Rscript -e ' install.packages(
-#    "XML",
-#    repos="http://mirrors.ustc.edu.cn/CRAN",
-#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
-#    configure.vars = "CC=gcc"
-#    ) '
-#
-## manually
-##curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.18.tar.gz |
-##    tar xvz
-##cd XML
-##./configure --with-xml-config=/usr/bin/xml2-config
-##CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
-#
-## export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
-## pkg-config --cflags libxml-2.0
-## pkg-config --libs libxml-2.0
-#Rscript -e ' install.packages(
-#    "xml2",
-#    repos="http://mirrors.ustc.edu.cn/CRAN",
-#    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
-#    ) '
 
 ```
 
@@ -773,5 +674,99 @@ rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:bin/ ~/bin
 
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:homebrew/ ~/homebrew
 rsync -avP -e "ssh -p ${PORT}" wangq@${HPCC}:share/R/ ~/share/R
+
+```
+
+## Old codes
+
+### curl
+
+```bash
+## curl need libnghttp2
+## libnghttp2 is in epel
+#yum install -y epel-release
+#sed -e 's|^metalink=|#metalink=|g' \
+#    -e 's|^#baseurl=https\?://download.fedoraproject.org/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+#    -e 's|^#baseurl=https\?://download.example/pub/epel/|baseurl=https://mirrors.ustc.edu.cn/epel/|g' \
+#    -i.bak \
+#    /etc/yum.repos.d/epel.repo
+#yum install -y libnghttp2
+#
+## city-fan
+#rpm -Uvh https://mirror.city-fan.org/ftp/contrib/yum-repo/city-fan.org-release-3-8.rhel7.noarch.rpm
+#
+#yum install -y yum-utils
+#
+#yum --enablerepo=city-fan.org install -y libcurl libcurl-devel
+#
+#curl --version
+## curl 8.1.2
+#
+#yum-config-manager --disable city-fan.org
+#
+## https://github.com/Linuxbrew/legacy-linuxbrew/issues/46#issuecomment-308758171
+#yum remove -y yum-utils
+
+```
+
+
+### Change the hostname
+
+Can't change hostname inside WSL
+
+```bash
+#hostnamectl set-hostname centos
+#
+#systemctl reboot
+
+```
+### R with system `libc`
+
+R was built with system `gcc` and linked to the system `libc`.
+
+Avoid using graphic, gtk and x11 packages in brew.
+
+```bash
+cd
+ln -sf /mnt/c/Users/wangq/Scripts/ Scripts
+
+# A minimal R built by gcc-4.8
+bash ~/Scripts/dotfiles/r/build.sh
+
+source $HOME/.bashrc
+
+```
+
+### Old R
+
+```bash
+## nloptr need `cmake`
+##ln -s /usr/bin/cmake3 ~/bin/cmake
+#
+## brew unlink libxml2
+#
+## Can't use brewed libxml2
+#Rscript -e ' install.packages(
+#    "XML",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.args = "--with-xml-config=/usr/bin/xml2-config",
+#    configure.vars = "CC=gcc"
+#    ) '
+#
+## manually
+##curl -L https://mirrors.ustc.edu.cn/CRAN/src/contrib/XML_3.99-0.18.tar.gz |
+##    tar xvz
+##cd XML
+##./configure --with-xml-config=/usr/bin/xml2-config
+##CC=gcc R CMD INSTALL . --configure-args='--with-xml-config=/usr/bin/xml2-config'
+#
+## export PKG_CONFIG_PATH="/usr/lib64/pkgconfig/"
+## pkg-config --cflags libxml-2.0
+## pkg-config --libs libxml-2.0
+#Rscript -e ' install.packages(
+#    "xml2",
+#    repos="http://mirrors.ustc.edu.cn/CRAN",
+#    configure.vars = "CC=gcc INCLUDE_DIR=/usr/include/libxml2 LIB_DIR=/usr/lib64"
+#    ) '
 
 ```
