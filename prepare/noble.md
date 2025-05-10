@@ -73,17 +73,6 @@ librsvg2-bin libudunits2-dev udunits-bin
 
 ```
 
-## Disks
-
-* `/home/wangq/data`: 2 TB SSD
-* `/home/wangq/data2`: 4 TB HDD
-
-```bash
-ln -s /home/wangq/data2/Bacteria /home/wangq/data/Bacteria
-ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
-
-```
-
 ## ssh
 
 ```bash
@@ -125,6 +114,39 @@ sudo ufw allow samba
 
 # Setting up User Accounts
 sudo smbpasswd -a wangq
+
+```
+
+## Disks
+
+* `/home/wangq/data`2 TB SSD
+
+`/dev/disk/by-id/usb-Samsung_PSSD_T7_S5TDNS0T330981K-0:0-part1 /home/wangq/data auto nosuid,nodev,nofail 0 0`
+
+## nfs
+
+Qnap
+
+* Enable NFS v2/v3 and/or NFS v4
+* Edit Shared Folder Permission
+  * NFS host access
+
+![nfs.png](../images/nfs.png)
+
+```bash
+# ubuntu
+sudo apt -y update
+sudo apt -y install nfs-common
+
+mkdir -p /home/wangq/nfs
+
+sudo mount -t nfs 192.168.31.209:/share/data /home/wangq/nfs
+sudo umount /home/wangq/nfs
+
+# /etc/fstab
+192.168.31.209:/share/data /home/wangq/nfs nfs rsize=8192,wsize=8192,timeo=14,intr
+
+sudo systemctl daemon-reload
 
 ```
 
