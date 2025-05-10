@@ -87,10 +87,10 @@ ln -s /home/wangq/data2/Plants /home/wangq/data/Plants
 ## ssh
 
 ```bash
-sudo apt update
-sudo apt upgrade
+sudo apt -y update
+sudo apt -y upgrade
 
-sudo apt install ssh
+sudo apt -y install ssh
 
 sudo systemctl start ssh
 sudo systemctl enable ssh
@@ -106,10 +106,10 @@ sudo ufw enable
 https://ubuntu.com/tutorials/install-and-configure-samba
 
 ```bash
-sudo apt update
-sudo apt upgrade
+sudo apt -y update
+sudo apt -y upgrade
 
-sudo apt install samba
+sudo apt -y install samba
 
 # Setting up Samba
 sudo bash -c 'cat >> /etc/samba/smb.conf <<EOF
@@ -143,10 +143,10 @@ sudo ufw reload
 
 ```bash
 # quicklook
-sudo apt install gnome-sushi
+sudo apt -y install gnome-sushi
 
 # extensions
-sudo apt install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
+sudo apt -y install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
 
 # Open the Extension Manager (installed above), search for
 # * Vitals
@@ -190,7 +190,8 @@ sudo apt update && sudo apt install microsoft-edge-stable
 ### Clash
 
 ```bash
-sudo apt  install curl
+sudo apt -y install curl
+sudo apt -y install libfuse2t64
 
 curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
 chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
@@ -203,7 +204,7 @@ mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 ```bash
 # Input Leap
 # Input Leap makes mouse points in the server laggy
-curl -L https://github.com/input-leap/input-leap/releases/download/v3.0.2/InputLeap_3.0.2_ubuntu_24-04_amd64.deb
+#curl -L https://github.com/input-leap/input-leap/releases/download/v3.0.2/InputLeap_3.0.2_ubuntu_24-04_amd64.deb
 #winget install input-leap.input-leap
 
 # zed
@@ -215,7 +216,7 @@ curl -f https://zed.dev/install.sh | sh
 
 ```bash
 # flatpak
-sudo apt install flatpak
+sudo apt -y install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
 
