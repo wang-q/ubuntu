@@ -279,8 +279,8 @@ curl -L https://cpanmin.us | perl - App::cpanminus
 # Python
 cbp install python3.11 uv
 
-python3 -m ensurepip --upgrade
-python3 -m pip install --upgrade pip setuptools wheel
+# python3 -m ensurepip --upgrade
+# python3 -m pip install --upgrade pip setuptools wheel
 
 uv pip install --system numpy matplotlib
 
