@@ -90,6 +90,15 @@ sudo ufw enable
 
 ```
 
+### From a Windows machine
+
+https://superuser.com/questions/1747549/alternative-to-ssh-copy-id-on-windows
+
+```powershell
+type $HOME\.ssh\id_rsa.pub | ssh wangq@m750 "cat >> .ssh/authorized_keys"
+
+```
+
 ## smb
 
 https://ubuntu.com/tutorials/install-and-configure-samba
