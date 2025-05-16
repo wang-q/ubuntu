@@ -183,8 +183,10 @@ sudo apt -y install gnome-shell-extension-manager gir1.2-gtop-2.0 lm-sensors
 # * Vitals
 # * Allow Locked Remote Desktop
 
-```
+# https://askubuntu.com/questions/1515740/swap-memory-really-leak-on-freshish-install-of-24-04
+gnome-extensions disable ding@rastersoft.com
 
+```
 
 ### edge
 
