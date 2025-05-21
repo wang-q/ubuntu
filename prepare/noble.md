@@ -250,6 +250,13 @@ curl -f https://zed.dev/install.sh | sh
 
 ```
 
+## Snap
+
+```bash
+snap install ghostty --classic
+
+```
+
 ## Flatpak
 
 ```bash
