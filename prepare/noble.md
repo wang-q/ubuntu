@@ -104,6 +104,7 @@ type $HOME\.ssh\id_rsa.pub | ssh wangq@m750 "cat >> .ssh/authorized_keys"
 https://ubuntu.com/tutorials/install-and-configure-samba
 
 ```bash
+# server
 sudo apt -y update
 sudo apt -y upgrade
 
@@ -123,6 +124,10 @@ sudo ufw allow samba
 
 # Setting up User Accounts
 sudo smbpasswd -a wangq
+
+# client
+sudo apt -y update
+sudo apt -y install cifs-utils
 
 ```
 
