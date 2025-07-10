@@ -47,8 +47,8 @@ apt-get -y update
 apt-get -y upgrade
 
 apt-get -y install sudo vim
-# ip ping
-apt-get -y install iproute2 iputils-ping
+# ip ping ifconfig
+apt-get -y install iproute2 iputils-ping net-tools
 
 ```
 
@@ -95,7 +95,7 @@ sudo ufw enable
 https://superuser.com/questions/1747549/alternative-to-ssh-copy-id-on-windows
 
 ```powershell
-type $HOME\.ssh\id_rsa.pub | ssh wangq@m750 "cat >> .ssh/authorized_keys"
+type $HOME\.ssh\id_rsa.pub | ssh wangq@ser5 "cat >> .ssh/authorized_keys"
 
 ```
 
@@ -233,6 +233,8 @@ sudo apt -y install libfuse2t64
 
 curl -LO https://github.com/libnyanpasu/clash-nyanpasu/releases/download/v1.6.1/clash-nyanpasu_1.6.1_amd64.AppImage
 chmod +x clash-nyanpasu_1.6.1_amd64.AppImage
+
+mkdir -p ~/bin
 mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 
 ```
@@ -253,7 +255,7 @@ curl -f https://zed.dev/install.sh | sh
 ## Snap
 
 ```bash
-snap install ghostty --classic
+sudo snap install ghostty --classic
 
 ```
 
@@ -294,7 +296,7 @@ flatpak uninstall --unused
 ## pggb
 
 ```bash
-sudo apt install singularity-container
+sudo apt -y install singularity-container
 
 singularity version
 #4.1.1
@@ -313,9 +315,9 @@ singularity run -B ${PWD}/data:/data ~/share/pggb_latest.sif pggb -i /data/HLA/D
 ## Waydroid
 
 ```bash
-sudo apt install curl ca-certificates -y
+sudo apt -y install curl ca-certificates
 curl -s https://repo.waydro.id | sudo bash
-sudo apt install waydroid -y
+sudo apt -y install waydroid
 
 waydroid prop set persist.waydroid.width "1280"
 waydroid prop set persist.waydroid.height "720"
