@@ -33,6 +33,9 @@ sudo apt-get -y install libdb-dev libxml2-dev libssl-dev libncurses5-dev libgd-d
 # sudo apt-get -y install gdal-bin gdal-data libgdal-dev # /usr/lib/libgdal.so: undefined reference to `TIFFReadDirectory@LIBTIFF_4.0'
 # sudo apt-get -y install libgsl0ldbl libgsl0-dev
 
+# /usr/share/dict/words
+sudo apt-get -y install wamerican
+
 # Gtk stuff, Need by alignDB
 # install them in a fresh machine to avoid problems
 echo "==> Install gtk3"
