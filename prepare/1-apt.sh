@@ -35,6 +35,7 @@ sudo apt-get -y install libdb-dev libxml2-dev libssl-dev libncurses5-dev libgd-d
 
 # /usr/share/dict/words
 sudo apt-get -y install wamerican
+sudo apt-get -y install fontconfig
 
 # Gtk stuff, Need by alignDB
 # install them in a fresh machine to avoid problems
