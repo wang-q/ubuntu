@@ -25,13 +25,17 @@ sudo apt-get -y install pkg-config libbz2-dev zlib1g-dev liblzma-dev libzstd-dev
 # sudo apt-get -y install libcurl4-openssl-dev libncurses-dev
 
 echo "==> Install other software"
-sudo apt-get -y install aptitude net-tools parallel vim screen xsltproc numactl pigz plocate # mlocate
+sudo apt-get -y install aptitude net-tools parallel vim screen xsltproc numactl pigz plocate fontconfig-config # mlocate
 
 echo "==> Install develop libraries"
 # sudo apt-get -y install libreadline-dev libedit-dev
 sudo apt-get -y install libdb-dev libxml2-dev libssl-dev libncurses5-dev libgd-dev
 # sudo apt-get -y install gdal-bin gdal-data libgdal-dev # /usr/lib/libgdal.so: undefined reference to `TIFFReadDirectory@LIBTIFF_4.0'
 # sudo apt-get -y install libgsl0ldbl libgsl0-dev
+
+# /usr/share/dict/words
+sudo apt-get -y install wamerican
+sudo apt-get -y install fontconfig
 
 # Gtk stuff, Need by alignDB
 # install them in a fresh machine to avoid problems

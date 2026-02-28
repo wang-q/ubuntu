@@ -13,16 +13,15 @@ docker pull ubuntu:24.04
 docker run -t --name wsl_export ubuntu:24.04 ls /
 
 # Create a directory to store the exported container file
-mkdir -p d:\VM
+mkdir -p $HOME\VM
 
 # Export the specified container and save it as a tar file
-docker export wsl_export > d:\VM\noble.tar
+docker export wsl_export > $HOME\VM\noble.tar
 
 docker rm wsl_export
 
 # Import the exported container tar file into WSL, creating a WSL instance named noble
-wsl --import noble d:\VM\noble d:\VM\noble.tar
-# wsl --import noble $HOME\VM\noble $HOME\VM\noble.tar
+wsl --import noble $HOME\VM\noble $HOME\VM\noble.tar
 
 # List all WSL instances and their version information
 wsl -l -v
@@ -79,7 +78,7 @@ librsvg2-bin libudunits2-dev udunits-bin
 sudo apt -y update
 sudo apt -y upgrade
 
-sudo apt -y install ssh
+sudo apt -y install ssh ufw
 
 sudo systemctl start ssh
 sudo systemctl enable ssh
@@ -133,7 +132,7 @@ sudo apt -y install cifs-utils
 
 ## Disks
 
-* `/home/wangq/data`2 TB SSD
+* `/home/wangq/data` 2 TB SSD
 
 `/dev/disk/by-id/usb-Samsung_PSSD_T7_S5TDNS0T330981K-0:0-part1 /home/wangq/data auto nosuid,nodev,nofail 0 0`
 
