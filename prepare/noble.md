@@ -67,11 +67,6 @@ passwd $myUsername
 
 ```
 
-```bash
-librsvg2-bin libudunits2-dev udunits-bin
-
-```
-
 ## ssh
 
 ```bash
