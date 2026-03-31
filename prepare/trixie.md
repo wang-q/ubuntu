@@ -38,7 +38,7 @@ wsl -d trixie
 # Terminate the trixie instance to achieve this
 # wsl --terminate trixie
 
-# wsl --unregister trixie   
+# wsl --unregister trixie
 
 ```
 
@@ -54,7 +54,12 @@ apt-get -y install sudo vim
 # ip ping ifconfig ps
 apt-get -y install iproute2 iputils-ping net-tools procps
 
-# systemd 
+# locales
+apt-get -y install locales
+locale-gen en_US.UTF-8
+update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+# systemd
 apt-get -y install systemd systemd-sysv
 ```
 
@@ -101,10 +106,23 @@ sudo ufw allow ssh
 sudo ufw enable
 
 ```
+
 ## Flatpak
+
 ```bash
 # flatpak
 sudo apt -y install flatpak
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+```
+
+## Python
+
+```bash
+cbp install python3.11
+cbp install uv
+
+uv pip install --system -U "docling"
+uv pip install --system -U "mineru[all]"
+uv pip install --system -U 'markitdown[all]'
 ```
