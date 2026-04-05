@@ -125,4 +125,6 @@ cbp install uv
 uv pip install --system -U "docling"
 uv pip install --system -U "mineru[all]"
 uv pip install --system -U 'markitdown[all]'
+
+uv pip install --system -U "opendataloader-pdf[hybrid]"
 ```
