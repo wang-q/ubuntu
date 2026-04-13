@@ -253,9 +253,10 @@ flatpak install launcher.moe moe.launcher.the-honkers-railway-launcher
 
 # flatpak install --user flathub io.mpv.Mpv
 # flatpak install --user flathub info.smplayer.SMPlayer
-flatpak install --user flathub io.github.celluloid_player.Celluloid
+# flatpak install --user flathub io.github.celluloid_player.Celluloid
+flatpak install --user flathub org.videolan.VLC
 
-flatpak install --user flathub io.github.shiftey.Desktop
+# flatpak install --user flathub io.github.shiftey.Desktop
 # flatpak install --user flathub com.visualstudio.code
 
 flatpak install --user flathub org.qbittorrent.qBittorrent
