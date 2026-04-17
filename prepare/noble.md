@@ -220,10 +220,6 @@ mv clash-nyanpasu_1.6.1_amd64.AppImage ~/bin
 ### Apps
 
 ```bash
-# Input Leap
-# Input Leap makes mouse points in the server laggy
-#curl -L https://github.com/input-leap/input-leap/releases/download/v3.0.2/InputLeap_3.0.2_ubuntu_24-04_amd64.deb
-#winget install input-leap.input-leap
 
 # zed
 curl -f https://zed.dev/install.sh | sh
@@ -232,8 +228,11 @@ curl -f https://zed.dev/install.sh | sh
 
 ## Snap
 
+Accepts system proxy
+
 ```bash
 sudo snap install ghostty --classic
+sudo snap install github-desktop --beta --classic
 
 ```
 
